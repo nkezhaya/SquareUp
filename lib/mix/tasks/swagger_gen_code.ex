@@ -26,6 +26,8 @@ defmodule Mix.Tasks.SwaggerCodeGen do
       |> filter_deprecated()
       |> filter_v1()
 
+    # TODO offer support for v1 and v2 and vX endpoints
+
     Enum.map(endpoints, fn {path, method, defn} ->
       function = Map.get(defn, "operationId") |> name_to_function()
       {function, {path, method, defn}}
