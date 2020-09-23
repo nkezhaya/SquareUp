@@ -32,6 +32,8 @@ defmodule Mix.Tasks.SwaggerCodeGen do
     end)
     |> Enum.group_by(fn {{module, _fun}, _defn} -> module end)
     |> Enum.map(&write_module/1)
+
+    Mix.Tasks.Format.run(~w(lib/square_up/resources/*.ex))
   end
 
   defp write_module({module, endpoints}) do
