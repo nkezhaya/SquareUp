@@ -4,6 +4,22 @@ defmodule SquareUp.Client do
   @square_version "2020-08-26"
 
   def call(client, call, opts \\ []) do
+    case check_request(call) do
+      :ok -> do_request(client, call, opts)
+      {:error, _} = err -> err
+    end
+  end
+
+  defp check_request(call) do
+    import Norm
+
+    case conform(call.params, call.spec) do
+      {:ok, _params} -> :ok
+      {:error, _} = err -> err
+    end
+  end
+
+  defp do_request(client, call, opts) do
     :hackney.request(
       call.method,
       url(client, call),

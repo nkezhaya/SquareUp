@@ -9,6 +9,10 @@ defmodule SquareUpTest do
   }
 
   test "can list payments" do
-    {:ok, _payments} = SquareUp.Payments.list(@client, %{})
+    assert {:ok, _payments} = SquareUp.Payments.list(@client, %{})
+  end
+
+  test "rejects an invalid request" do
+    assert {:error, _details} = SquareUp.Payment.create(@client, %{}) |> IO.inspect()
   end
 end

@@ -8,6 +8,8 @@ defmodule GenResources do
   def run(_args) do
     rm_resources()
 
+    write_schema_module()
+
     write_resources()
   end
 
@@ -42,6 +44,7 @@ defmodule GenResources do
   defp write_module({module, endpoints}) do
     contents = """
     defmodule SquareUp.#{module} do
+      import Norm
       import SquareUp.Client, only: [call: 2]
     #{Enum.map(endpoints, &write_function/1)}
     end
@@ -51,10 +54,6 @@ defmodule GenResources do
   end
 
   defp write_function({{_module, function}, {path, method, defn}}) do
-    # NOTE for later:
-    # norm_spec = #{params_to_norm(Map.get(defn, "parameters"))}
-    # IO.inspect(defn)
-
     path =
       String.replace(path, ~r/{[^}]+}/, fn param ->
         param = String.replace(param, ["{", "}"], "")
@@ -64,35 +63,66 @@ defmodule GenResources do
 
     """
       def #{function}(client, params) do
+        norm_spec = #{params_to_norm(Map.get(defn, "parameters"))}
+
         call(client, %{
           method: :#{method},
           params: params,
+          spec: norm_spec,
           path: "#{path}"
         })
       end
     """
   end
 
+  defp write_schema_module() do
+    definitions = Map.get(@api, "definitions")
+
+    contents = """
+    defmodule SquareUp.Schema do
+      import Norm
+    #{Enum.map(definitions, &write_definition/1)}
+    end
+    """
+
+    File.write!("lib/square_up/resources/schema.ex", contents)
+  end
+
+  defp write_definition({function, defn}) do
+    """
+    def #{Macro.underscore(function)}(_data) do
+    #{params_to_norm(defn)}
+    end
+    """
+  end
+
+  defp params_to_norm([%{"name" => "body"} = body]) do
+    Map.delete(body, "name") |> params_to_norm()
+  end
+
   defp params_to_norm(list) when is_list(list) do
     "schema(%{#{Enum.map(list, &params_to_norm/1) |> Enum.join(",")}})"
   end
 
-  defp params_to_norm(%{"properties" => props}) do
-    "schema(%{#{Enum.map(props, &params_to_norm/1) |> Enum.join(",")}})"
-  end
-
-  defp params_to_norm(%{"schema" => %{"$ref" => schema}}) do
-    get_definition(schema) |> params_to_norm()
-  end
-
-  defp params_to_norm(%{"$ref" => schema}) do
-    get_definition(schema) |> params_to_norm()
+  defp params_to_norm(%{"properties" => props} = defn) do
+    """
+    schema(%{#{Enum.map(props, &params_to_norm/1) |> Enum.join(",")}})
+    |> selection(#{inspect(Map.get(defn, "required", []))})
+    """
   end
 
   defp params_to_norm(%{"name" => name} = param) do
-    """
-    "#{name}" => #{params_to_norm(Map.delete(param, "name"))}
-    """
+    ~s["#{name}" => #{params_to_norm(Map.delete(param, "name"))}]
+  end
+
+  defp params_to_norm(%{"schema" => %{"$ref" => schema}}) do
+    "#/definitions/" <> function = schema
+    ~s[spec(SquareUp.Schema.#{Macro.underscore(function)}())]
+  end
+
+  defp params_to_norm(%{"$ref" => schema}) do
+    "#/definitions/" <> function = schema
+    ~s[spec(SquareUp.Schema.#{Macro.underscore(function)}())]
   end
 
   defp params_to_norm(%{"type" => "integer"}) do
@@ -121,11 +151,6 @@ defmodule GenResources do
 
   defp params_to_norm({name, param = %{}}) do
     params_to_norm(Map.put(param, "name", name))
-  end
-
-  defp get_definition("#/definitions/" <> definition) do
-    IO.inspect(definition, label: "getting definition for")
-    Map.get(@api, "definitions") |> Map.get(definition)
   end
 
   defp name_to_function("BulkUpdate" <> module), do: {module, "bulk_update"}
