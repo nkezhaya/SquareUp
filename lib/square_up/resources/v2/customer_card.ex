@@ -2,7 +2,7 @@ defmodule SquareUp.V2.CustomerCard do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  def delete(client, params) do
+  def delete(client, params \\ %{}) do
     norm_spec = schema(%{"customer_id" => spec(is_binary()), "card_id" => spec(is_binary())})
 
     call(client, %{
@@ -13,7 +13,7 @@ defmodule SquareUp.V2.CustomerCard do
     })
   end
 
-  def create(client, params) do
+  def create(client, params \\ %{}) do
     norm_spec =
       schema(%{
         "customer_id" => spec(is_binary()),

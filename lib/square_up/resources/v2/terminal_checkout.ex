@@ -2,7 +2,7 @@ defmodule SquareUp.V2.TerminalCheckout do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  def create(client, params) do
+  def create(client, params \\ %{}) do
     norm_spec = spec(SquareUp.Schema.create_terminal_checkout_request())
 
     call(client, %{
@@ -13,7 +13,7 @@ defmodule SquareUp.V2.TerminalCheckout do
     })
   end
 
-  def get(client, params) do
+  def get(client, params \\ %{}) do
     norm_spec = schema(%{"checkout_id" => spec(is_binary())})
 
     call(client, %{
@@ -24,7 +24,7 @@ defmodule SquareUp.V2.TerminalCheckout do
     })
   end
 
-  def cancel(client, params) do
+  def cancel(client, params \\ %{}) do
     norm_spec = schema(%{"checkout_id" => spec(is_binary())})
 
     call(client, %{

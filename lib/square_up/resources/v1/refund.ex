@@ -2,7 +2,7 @@ defmodule SquareUp.V1.Refund do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  def create(client, params) do
+  def create(client, params \\ %{}) do
     norm_spec =
       schema(%{
         "location_id" => spec(is_binary()),

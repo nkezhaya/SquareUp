@@ -2,7 +2,7 @@ defmodule SquareUp.V2.Invoices do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  def search(client, params) do
+  def search(client, params \\ %{}) do
     norm_spec = spec(SquareUp.Schema.search_invoices_request())
 
     call(client, %{
@@ -13,7 +13,7 @@ defmodule SquareUp.V2.Invoices do
     })
   end
 
-  def list(client, params) do
+  def list(client, params \\ %{}) do
     norm_spec =
       schema(%{
         "location_id" => spec(is_binary()),

@@ -9,7 +9,7 @@ defmodule SquareUpTest do
   }
 
   test "can list payments" do
-    assert {:ok, _payments} = SquareUp.V2.Payments.list(@client, %{})
+    assert {:ok, _payments} = SquareUp.V2.Payments.list(@client)
   end
 
   test "rejects an invalid request" do

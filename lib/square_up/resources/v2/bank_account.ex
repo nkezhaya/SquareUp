@@ -2,7 +2,7 @@ defmodule SquareUp.V2.BankAccount do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  def get(client, params) do
+  def get(client, params \\ %{}) do
     norm_spec = schema(%{"bank_account_id" => spec(is_binary())})
 
     call(client, %{

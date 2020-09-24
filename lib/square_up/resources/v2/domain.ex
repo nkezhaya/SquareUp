@@ -2,7 +2,7 @@ defmodule SquareUp.V2.Domain do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  def register(client, params) do
+  def register(client, params \\ %{}) do
     norm_spec = spec(SquareUp.Schema.register_domain_request())
 
     call(client, %{

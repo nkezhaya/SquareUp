@@ -2,7 +2,7 @@ defmodule SquareUp.OAUTH2.Token do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  def obtain(client, params) do
+  def obtain(client, params \\ %{}) do
     norm_spec = spec(SquareUp.Schema.obtain_token_request())
 
     call(client, %{
@@ -13,7 +13,7 @@ defmodule SquareUp.OAUTH2.Token do
     })
   end
 
-  def revoke(client, params) do
+  def revoke(client, params \\ %{}) do
     norm_spec = spec(SquareUp.Schema.revoke_token_request())
 
     call(client, %{

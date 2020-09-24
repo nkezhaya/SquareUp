@@ -2,7 +2,7 @@ defmodule SquareUp.V2.Payment do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  def refund(client, params) do
+  def refund(client, params \\ %{}) do
     norm_spec = spec(SquareUp.Schema.refund_payment_request())
 
     call(client, %{
@@ -13,7 +13,7 @@ defmodule SquareUp.V2.Payment do
     })
   end
 
-  def cancel_by_idempotency_key(client, params) do
+  def cancel_by_idempotency_key(client, params \\ %{}) do
     norm_spec = spec(SquareUp.Schema.cancel_payment_by_idempotency_key_request())
 
     call(client, %{
@@ -24,7 +24,7 @@ defmodule SquareUp.V2.Payment do
     })
   end
 
-  def complete(client, params) do
+  def complete(client, params \\ %{}) do
     norm_spec = schema(%{"payment_id" => spec(is_binary())})
 
     call(client, %{
@@ -35,7 +35,7 @@ defmodule SquareUp.V2.Payment do
     })
   end
 
-  def get(client, params) do
+  def get(client, params \\ %{}) do
     norm_spec = schema(%{"payment_id" => spec(is_binary())})
 
     call(client, %{
@@ -46,7 +46,7 @@ defmodule SquareUp.V2.Payment do
     })
   end
 
-  def cancel(client, params) do
+  def cancel(client, params \\ %{}) do
     norm_spec = schema(%{"payment_id" => spec(is_binary())})
 
     call(client, %{
@@ -57,7 +57,7 @@ defmodule SquareUp.V2.Payment do
     })
   end
 
-  def create(client, params) do
+  def create(client, params \\ %{}) do
     norm_spec = spec(SquareUp.Schema.create_payment_request())
 
     call(client, %{

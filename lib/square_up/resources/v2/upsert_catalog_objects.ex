@@ -2,7 +2,7 @@ defmodule SquareUp.V2.UpsertCatalogObjects do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  def batch(client, params) do
+  def batch(client, params \\ %{}) do
     norm_spec = spec(SquareUp.Schema.batch_upsert_catalog_objects_request())
 
     call(client, %{

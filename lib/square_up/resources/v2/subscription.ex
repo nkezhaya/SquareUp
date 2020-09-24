@@ -2,7 +2,7 @@ defmodule SquareUp.V2.Subscription do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  def retrieve(client, params) do
+  def retrieve(client, params \\ %{}) do
     norm_spec = schema(%{"subscription_id" => spec(is_binary())})
 
     call(client, %{
@@ -13,7 +13,7 @@ defmodule SquareUp.V2.Subscription do
     })
   end
 
-  def update(client, params) do
+  def update(client, params \\ %{}) do
     norm_spec =
       schema(%{
         "subscription_id" => spec(is_binary()),
@@ -28,7 +28,7 @@ defmodule SquareUp.V2.Subscription do
     })
   end
 
-  def cancel(client, params) do
+  def cancel(client, params \\ %{}) do
     norm_spec = schema(%{"subscription_id" => spec(is_binary())})
 
     call(client, %{
@@ -39,7 +39,7 @@ defmodule SquareUp.V2.Subscription do
     })
   end
 
-  def create(client, params) do
+  def create(client, params \\ %{}) do
     norm_spec = spec(SquareUp.Schema.create_subscription_request())
 
     call(client, %{

@@ -2,7 +2,7 @@ defmodule SquareUp.V2.Shift do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  def delete(client, params) do
+  def delete(client, params \\ %{}) do
     norm_spec = schema(%{"id" => spec(is_binary())})
 
     call(client, %{
@@ -13,7 +13,7 @@ defmodule SquareUp.V2.Shift do
     })
   end
 
-  def get(client, params) do
+  def get(client, params \\ %{}) do
     norm_spec = schema(%{"id" => spec(is_binary())})
 
     call(client, %{
@@ -24,7 +24,7 @@ defmodule SquareUp.V2.Shift do
     })
   end
 
-  def update(client, params) do
+  def update(client, params \\ %{}) do
     norm_spec =
       schema(%{"id" => spec(is_binary()), "body" => spec(SquareUp.Schema.update_shift_request())})
 
@@ -36,7 +36,7 @@ defmodule SquareUp.V2.Shift do
     })
   end
 
-  def create(client, params) do
+  def create(client, params \\ %{}) do
     norm_spec = spec(SquareUp.Schema.create_shift_request())
 
     call(client, %{

@@ -2,7 +2,7 @@ defmodule SquareUp.V2.BreakTypes do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  def list(client, params) do
+  def list(client, params \\ %{}) do
     norm_spec =
       schema(%{
         "location_id" => spec(is_binary()),

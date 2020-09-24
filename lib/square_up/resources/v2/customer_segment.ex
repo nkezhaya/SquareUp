@@ -2,7 +2,7 @@ defmodule SquareUp.V2.CustomerSegment do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  def retrieve(client, params) do
+  def retrieve(client, params \\ %{}) do
     norm_spec = schema(%{"segment_id" => spec(is_binary())})
 
     call(client, %{

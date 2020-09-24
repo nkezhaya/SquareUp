@@ -2,7 +2,7 @@ defmodule SquareUp.V2.Customer do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  def create(client, params) do
+  def create(client, params \\ %{}) do
     norm_spec = spec(SquareUp.Schema.create_customer_request())
 
     call(client, %{
@@ -13,7 +13,7 @@ defmodule SquareUp.V2.Customer do
     })
   end
 
-  def remove_group(client, params) do
+  def remove_group(client, params \\ %{}) do
     norm_spec = schema(%{"customer_id" => spec(is_binary()), "group_id" => spec(is_binary())})
 
     call(client, %{
@@ -25,7 +25,7 @@ defmodule SquareUp.V2.Customer do
     })
   end
 
-  def add_group(client, params) do
+  def add_group(client, params \\ %{}) do
     norm_spec = schema(%{"customer_id" => spec(is_binary()), "group_id" => spec(is_binary())})
 
     call(client, %{
@@ -37,7 +37,7 @@ defmodule SquareUp.V2.Customer do
     })
   end
 
-  def delete(client, params) do
+  def delete(client, params \\ %{}) do
     norm_spec = schema(%{"customer_id" => spec(is_binary())})
 
     call(client, %{
@@ -48,7 +48,7 @@ defmodule SquareUp.V2.Customer do
     })
   end
 
-  def retrieve(client, params) do
+  def retrieve(client, params \\ %{}) do
     norm_spec = schema(%{"customer_id" => spec(is_binary())})
 
     call(client, %{
@@ -59,7 +59,7 @@ defmodule SquareUp.V2.Customer do
     })
   end
 
-  def update(client, params) do
+  def update(client, params \\ %{}) do
     norm_spec =
       schema(%{
         "customer_id" => spec(is_binary()),

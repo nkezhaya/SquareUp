@@ -2,7 +2,7 @@ defmodule SquareUp.V2.TeamMember do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  def create(client, params) do
+  def create(client, params \\ %{}) do
     norm_spec = spec(SquareUp.Schema.create_team_member_request())
 
     call(client, %{
@@ -13,7 +13,7 @@ defmodule SquareUp.V2.TeamMember do
     })
   end
 
-  def retrieve(client, params) do
+  def retrieve(client, params \\ %{}) do
     norm_spec = schema(%{"team_member_id" => spec(is_binary())})
 
     call(client, %{
@@ -24,7 +24,7 @@ defmodule SquareUp.V2.TeamMember do
     })
   end
 
-  def update(client, params) do
+  def update(client, params \\ %{}) do
     norm_spec =
       schema(%{
         "team_member_id" => spec(is_binary()),

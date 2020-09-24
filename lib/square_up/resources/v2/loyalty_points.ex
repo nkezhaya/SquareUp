@@ -2,7 +2,7 @@ defmodule SquareUp.V2.LoyaltyPoints do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  def calculate(client, params) do
+  def calculate(client, params \\ %{}) do
     norm_spec =
       schema(%{
         "program_id" => spec(is_binary()),
@@ -17,7 +17,7 @@ defmodule SquareUp.V2.LoyaltyPoints do
     })
   end
 
-  def accumulate(client, params) do
+  def accumulate(client, params \\ %{}) do
     norm_spec =
       schema(%{
         "account_id" => spec(is_binary()),
@@ -32,7 +32,7 @@ defmodule SquareUp.V2.LoyaltyPoints do
     })
   end
 
-  def adjust(client, params) do
+  def adjust(client, params \\ %{}) do
     norm_spec =
       schema(%{
         "account_id" => spec(is_binary()),

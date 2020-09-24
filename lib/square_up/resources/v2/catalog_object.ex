@@ -2,7 +2,7 @@ defmodule SquareUp.V2.CatalogObject do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  def delete(client, params) do
+  def delete(client, params \\ %{}) do
     norm_spec = schema(%{"object_id" => spec(is_binary())})
 
     call(client, %{
@@ -13,7 +13,7 @@ defmodule SquareUp.V2.CatalogObject do
     })
   end
 
-  def retrieve(client, params) do
+  def retrieve(client, params \\ %{}) do
     norm_spec =
       schema(%{"object_id" => spec(is_binary()), "include_related_objects" => spec(is_boolean())})
 
@@ -25,7 +25,7 @@ defmodule SquareUp.V2.CatalogObject do
     })
   end
 
-  def upsert(client, params) do
+  def upsert(client, params \\ %{}) do
     norm_spec = spec(SquareUp.Schema.upsert_catalog_object_request())
 
     call(client, %{

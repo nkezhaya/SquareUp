@@ -2,7 +2,7 @@ defmodule SquareUp.V2.Order do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  def update(client, params) do
+  def update(client, params \\ %{}) do
     norm_spec =
       schema(%{
         "order_id" => spec(is_binary()),
@@ -17,7 +17,7 @@ defmodule SquareUp.V2.Order do
     })
   end
 
-  def create(client, params) do
+  def create(client, params \\ %{}) do
     norm_spec = spec(SquareUp.Schema.create_order_request())
 
     call(client, %{
@@ -28,7 +28,7 @@ defmodule SquareUp.V2.Order do
     })
   end
 
-  def calculate(client, params) do
+  def calculate(client, params \\ %{}) do
     norm_spec = spec(SquareUp.Schema.calculate_order_request())
 
     call(client, %{
@@ -39,7 +39,7 @@ defmodule SquareUp.V2.Order do
     })
   end
 
-  def pay(client, params) do
+  def pay(client, params \\ %{}) do
     norm_spec =
       schema(%{
         "order_id" => spec(is_binary()),

@@ -2,7 +2,7 @@ defmodule SquareUp.V2.Invoice do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  def create(client, params) do
+  def create(client, params \\ %{}) do
     norm_spec = spec(SquareUp.Schema.create_invoice_request())
 
     call(client, %{
@@ -13,7 +13,7 @@ defmodule SquareUp.V2.Invoice do
     })
   end
 
-  def publish(client, params) do
+  def publish(client, params \\ %{}) do
     norm_spec =
       schema(%{
         "invoice_id" => spec(is_binary()),
@@ -28,7 +28,7 @@ defmodule SquareUp.V2.Invoice do
     })
   end
 
-  def delete(client, params) do
+  def delete(client, params \\ %{}) do
     norm_spec = schema(%{"invoice_id" => spec(is_binary()), "version" => spec(is_integer())})
 
     call(client, %{
@@ -39,7 +39,7 @@ defmodule SquareUp.V2.Invoice do
     })
   end
 
-  def get(client, params) do
+  def get(client, params \\ %{}) do
     norm_spec = schema(%{"invoice_id" => spec(is_binary())})
 
     call(client, %{
@@ -50,7 +50,7 @@ defmodule SquareUp.V2.Invoice do
     })
   end
 
-  def update(client, params) do
+  def update(client, params \\ %{}) do
     norm_spec =
       schema(%{
         "invoice_id" => spec(is_binary()),
@@ -65,7 +65,7 @@ defmodule SquareUp.V2.Invoice do
     })
   end
 
-  def cancel(client, params) do
+  def cancel(client, params \\ %{}) do
     norm_spec =
       schema(%{
         "invoice_id" => spec(is_binary()),

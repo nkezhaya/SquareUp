@@ -2,7 +2,7 @@ defmodule SquareUp.V2.CatalogObjects do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  def batch_delete(client, params) do
+  def batch_delete(client, params \\ %{}) do
     norm_spec = spec(SquareUp.Schema.batch_delete_catalog_objects_request())
 
     call(client, %{
@@ -13,7 +13,7 @@ defmodule SquareUp.V2.CatalogObjects do
     })
   end
 
-  def batch_retrieve(client, params) do
+  def batch_retrieve(client, params \\ %{}) do
     norm_spec = spec(SquareUp.Schema.batch_retrieve_catalog_objects_request())
 
     call(client, %{
@@ -24,7 +24,7 @@ defmodule SquareUp.V2.CatalogObjects do
     })
   end
 
-  def search(client, params) do
+  def search(client, params \\ %{}) do
     norm_spec = spec(SquareUp.Schema.search_catalog_objects_request())
 
     call(client, %{

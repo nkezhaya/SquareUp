@@ -2,7 +2,7 @@ defmodule SquareUp.V2.InventoryCounts do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  def batch_retrieve(client, params) do
+  def batch_retrieve(client, params \\ %{}) do
     norm_spec = spec(SquareUp.Schema.batch_retrieve_inventory_counts_request())
 
     call(client, %{

@@ -2,7 +2,7 @@ defmodule SquareUp.V2.Dispute do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  def retrieve(client, params) do
+  def retrieve(client, params \\ %{}) do
     norm_spec = schema(%{"dispute_id" => spec(is_binary())})
 
     call(client, %{
@@ -13,7 +13,7 @@ defmodule SquareUp.V2.Dispute do
     })
   end
 
-  def accept(client, params) do
+  def accept(client, params \\ %{}) do
     norm_spec = schema(%{"dispute_id" => spec(is_binary())})
 
     call(client, %{

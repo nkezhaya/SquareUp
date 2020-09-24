@@ -2,7 +2,7 @@ defmodule SquareUp.V2.LoyaltyReward do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  def redeem(client, params) do
+  def redeem(client, params \\ %{}) do
     norm_spec =
       schema(%{
         "reward_id" => spec(is_binary()),
@@ -17,7 +17,7 @@ defmodule SquareUp.V2.LoyaltyReward do
     })
   end
 
-  def delete(client, params) do
+  def delete(client, params \\ %{}) do
     norm_spec = schema(%{"reward_id" => spec(is_binary())})
 
     call(client, %{
@@ -28,7 +28,7 @@ defmodule SquareUp.V2.LoyaltyReward do
     })
   end
 
-  def retrieve(client, params) do
+  def retrieve(client, params \\ %{}) do
     norm_spec = schema(%{"reward_id" => spec(is_binary())})
 
     call(client, %{
@@ -39,7 +39,7 @@ defmodule SquareUp.V2.LoyaltyReward do
     })
   end
 
-  def create(client, params) do
+  def create(client, params \\ %{}) do
     norm_spec = spec(SquareUp.Schema.create_loyalty_reward_request())
 
     call(client, %{

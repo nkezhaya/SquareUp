@@ -2,7 +2,7 @@ defmodule SquareUp.V1.EmployeeRoles do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  def list(client, params) do
+  def list(client, params \\ %{}) do
     norm_spec =
       schema(%{
         "order" => spec(is_binary()),

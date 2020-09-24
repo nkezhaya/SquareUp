@@ -67,7 +67,7 @@ defmodule GenResources do
       end)
 
     """
-      def #{function}(client, params) do
+      def #{function}(client, params \\\\ %{}) do
         norm_spec = #{params_to_norm(Map.get(defn, "parameters"))}
 
         call(client, %{

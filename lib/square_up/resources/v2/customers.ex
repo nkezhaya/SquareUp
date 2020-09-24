@@ -2,7 +2,7 @@ defmodule SquareUp.V2.Customers do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  def search(client, params) do
+  def search(client, params \\ %{}) do
     norm_spec = spec(SquareUp.Schema.search_customers_request())
 
     call(client, %{
@@ -13,7 +13,7 @@ defmodule SquareUp.V2.Customers do
     })
   end
 
-  def list(client, params) do
+  def list(client, params \\ %{}) do
     norm_spec =
       schema(%{
         "cursor" => spec(is_binary()),
