@@ -90,10 +90,16 @@ defmodule GenResources do
 
   defp write_definition({function, defn}) do
     """
-    def #{Macro.underscore(function)}(_data) do
-    #{params_to_norm(defn)}
+    def #{Macro.underscore(function)}(data) do
+    valid?(data, #{params_to_norm(defn)})
     end
     """
+
+    # """
+    # def #{Macro.underscore(function)}() do
+    ## {params_to_norm(defn)}
+    # end
+    # """
   end
 
   defp params_to_norm([%{"name" => "body"} = body]) do
@@ -118,11 +124,13 @@ defmodule GenResources do
   defp params_to_norm(%{"schema" => %{"$ref" => schema}}) do
     "#/definitions/" <> function = schema
     ~s[spec(SquareUp.Schema.#{Macro.underscore(function)}())]
+    # ~s[delegate(&SquareUp.Schema.#{Macro.underscore(function)}/0)]
   end
 
   defp params_to_norm(%{"$ref" => schema}) do
     "#/definitions/" <> function = schema
     ~s[spec(SquareUp.Schema.#{Macro.underscore(function)}())]
+    # ~s[delegate(&SquareUp.Schema.#{Macro.underscore(function)}/0)]
   end
 
   defp params_to_norm(%{"type" => "integer"}) do

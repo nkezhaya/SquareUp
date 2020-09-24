@@ -13,6 +13,10 @@ defmodule SquareUpTest do
   end
 
   test "rejects an invalid request" do
-    assert {:error, _details} = SquareUp.Payment.create(@client, %{}) |> IO.inspect()
+    assert {:error, [%{spec: "SquareUp.Schema.create_payment_request()"}]} =
+             SquareUp.Payment.create(@client, %{"amount_money" => %{"amount" => "foo"}})
+
+    # assert {:error, [%{input: "foo", path: ["amount_money", "amount"], spec: "is_integer()"} | _]} =
+    #          SquareUp.Payment.create(@client, %{"amount_money" => %{"amount" => "foo"}})
   end
 end
