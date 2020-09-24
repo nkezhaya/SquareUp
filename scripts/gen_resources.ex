@@ -4,20 +4,21 @@ defmodule GenResources do
 
   @api File.read!("api.json") |> Jason.decode!()
 
-  # Map.get(@api, "definitions") |> IO.inspect(label: "definitions", limit: :infinity)
-
   @impl Mix.Task
   def run(_args) do
-    api_definition = api_definition()
+    rm_resources()
 
-    write_endpoints(api_definition)
-
-    # Map.keys(api_definition) |> IO.inspect()
+    write_resources()
   end
 
-  defp write_endpoints(api) do
+  defp rm_resources() do
+    Path.wildcard("lib/square_up/resources/*.ex")
+    |> Enum.each(&File.rm/1)
+  end
+
+  defp write_resources() do
     endpoints =
-      Map.get(api, "paths")
+      Map.get(@api, "paths")
       |> Enum.flat_map(fn {path, methods} ->
         Enum.map(methods, fn {method, defn} ->
           {path, method, defn}
@@ -154,10 +155,6 @@ defmodule GenResources do
       {"/v1/" <> _, _, _} -> false
       _ -> true
     end)
-  end
-
-  defp api_definition do
-    File.read!("api.json") |> Jason.decode!()
   end
 end
 
