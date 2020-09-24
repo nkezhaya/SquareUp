@@ -1,4 +1,4 @@
-defmodule Mix.Tasks.SwaggerCodeGen do
+defmodule GenResources do
   use Mix.Task
   @shortdoc "generate modules from api.json"
 
@@ -160,3 +160,5 @@ defmodule Mix.Tasks.SwaggerCodeGen do
     File.read!("api.json") |> Jason.decode!()
   end
 end
+
+GenResources.run([])
