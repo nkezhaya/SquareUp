@@ -1,9 +1,9 @@
 defmodule SquareUp.V2.Evidence do
   import Norm
   import SquareUp.Client, only: [call: 2]
-
+  @spec submit(%SquareUp.Client{}, %{dispute_id: binary()}) :: SquareUp.Client.response()
   def submit(client, params \\ %{}) do
-    norm_spec = schema(%{"dispute_id" => spec(is_binary())})
+    norm_spec = schema(%{dispute_id: spec(is_binary())})
 
     call(client, %{
       method: :post,

@@ -3,6 +3,8 @@ defmodule SquareUp.Client do
 
   @square_version "2020-08-26"
 
+  @type response :: {:ok, decoded_json :: any()} | {:error, any()}
+
   def call(client, call, opts \\ []) do
     case check_request(call) do
       :ok -> do_request(client, call, Keyword.merge(client.hackney_opts, opts))

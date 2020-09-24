@@ -2,12 +2,14 @@ defmodule SquareUp.V2.SubscriptionEvents do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
+  @spec list(%SquareUp.Client{}, %{subscription_id: binary(), cursor: binary(), limit: integer()}) ::
+          SquareUp.Client.response()
   def list(client, params \\ %{}) do
     norm_spec =
       schema(%{
-        "subscription_id" => spec(is_binary()),
-        "cursor" => spec(is_binary()),
-        "limit" => spec(is_integer())
+        subscription_id: spec(is_binary()),
+        cursor: spec(is_binary()),
+        limit: spec(is_integer())
       })
 
     call(client, %{

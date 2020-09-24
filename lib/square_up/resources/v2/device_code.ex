@@ -1,9 +1,9 @@
 defmodule SquareUp.V2.DeviceCode do
   import Norm
   import SquareUp.Client, only: [call: 2]
-
+  @spec get(%SquareUp.Client{}, %{id: binary()}) :: SquareUp.Client.response()
   def get(client, params \\ %{}) do
-    norm_spec = schema(%{"id" => spec(is_binary())})
+    norm_spec = schema(%{id: spec(is_binary())})
 
     call(client, %{
       method: :get,
@@ -13,6 +13,8 @@ defmodule SquareUp.V2.DeviceCode do
     })
   end
 
+  @spec create(%SquareUp.Client{}, SquareUp.Schema.create_device_code_request()) ::
+          SquareUp.Client.response()
   def create(client, params \\ %{}) do
     norm_spec = spec(SquareUp.Schema.create_device_code_request())
 

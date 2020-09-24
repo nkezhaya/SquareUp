@@ -2,6 +2,8 @@ defmodule SquareUp.V2.TeamMembers do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
+  @spec search(%SquareUp.Client{}, SquareUp.Schema.search_team_members_request()) ::
+          SquareUp.Client.response()
   def search(client, params \\ %{}) do
     norm_spec = spec(SquareUp.Schema.search_team_members_request())
 
@@ -13,6 +15,8 @@ defmodule SquareUp.V2.TeamMembers do
     })
   end
 
+  @spec bulk_update(%SquareUp.Client{}, SquareUp.Schema.bulk_update_team_members_request()) ::
+          SquareUp.Client.response()
   def bulk_update(client, params \\ %{}) do
     norm_spec = spec(SquareUp.Schema.bulk_update_team_members_request())
 

@@ -2,11 +2,15 @@ defmodule SquareUp.V2.LoyaltyReward do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
+  @spec redeem(%SquareUp.Client{}, %{
+          reward_id: binary(),
+          body: SquareUp.Schema.redeem_loyalty_reward_request()
+        }) :: SquareUp.Client.response()
   def redeem(client, params \\ %{}) do
     norm_spec =
       schema(%{
-        "reward_id" => spec(is_binary()),
-        "body" => spec(SquareUp.Schema.redeem_loyalty_reward_request())
+        reward_id: spec(is_binary()),
+        body: spec(SquareUp.Schema.redeem_loyalty_reward_request())
       })
 
     call(client, %{
@@ -17,8 +21,9 @@ defmodule SquareUp.V2.LoyaltyReward do
     })
   end
 
+  @spec delete(%SquareUp.Client{}, %{reward_id: binary()}) :: SquareUp.Client.response()
   def delete(client, params \\ %{}) do
-    norm_spec = schema(%{"reward_id" => spec(is_binary())})
+    norm_spec = schema(%{reward_id: spec(is_binary())})
 
     call(client, %{
       method: :delete,
@@ -28,8 +33,9 @@ defmodule SquareUp.V2.LoyaltyReward do
     })
   end
 
+  @spec retrieve(%SquareUp.Client{}, %{reward_id: binary()}) :: SquareUp.Client.response()
   def retrieve(client, params \\ %{}) do
-    norm_spec = schema(%{"reward_id" => spec(is_binary())})
+    norm_spec = schema(%{reward_id: spec(is_binary())})
 
     call(client, %{
       method: :get,
@@ -39,6 +45,8 @@ defmodule SquareUp.V2.LoyaltyReward do
     })
   end
 
+  @spec create(%SquareUp.Client{}, SquareUp.Schema.create_loyalty_reward_request()) ::
+          SquareUp.Client.response()
   def create(client, params \\ %{}) do
     norm_spec = spec(SquareUp.Schema.create_loyalty_reward_request())
 

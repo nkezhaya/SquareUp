@@ -2,11 +2,15 @@ defmodule SquareUp.V1.Refund do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
+  @spec create(%SquareUp.Client{}, %{
+          location_id: binary(),
+          body: SquareUp.Schema.v1_create_refund_request()
+        }) :: SquareUp.Client.response()
   def create(client, params \\ %{}) do
     norm_spec =
       schema(%{
-        "location_id" => spec(is_binary()),
-        "body" => spec(SquareUp.Schema.v1_create_refund_request())
+        location_id: spec(is_binary()),
+        body: spec(SquareUp.Schema.v1_create_refund_request())
       })
 
     call(client, %{

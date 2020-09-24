@@ -2,11 +2,15 @@ defmodule SquareUp.V2.WorkweekConfig do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
+  @spec update(%SquareUp.Client{}, %{
+          id: binary(),
+          body: SquareUp.Schema.update_workweek_config_request()
+        }) :: SquareUp.Client.response()
   def update(client, params \\ %{}) do
     norm_spec =
       schema(%{
-        "id" => spec(is_binary()),
-        "body" => spec(SquareUp.Schema.update_workweek_config_request())
+        id: spec(is_binary()),
+        body: spec(SquareUp.Schema.update_workweek_config_request())
       })
 
     call(client, %{

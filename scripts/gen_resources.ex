@@ -66,9 +66,12 @@ defmodule GenResources do
         ~s[\#\{Map.get(params, "#{param}")\}]
       end)
 
+    params = Map.get(defn, "parameters")
+
     """
+      @spec #{function}(%SquareUp.Client{}, #{params_to_typespec(params)}) :: SquareUp.Client.response()
       def #{function}(client, params \\\\ %{}) do
-        norm_spec = #{params_to_norm(Map.get(defn, "parameters"))}
+        norm_spec = #{params_to_norm(params)}
 
         call(client, %{
           method: :#{method},
@@ -95,6 +98,7 @@ defmodule GenResources do
 
   defp write_definition({function, defn}) do
     """
+    @type #{Macro.underscore(function)} :: #{params_to_typespec(defn)}
     def #{Macro.underscore(function)}(data) do
     valid?(data, #{params_to_norm(defn)})
     end
@@ -118,12 +122,14 @@ defmodule GenResources do
   defp params_to_norm(%{"properties" => props} = defn) do
     """
     schema(%{#{Enum.map(props, &params_to_norm/1) |> Enum.join(",")}})
-    |> selection(#{inspect(Map.get(defn, "required", []))})
+    |> selection([#{
+      Map.get(defn, "required", []) |> Enum.map(fn string -> ":#{string}" end) |> Enum.join(", ")
+    }])
     """
   end
 
   defp params_to_norm(%{"name" => name} = param) do
-    ~s["#{name}" => #{params_to_norm(Map.delete(param, "name"))}]
+    ~s[#{name}: #{params_to_norm(Map.delete(param, "name"))}]
   end
 
   defp params_to_norm(%{"schema" => %{"$ref" => schema}}) do
@@ -164,6 +170,60 @@ defmodule GenResources do
 
   defp params_to_norm({name, param = %{}}) do
     params_to_norm(Map.put(param, "name", name))
+  end
+
+  # params_to_typespec
+  defp params_to_typespec([%{"name" => "body"} = body]) do
+    Map.delete(body, "name") |> params_to_typespec()
+  end
+
+  defp params_to_typespec(list) when is_list(list) do
+    "%{#{Enum.map(list, &params_to_typespec/1) |> Enum.join(",")}}"
+  end
+
+  defp params_to_typespec(%{"properties" => props} = defn) do
+    required = Map.get(defn, "required", [])
+
+    props =
+      Enum.map(props, fn prop ->
+        if prop in required do
+          Map.put(prop, "required", true)
+        else
+          prop
+        end
+      end)
+
+    """
+    %{#{Enum.map(props, &params_to_typespec/1) |> Enum.join(",")}}
+    """
+  end
+
+  defp params_to_typespec(%{"name" => name} = param) do
+    ~s[#{name}: #{params_to_typespec(Map.delete(param, "name"))}]
+  end
+
+  defp params_to_typespec(%{"schema" => %{"$ref" => schema}}) do
+    "#/definitions/" <> function = schema
+    ~s[SquareUp.Schema.#{Macro.underscore(function)}()]
+  end
+
+  defp params_to_typespec(%{"$ref" => schema}) do
+    "#/definitions/" <> function = schema
+    ~s[SquareUp.Schema.#{Macro.underscore(function)}()]
+  end
+
+  defp params_to_typespec(%{"type" => "integer"}), do: "integer()"
+  defp params_to_typespec(%{"type" => "boolean"}), do: "boolean()"
+  defp params_to_typespec(%{"type" => "string"}), do: "binary()"
+  defp params_to_typespec(%{"type" => "number"}), do: "number()"
+  defp params_to_typespec(%{"type" => "object"}), do: "map()"
+
+  defp params_to_typespec(%{"items" => item, "type" => "array"}) do
+    "[#{params_to_typespec(item)}]"
+  end
+
+  defp params_to_typespec({name, param = %{}}) do
+    params_to_typespec(Map.put(param, "name", name))
   end
 
   defp name_to_function("BulkUpdate" <> module), do: {module, "bulk_update"}

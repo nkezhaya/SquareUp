@@ -1,9 +1,9 @@
 defmodule SquareUp.V1.EmployeeRole do
   import Norm
   import SquareUp.Client, only: [call: 2]
-
+  @spec retrieve(%SquareUp.Client{}, %{role_id: binary()}) :: SquareUp.Client.response()
   def retrieve(client, params \\ %{}) do
-    norm_spec = schema(%{"role_id" => spec(is_binary())})
+    norm_spec = schema(%{role_id: spec(is_binary())})
 
     call(client, %{
       method: :get,
@@ -13,9 +13,11 @@ defmodule SquareUp.V1.EmployeeRole do
     })
   end
 
+  @spec update(%SquareUp.Client{}, %{role_id: binary(), body: SquareUp.Schema.v1_employee_role()}) ::
+          SquareUp.Client.response()
   def update(client, params \\ %{}) do
     norm_spec =
-      schema(%{"role_id" => spec(is_binary()), "body" => spec(SquareUp.Schema.v1_employee_role())})
+      schema(%{role_id: spec(is_binary()), body: spec(SquareUp.Schema.v1_employee_role())})
 
     call(client, %{
       method: :put,
@@ -25,8 +27,10 @@ defmodule SquareUp.V1.EmployeeRole do
     })
   end
 
+  @spec create(%SquareUp.Client{}, %{employee_role: SquareUp.Schema.v1_employee_role()}) ::
+          SquareUp.Client.response()
   def create(client, params \\ %{}) do
-    norm_spec = schema(%{"employee_role" => spec(SquareUp.Schema.v1_employee_role())})
+    norm_spec = schema(%{employee_role: spec(SquareUp.Schema.v1_employee_role())})
 
     call(client, %{
       method: :post,

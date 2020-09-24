@@ -1,9 +1,9 @@
 defmodule SquareUp.V2.LoyaltyAccount do
   import Norm
   import SquareUp.Client, only: [call: 2]
-
+  @spec retrieve(%SquareUp.Client{}, %{account_id: binary()}) :: SquareUp.Client.response()
   def retrieve(client, params \\ %{}) do
-    norm_spec = schema(%{"account_id" => spec(is_binary())})
+    norm_spec = schema(%{account_id: spec(is_binary())})
 
     call(client, %{
       method: :get,
@@ -13,6 +13,8 @@ defmodule SquareUp.V2.LoyaltyAccount do
     })
   end
 
+  @spec create(%SquareUp.Client{}, SquareUp.Schema.create_loyalty_account_request()) ::
+          SquareUp.Client.response()
   def create(client, params \\ %{}) do
     norm_spec = spec(SquareUp.Schema.create_loyalty_account_request())
 

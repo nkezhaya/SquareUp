@@ -7,7 +7,11 @@ defmodule SquareUp.MixProject do
       version: "0.1.0",
       elixir: "~> 1.10",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+
+      # Docs
+      name: "SquareUp",
+      source_url: "https://github.com/whitepaperclip/SquareUp"
     ]
   end
 
@@ -24,7 +28,8 @@ defmodule SquareUp.MixProject do
       {:jason, "~> 1.2"},
       {:norm, "~> 0.12.0"},
       {:hackney, "~> 1.16"},
-      {:elixir_uuid, "~> 1.2", only: :test}
+      {:elixir_uuid, "~> 1.2", only: :test},
+      {:ex_doc, "~> 0.22", only: :dev, runtime: false}
     ]
   end
 end

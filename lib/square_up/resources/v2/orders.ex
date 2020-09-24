@@ -2,6 +2,8 @@ defmodule SquareUp.V2.Orders do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
+  @spec search(%SquareUp.Client{}, SquareUp.Schema.search_orders_request()) ::
+          SquareUp.Client.response()
   def search(client, params \\ %{}) do
     norm_spec = spec(SquareUp.Schema.search_orders_request())
 
@@ -13,6 +15,8 @@ defmodule SquareUp.V2.Orders do
     })
   end
 
+  @spec batch_retrieve(%SquareUp.Client{}, SquareUp.Schema.batch_retrieve_orders_request()) ::
+          SquareUp.Client.response()
   def batch_retrieve(client, params \\ %{}) do
     norm_spec = spec(SquareUp.Schema.batch_retrieve_orders_request())
 

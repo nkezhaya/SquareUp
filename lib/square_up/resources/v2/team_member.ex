@@ -2,6 +2,8 @@ defmodule SquareUp.V2.TeamMember do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
+  @spec create(%SquareUp.Client{}, SquareUp.Schema.create_team_member_request()) ::
+          SquareUp.Client.response()
   def create(client, params \\ %{}) do
     norm_spec = spec(SquareUp.Schema.create_team_member_request())
 
@@ -13,8 +15,9 @@ defmodule SquareUp.V2.TeamMember do
     })
   end
 
+  @spec retrieve(%SquareUp.Client{}, %{team_member_id: binary()}) :: SquareUp.Client.response()
   def retrieve(client, params \\ %{}) do
-    norm_spec = schema(%{"team_member_id" => spec(is_binary())})
+    norm_spec = schema(%{team_member_id: spec(is_binary())})
 
     call(client, %{
       method: :get,
@@ -24,11 +27,15 @@ defmodule SquareUp.V2.TeamMember do
     })
   end
 
+  @spec update(%SquareUp.Client{}, %{
+          team_member_id: binary(),
+          body: SquareUp.Schema.update_team_member_request()
+        }) :: SquareUp.Client.response()
   def update(client, params \\ %{}) do
     norm_spec =
       schema(%{
-        "team_member_id" => spec(is_binary()),
-        "body" => spec(SquareUp.Schema.update_team_member_request())
+        team_member_id: spec(is_binary()),
+        body: spec(SquareUp.Schema.update_team_member_request())
       })
 
     call(client, %{

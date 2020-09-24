@@ -2,6 +2,8 @@ defmodule SquareUp.V2.LoyaltyAccounts do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
+  @spec search(%SquareUp.Client{}, SquareUp.Schema.search_loyalty_accounts_request()) ::
+          SquareUp.Client.response()
   def search(client, params \\ %{}) do
     norm_spec = spec(SquareUp.Schema.search_loyalty_accounts_request())
 

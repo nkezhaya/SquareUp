@@ -2,8 +2,10 @@ defmodule SquareUp.V1.Order do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
+  @spec retrieve(%SquareUp.Client{}, %{location_id: binary(), order_id: binary()}) ::
+          SquareUp.Client.response()
   def retrieve(client, params \\ %{}) do
-    norm_spec = schema(%{"location_id" => spec(is_binary()), "order_id" => spec(is_binary())})
+    norm_spec = schema(%{location_id: spec(is_binary()), order_id: spec(is_binary())})
 
     call(client, %{
       method: :get,
@@ -13,12 +15,17 @@ defmodule SquareUp.V1.Order do
     })
   end
 
+  @spec update(%SquareUp.Client{}, %{
+          location_id: binary(),
+          order_id: binary(),
+          body: SquareUp.Schema.v1_update_order_request()
+        }) :: SquareUp.Client.response()
   def update(client, params \\ %{}) do
     norm_spec =
       schema(%{
-        "location_id" => spec(is_binary()),
-        "order_id" => spec(is_binary()),
-        "body" => spec(SquareUp.Schema.v1_update_order_request())
+        location_id: spec(is_binary()),
+        order_id: spec(is_binary()),
+        body: spec(SquareUp.Schema.v1_update_order_request())
       })
 
     call(client, %{

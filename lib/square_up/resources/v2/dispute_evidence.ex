@@ -2,8 +2,10 @@ defmodule SquareUp.V2.DisputeEvidence do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
+  @spec remove(%SquareUp.Client{}, %{dispute_id: binary(), evidence_id: binary()}) ::
+          SquareUp.Client.response()
   def remove(client, params \\ %{}) do
-    norm_spec = schema(%{"dispute_id" => spec(is_binary()), "evidence_id" => spec(is_binary())})
+    norm_spec = schema(%{dispute_id: spec(is_binary()), evidence_id: spec(is_binary())})
 
     call(client, %{
       method: :delete,
@@ -14,8 +16,10 @@ defmodule SquareUp.V2.DisputeEvidence do
     })
   end
 
+  @spec retrieve(%SquareUp.Client{}, %{dispute_id: binary(), evidence_id: binary()}) ::
+          SquareUp.Client.response()
   def retrieve(client, params \\ %{}) do
-    norm_spec = schema(%{"dispute_id" => spec(is_binary()), "evidence_id" => spec(is_binary())})
+    norm_spec = schema(%{dispute_id: spec(is_binary()), evidence_id: spec(is_binary())})
 
     call(client, %{
       method: :get,
@@ -26,8 +30,9 @@ defmodule SquareUp.V2.DisputeEvidence do
     })
   end
 
+  @spec list(%SquareUp.Client{}, %{dispute_id: binary()}) :: SquareUp.Client.response()
   def list(client, params \\ %{}) do
-    norm_spec = schema(%{"dispute_id" => spec(is_binary())})
+    norm_spec = schema(%{dispute_id: spec(is_binary())})
 
     call(client, %{
       method: :get,

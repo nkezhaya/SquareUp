@@ -2,12 +2,14 @@ defmodule SquareUp.V2.TeamMemberWages do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
+  @spec list(%SquareUp.Client{}, %{team_member_id: binary(), limit: integer(), cursor: binary()}) ::
+          SquareUp.Client.response()
   def list(client, params \\ %{}) do
     norm_spec =
       schema(%{
-        "team_member_id" => spec(is_binary()),
-        "limit" => spec(is_integer()),
-        "cursor" => spec(is_binary())
+        team_member_id: spec(is_binary()),
+        limit: spec(is_integer()),
+        cursor: spec(is_binary())
       })
 
     call(client, %{

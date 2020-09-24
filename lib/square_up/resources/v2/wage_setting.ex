@@ -1,9 +1,9 @@
 defmodule SquareUp.V2.WageSetting do
   import Norm
   import SquareUp.Client, only: [call: 2]
-
+  @spec retrieve(%SquareUp.Client{}, %{team_member_id: binary()}) :: SquareUp.Client.response()
   def retrieve(client, params \\ %{}) do
-    norm_spec = schema(%{"team_member_id" => spec(is_binary())})
+    norm_spec = schema(%{team_member_id: spec(is_binary())})
 
     call(client, %{
       method: :get,
@@ -13,11 +13,15 @@ defmodule SquareUp.V2.WageSetting do
     })
   end
 
+  @spec update(%SquareUp.Client{}, %{
+          team_member_id: binary(),
+          body: SquareUp.Schema.update_wage_setting_request()
+        }) :: SquareUp.Client.response()
   def update(client, params \\ %{}) do
     norm_spec =
       schema(%{
-        "team_member_id" => spec(is_binary()),
-        "body" => spec(SquareUp.Schema.update_wage_setting_request())
+        team_member_id: spec(is_binary()),
+        body: spec(SquareUp.Schema.update_wage_setting_request())
       })
 
     call(client, %{

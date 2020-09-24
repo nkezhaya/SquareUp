@@ -2,12 +2,17 @@ defmodule SquareUp.V2.InventoryCount do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
+  @spec retrieve(%SquareUp.Client{}, %{
+          catalog_object_id: binary(),
+          location_ids: binary(),
+          cursor: binary()
+        }) :: SquareUp.Client.response()
   def retrieve(client, params \\ %{}) do
     norm_spec =
       schema(%{
-        "catalog_object_id" => spec(is_binary()),
-        "location_ids" => spec(is_binary()),
-        "cursor" => spec(is_binary())
+        catalog_object_id: spec(is_binary()),
+        location_ids: spec(is_binary()),
+        cursor: spec(is_binary())
       })
 
     call(client, %{

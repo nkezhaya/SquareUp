@@ -2,11 +2,15 @@ defmodule SquareUp.V2.DisputeEvidenceText do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
+  @spec create(%SquareUp.Client{}, %{
+          dispute_id: binary(),
+          body: SquareUp.Schema.create_dispute_evidence_text_request()
+        }) :: SquareUp.Client.response()
   def create(client, params \\ %{}) do
     norm_spec =
       schema(%{
-        "dispute_id" => spec(is_binary()),
-        "body" => spec(SquareUp.Schema.create_dispute_evidence_text_request())
+        dispute_id: spec(is_binary()),
+        body: spec(SquareUp.Schema.create_dispute_evidence_text_request())
       })
 
     call(client, %{
