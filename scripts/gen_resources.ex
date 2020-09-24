@@ -27,30 +27,35 @@ defmodule GenResources do
         end)
       end)
       |> filter_deprecated()
-      |> filter_v1()
-
-    # TODO offer support for v1 and v2 and vX endpoints
 
     Enum.map(endpoints, fn {path, method, defn} ->
-      function = Map.get(defn, "operationId") |> name_to_function()
-      {function, {path, method, defn}}
+      mod_fun = Map.get(defn, "operationId") |> name_to_function()
+      {mod_fun, {path, method, defn}}
     end)
-    |> Enum.group_by(fn {{module, _fun}, _defn} -> module end)
+    |> Enum.group_by(fn {{module, _fun}, {path, _, _}} ->
+      [_, version | _] = String.split(path, "/")
+      {module, version}
+    end)
     |> Enum.map(&write_module/1)
 
-    Mix.Tasks.Format.run(~w(lib/square_up/resources/*.ex))
+    Mix.Tasks.Format.run(~w(lib/square_up/resources/**/*.ex))
   end
 
-  defp write_module({module, endpoints}) do
+  defp write_module({{module, version}, endpoints}) do
     contents = """
-    defmodule SquareUp.#{module} do
+    defmodule SquareUp.#{String.upcase(version)}.#{module} do
       import Norm
       import SquareUp.Client, only: [call: 2]
     #{Enum.map(endpoints, &write_function/1)}
     end
     """
 
-    File.write!("lib/square_up/resources/#{Macro.underscore(module)}.ex", contents)
+    File.mkdir_p("lib/square_up/resources/#{String.downcase(version)}")
+
+    File.write!(
+      "lib/square_up/resources/#{String.downcase(version)}/#{Macro.underscore(module)}.ex",
+      contents
+    )
   end
 
   defp write_function({{_module, function}, {path, method, defn}}) do
@@ -179,13 +184,6 @@ defmodule GenResources do
   defp filter_deprecated(endpoints) do
     Enum.filter(endpoints, fn
       {_, _, %{"x-is-deprecated" => true}} -> false
-      _ -> true
-    end)
-  end
-
-  defp filter_v1(endpoints) do
-    Enum.filter(endpoints, fn
-      {"/v1/" <> _, _, _} -> false
       _ -> true
     end)
   end

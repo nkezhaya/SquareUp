@@ -1,11 +1,11 @@
 defmodule SquareUp.Client do
-  defstruct [:application_id, :access_token, :base_path]
+  defstruct application_id: nil, access_token: nil, base_path: "", hackney_opts: []
 
   @square_version "2020-08-26"
 
   def call(client, call, opts \\ []) do
     case check_request(call) do
-      :ok -> do_request(client, call, opts)
+      :ok -> do_request(client, call, Keyword.merge(client.hackney_opts, opts))
       {:error, _} = err -> err
     end
   end
