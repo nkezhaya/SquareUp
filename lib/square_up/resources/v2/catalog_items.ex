@@ -5,7 +5,7 @@ defmodule SquareUp.V2.CatalogItems do
   @spec search(%SquareUp.Client{}, SquareUp.Schema.search_catalog_items_request()) ::
           SquareUp.Client.response()
   def search(client, params \\ %{}) do
-    norm_spec = spec(SquareUp.Schema.search_catalog_items_request())
+    norm_spec = Norm.Delegate.delegate(&SquareUp.Schema.search_catalog_items_request/0)
 
     call(client, %{
       method: :post,

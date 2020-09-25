@@ -5,7 +5,7 @@ defmodule SquareUp.V2.Invoices do
   @spec search(%SquareUp.Client{}, SquareUp.Schema.search_invoices_request()) ::
           SquareUp.Client.response()
   def search(client, params \\ %{}) do
-    norm_spec = spec(SquareUp.Schema.search_invoices_request())
+    norm_spec = Norm.Delegate.delegate(&SquareUp.Schema.search_invoices_request/0)
 
     call(client, %{
       method: :post,

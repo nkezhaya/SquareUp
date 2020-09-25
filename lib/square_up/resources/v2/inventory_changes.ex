@@ -28,7 +28,8 @@ defmodule SquareUp.V2.InventoryChanges do
           SquareUp.Schema.batch_retrieve_inventory_changes_request()
         ) :: SquareUp.Client.response()
   def batch_retrieve(client, params \\ %{}) do
-    norm_spec = spec(SquareUp.Schema.batch_retrieve_inventory_changes_request())
+    norm_spec =
+      Norm.Delegate.delegate(&SquareUp.Schema.batch_retrieve_inventory_changes_request/0)
 
     call(client, %{
       method: :post,

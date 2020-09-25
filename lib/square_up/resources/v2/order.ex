@@ -8,7 +8,10 @@ defmodule SquareUp.V2.Order do
         }) :: SquareUp.Client.response()
   def update(client, params \\ %{}) do
     norm_spec =
-      schema(%{order_id: spec(is_binary()), body: spec(SquareUp.Schema.update_order_request())})
+      schema(%{
+        order_id: spec(is_binary()),
+        body: Norm.Delegate.delegate(&SquareUp.Schema.update_order_request/0)
+      })
 
     call(client, %{
       method: :put,
@@ -21,7 +24,7 @@ defmodule SquareUp.V2.Order do
   @spec create(%SquareUp.Client{}, SquareUp.Schema.create_order_request()) ::
           SquareUp.Client.response()
   def create(client, params \\ %{}) do
-    norm_spec = spec(SquareUp.Schema.create_order_request())
+    norm_spec = Norm.Delegate.delegate(&SquareUp.Schema.create_order_request/0)
 
     call(client, %{
       method: :post,
@@ -34,7 +37,7 @@ defmodule SquareUp.V2.Order do
   @spec calculate(%SquareUp.Client{}, SquareUp.Schema.calculate_order_request()) ::
           SquareUp.Client.response()
   def calculate(client, params \\ %{}) do
-    norm_spec = spec(SquareUp.Schema.calculate_order_request())
+    norm_spec = Norm.Delegate.delegate(&SquareUp.Schema.calculate_order_request/0)
 
     call(client, %{
       method: :post,
@@ -48,7 +51,10 @@ defmodule SquareUp.V2.Order do
           SquareUp.Client.response()
   def pay(client, params \\ %{}) do
     norm_spec =
-      schema(%{order_id: spec(is_binary()), body: spec(SquareUp.Schema.pay_order_request())})
+      schema(%{
+        order_id: spec(is_binary()),
+        body: Norm.Delegate.delegate(&SquareUp.Schema.pay_order_request/0)
+      })
 
     call(client, %{
       method: :post,

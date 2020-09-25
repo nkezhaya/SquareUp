@@ -5,7 +5,7 @@ defmodule SquareUp.V2.TeamMembers do
   @spec search(%SquareUp.Client{}, SquareUp.Schema.search_team_members_request()) ::
           SquareUp.Client.response()
   def search(client, params \\ %{}) do
-    norm_spec = spec(SquareUp.Schema.search_team_members_request())
+    norm_spec = Norm.Delegate.delegate(&SquareUp.Schema.search_team_members_request/0)
 
     call(client, %{
       method: :post,
@@ -18,7 +18,7 @@ defmodule SquareUp.V2.TeamMembers do
   @spec bulk_update(%SquareUp.Client{}, SquareUp.Schema.bulk_update_team_members_request()) ::
           SquareUp.Client.response()
   def bulk_update(client, params \\ %{}) do
-    norm_spec = spec(SquareUp.Schema.bulk_update_team_members_request())
+    norm_spec = Norm.Delegate.delegate(&SquareUp.Schema.bulk_update_team_members_request/0)
 
     call(client, %{
       method: :post,

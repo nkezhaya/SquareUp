@@ -10,7 +10,7 @@ defmodule SquareUp.V2.LoyaltyReward do
     norm_spec =
       schema(%{
         reward_id: spec(is_binary()),
-        body: spec(SquareUp.Schema.redeem_loyalty_reward_request())
+        body: Norm.Delegate.delegate(&SquareUp.Schema.redeem_loyalty_reward_request/0)
       })
 
     call(client, %{
@@ -48,7 +48,7 @@ defmodule SquareUp.V2.LoyaltyReward do
   @spec create(%SquareUp.Client{}, SquareUp.Schema.create_loyalty_reward_request()) ::
           SquareUp.Client.response()
   def create(client, params \\ %{}) do
-    norm_spec = spec(SquareUp.Schema.create_loyalty_reward_request())
+    norm_spec = Norm.Delegate.delegate(&SquareUp.Schema.create_loyalty_reward_request/0)
 
     call(client, %{
       method: :post,

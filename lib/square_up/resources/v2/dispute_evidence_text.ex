@@ -10,7 +10,7 @@ defmodule SquareUp.V2.DisputeEvidenceText do
     norm_spec =
       schema(%{
         dispute_id: spec(is_binary()),
-        body: spec(SquareUp.Schema.create_dispute_evidence_text_request())
+        body: Norm.Delegate.delegate(&SquareUp.Schema.create_dispute_evidence_text_request/0)
       })
 
     call(client, %{

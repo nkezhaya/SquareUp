@@ -5,7 +5,7 @@ defmodule SquareUp.V2.Orders do
   @spec search(%SquareUp.Client{}, SquareUp.Schema.search_orders_request()) ::
           SquareUp.Client.response()
   def search(client, params \\ %{}) do
-    norm_spec = spec(SquareUp.Schema.search_orders_request())
+    norm_spec = Norm.Delegate.delegate(&SquareUp.Schema.search_orders_request/0)
 
     call(client, %{
       method: :post,
@@ -18,7 +18,7 @@ defmodule SquareUp.V2.Orders do
   @spec batch_retrieve(%SquareUp.Client{}, SquareUp.Schema.batch_retrieve_orders_request()) ::
           SquareUp.Client.response()
   def batch_retrieve(client, params \\ %{}) do
-    norm_spec = spec(SquareUp.Schema.batch_retrieve_orders_request())
+    norm_spec = Norm.Delegate.delegate(&SquareUp.Schema.batch_retrieve_orders_request/0)
 
     call(client, %{
       method: :post,

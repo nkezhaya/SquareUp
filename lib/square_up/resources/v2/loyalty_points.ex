@@ -10,7 +10,7 @@ defmodule SquareUp.V2.LoyaltyPoints do
     norm_spec =
       schema(%{
         program_id: spec(is_binary()),
-        body: spec(SquareUp.Schema.calculate_loyalty_points_request())
+        body: Norm.Delegate.delegate(&SquareUp.Schema.calculate_loyalty_points_request/0)
       })
 
     call(client, %{
@@ -29,7 +29,7 @@ defmodule SquareUp.V2.LoyaltyPoints do
     norm_spec =
       schema(%{
         account_id: spec(is_binary()),
-        body: spec(SquareUp.Schema.accumulate_loyalty_points_request())
+        body: Norm.Delegate.delegate(&SquareUp.Schema.accumulate_loyalty_points_request/0)
       })
 
     call(client, %{
@@ -48,7 +48,7 @@ defmodule SquareUp.V2.LoyaltyPoints do
     norm_spec =
       schema(%{
         account_id: spec(is_binary()),
-        body: spec(SquareUp.Schema.adjust_loyalty_points_request())
+        body: Norm.Delegate.delegate(&SquareUp.Schema.adjust_loyalty_points_request/0)
       })
 
     call(client, %{

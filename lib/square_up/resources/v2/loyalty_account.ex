@@ -16,7 +16,7 @@ defmodule SquareUp.V2.LoyaltyAccount do
   @spec create(%SquareUp.Client{}, SquareUp.Schema.create_loyalty_account_request()) ::
           SquareUp.Client.response()
   def create(client, params \\ %{}) do
-    norm_spec = spec(SquareUp.Schema.create_loyalty_account_request())
+    norm_spec = Norm.Delegate.delegate(&SquareUp.Schema.create_loyalty_account_request/0)
 
     call(client, %{
       method: :post,

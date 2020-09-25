@@ -10,7 +10,7 @@ defmodule SquareUp.V1.Refund do
     norm_spec =
       schema(%{
         location_id: spec(is_binary()),
-        body: spec(SquareUp.Schema.v1_create_refund_request())
+        body: Norm.Delegate.delegate(&SquareUp.Schema.v1_create_refund_request/0)
       })
 
     call(client, %{

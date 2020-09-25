@@ -5,7 +5,7 @@ defmodule SquareUp.V2.CreateTeamMembers do
   @spec bulk(%SquareUp.Client{}, SquareUp.Schema.bulk_create_team_members_request()) ::
           SquareUp.Client.response()
   def bulk(client, params \\ %{}) do
-    norm_spec = spec(SquareUp.Schema.bulk_create_team_members_request())
+    norm_spec = Norm.Delegate.delegate(&SquareUp.Schema.bulk_create_team_members_request/0)
 
     call(client, %{
       method: :post,

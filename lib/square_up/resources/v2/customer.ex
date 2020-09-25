@@ -5,7 +5,7 @@ defmodule SquareUp.V2.Customer do
   @spec create(%SquareUp.Client{}, SquareUp.Schema.create_customer_request()) ::
           SquareUp.Client.response()
   def create(client, params \\ %{}) do
-    norm_spec = spec(SquareUp.Schema.create_customer_request())
+    norm_spec = Norm.Delegate.delegate(&SquareUp.Schema.create_customer_request/0)
 
     call(client, %{
       method: :post,
@@ -75,7 +75,7 @@ defmodule SquareUp.V2.Customer do
     norm_spec =
       schema(%{
         customer_id: spec(is_binary()),
-        body: spec(SquareUp.Schema.update_customer_request())
+        body: Norm.Delegate.delegate(&SquareUp.Schema.update_customer_request/0)
       })
 
     call(client, %{

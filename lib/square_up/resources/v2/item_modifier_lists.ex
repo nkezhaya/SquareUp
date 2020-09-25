@@ -5,7 +5,7 @@ defmodule SquareUp.V2.ItemModifierLists do
   @spec update(%SquareUp.Client{}, SquareUp.Schema.update_item_modifier_lists_request()) ::
           SquareUp.Client.response()
   def update(client, params \\ %{}) do
-    norm_spec = spec(SquareUp.Schema.update_item_modifier_lists_request())
+    norm_spec = Norm.Delegate.delegate(&SquareUp.Schema.update_item_modifier_lists_request/0)
 
     call(client, %{
       method: :post,

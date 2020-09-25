@@ -10,19 +10,16 @@ defmodule SquareUp.Schema do
           version: integer()
         }
 
-  def wage_setting(data) do
-    valid?(
-      data,
-      schema(%{
-        created_at: spec(is_binary()),
-        is_overtime_exempt: spec(is_boolean()),
-        job_assignments: spec(coll_of(spec(SquareUp.Schema.job_assignment()))),
-        team_member_id: spec(is_binary()),
-        updated_at: spec(is_binary()),
-        version: spec(is_integer())
-      })
-      |> selection([])
-    )
+  def wage_setting do
+    schema(%{
+      created_at: spec(is_binary()),
+      is_overtime_exempt: spec(is_boolean()),
+      job_assignments: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.job_assignment/0))),
+      team_member_id: spec(is_binary()),
+      updated_at: spec(is_binary()),
+      version: spec(is_integer())
+    })
+    |> selection([])
   end
 
   @type retrieve_customer_response :: %{
@@ -30,35 +27,26 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def retrieve_customer_response(data) do
-    valid?(
-      data,
-      schema(%{
-        customer: spec(SquareUp.Schema.customer()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def retrieve_customer_response do
+    schema(%{
+      customer: Norm.Delegate.delegate(&SquareUp.Schema.customer/0),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type create_location_request :: %{location: SquareUp.Schema.location()}
 
-  def create_location_request(data) do
-    valid?(
-      data,
-      schema(%{location: spec(SquareUp.Schema.location())})
-      |> selection([])
-    )
+  def create_location_request do
+    schema(%{location: Norm.Delegate.delegate(&SquareUp.Schema.location/0)})
+    |> selection([])
   end
 
   @type v1_retrieve_employee_request :: %{}
 
-  def v1_retrieve_employee_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def v1_retrieve_employee_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type retrieve_cash_drawer_shift_response :: %{
@@ -66,30 +54,24 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def retrieve_cash_drawer_shift_response(data) do
-    valid?(
-      data,
-      schema(%{
-        cash_drawer_shift: spec(SquareUp.Schema.cash_drawer_shift()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def retrieve_cash_drawer_shift_response do
+    schema(%{
+      cash_drawer_shift: Norm.Delegate.delegate(&SquareUp.Schema.cash_drawer_shift/0),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type shift_status :: binary()
-  def shift_status(data) do
-    valid?(data, spec(is_binary()))
+  def shift_status do
+    spec(is_binary())
   end
 
   @type redeem_loyalty_reward_request :: %{idempotency_key: binary(), location_id: binary()}
 
-  def redeem_loyalty_reward_request(data) do
-    valid?(
-      data,
-      schema(%{idempotency_key: spec(is_binary()), location_id: spec(is_binary())})
-      |> selection([:idempotency_key, :location_id])
-    )
+  def redeem_loyalty_reward_request do
+    schema(%{idempotency_key: spec(is_binary()), location_id: spec(is_binary())})
+    |> selection([:idempotency_key, :location_id])
   end
 
   @type order_fulfillment_pickup_details :: %{
@@ -114,47 +96,43 @@ defmodule SquareUp.Schema do
           schedule_type: binary()
         }
 
-  def order_fulfillment_pickup_details(data) do
-    valid?(
-      data,
-      schema(%{
-        accepted_at: spec(is_binary()),
-        auto_complete_duration: spec(is_binary()),
-        cancel_reason: spec(is_binary()),
-        canceled_at: spec(is_binary()),
-        curbside_pickup_details:
-          spec(SquareUp.Schema.order_fulfillment_pickup_details_curbside_pickup_details()),
-        expired_at: spec(is_binary()),
-        expires_at: spec(is_binary()),
-        is_curbside_pickup: spec(is_boolean()),
-        note: spec(is_binary()),
-        picked_up_at: spec(is_binary()),
-        pickup_at: spec(is_binary()),
-        pickup_window_duration: spec(is_binary()),
-        placed_at: spec(is_binary()),
-        prep_time_duration: spec(is_binary()),
-        ready_at: spec(is_binary()),
-        recipient: spec(SquareUp.Schema.order_fulfillment_recipient()),
-        rejected_at: spec(is_binary()),
-        schedule_type: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def order_fulfillment_pickup_details do
+    schema(%{
+      accepted_at: spec(is_binary()),
+      auto_complete_duration: spec(is_binary()),
+      cancel_reason: spec(is_binary()),
+      canceled_at: spec(is_binary()),
+      curbside_pickup_details:
+        Norm.Delegate.delegate(
+          &SquareUp.Schema.order_fulfillment_pickup_details_curbside_pickup_details/0
+        ),
+      expired_at: spec(is_binary()),
+      expires_at: spec(is_binary()),
+      is_curbside_pickup: spec(is_boolean()),
+      note: spec(is_binary()),
+      picked_up_at: spec(is_binary()),
+      pickup_at: spec(is_binary()),
+      pickup_window_duration: spec(is_binary()),
+      placed_at: spec(is_binary()),
+      prep_time_duration: spec(is_binary()),
+      ready_at: spec(is_binary()),
+      recipient: Norm.Delegate.delegate(&SquareUp.Schema.order_fulfillment_recipient/0),
+      rejected_at: spec(is_binary()),
+      schedule_type: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type subscription_event_subscription_event_type :: binary()
-  def subscription_event_subscription_event_type(data) do
-    valid?(data, spec(is_binary()))
+  def subscription_event_subscription_event_type do
+    spec(is_binary())
   end
 
   @type void_transaction_response :: %{errors: [SquareUp.Schema.error()]}
 
-  def void_transaction_response(data) do
-    valid?(
-      data,
-      schema(%{errors: spec(coll_of(spec(SquareUp.Schema.error())))})
-      |> selection([])
-    )
+  def void_transaction_response do
+    schema(%{errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))})
+    |> selection([])
   end
 
   @type v1_settlement_entry :: %{
@@ -164,22 +142,19 @@ defmodule SquareUp.Schema do
           type: binary()
         }
 
-  def v1_settlement_entry(data) do
-    valid?(
-      data,
-      schema(%{
-        amount_money: spec(SquareUp.Schema.v1_money()),
-        fee_money: spec(SquareUp.Schema.v1_money()),
-        payment_id: spec(is_binary()),
-        type: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def v1_settlement_entry do
+    schema(%{
+      amount_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      fee_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      payment_id: spec(is_binary()),
+      type: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type error_category :: binary()
-  def error_category(data) do
-    valid?(data, spec(is_binary()))
+  def error_category do
+    spec(is_binary())
   end
 
   @type retrieve_wage_setting_response :: %{
@@ -187,15 +162,12 @@ defmodule SquareUp.Schema do
           wage_setting: SquareUp.Schema.wage_setting()
         }
 
-  def retrieve_wage_setting_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        wage_setting: spec(SquareUp.Schema.wage_setting())
-      })
-      |> selection([])
-    )
+  def retrieve_wage_setting_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      wage_setting: Norm.Delegate.delegate(&SquareUp.Schema.wage_setting/0)
+    })
+    |> selection([])
   end
 
   @type cancel_payment_response :: %{
@@ -203,25 +175,19 @@ defmodule SquareUp.Schema do
           payment: SquareUp.Schema.payment()
         }
 
-  def cancel_payment_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        payment: spec(SquareUp.Schema.payment())
-      })
-      |> selection([])
-    )
+  def cancel_payment_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      payment: Norm.Delegate.delegate(&SquareUp.Schema.payment/0)
+    })
+    |> selection([])
   end
 
   @type remove_dispute_evidence_request :: %{}
 
-  def remove_dispute_evidence_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def remove_dispute_evidence_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type retrieve_dispute_response :: %{
@@ -229,29 +195,19 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def retrieve_dispute_response(data) do
-    valid?(
-      data,
-      schema(%{
-        dispute: spec(SquareUp.Schema.dispute()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def retrieve_dispute_response do
+    schema(%{
+      dispute: Norm.Delegate.delegate(&SquareUp.Schema.dispute/0),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type list_break_types_request :: %{cursor: binary(), limit: integer(), location_id: binary()}
 
-  def list_break_types_request(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        limit: spec(is_integer()),
-        location_id: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def list_break_types_request do
+    schema(%{cursor: spec(is_binary()), limit: spec(is_integer()), location_id: spec(is_binary())})
+    |> selection([])
   end
 
   @type update_order_response :: %{
@@ -259,25 +215,19 @@ defmodule SquareUp.Schema do
           order: SquareUp.Schema.order()
         }
 
-  def update_order_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        order: spec(SquareUp.Schema.order())
-      })
-      |> selection([])
-    )
+  def update_order_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      order: Norm.Delegate.delegate(&SquareUp.Schema.order/0)
+    })
+    |> selection([])
   end
 
   @type bulk_update_team_members_request :: %{team_members: map()}
 
-  def bulk_update_team_members_request(data) do
-    valid?(
-      data,
-      schema(%{team_members: schema(%{})})
-      |> selection([:team_members])
-    )
+  def bulk_update_team_members_request do
+    schema(%{team_members: schema(%{})})
+    |> selection([:team_members])
   end
 
   @type create_customer_group_response :: %{
@@ -285,25 +235,19 @@ defmodule SquareUp.Schema do
           group: SquareUp.Schema.customer_group()
         }
 
-  def create_customer_group_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        group: spec(SquareUp.Schema.customer_group())
-      })
-      |> selection([])
-    )
+  def create_customer_group_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      group: Norm.Delegate.delegate(&SquareUp.Schema.customer_group/0)
+    })
+    |> selection([])
   end
 
   @type money :: %{amount: integer(), currency: binary()}
 
-  def money(data) do
-    valid?(
-      data,
-      schema(%{amount: spec(is_integer()), currency: spec(is_binary())})
-      |> selection([])
-    )
+  def money do
+    schema(%{amount: spec(is_integer()), currency: spec(is_binary())})
+    |> selection([])
   end
 
   @type get_team_member_wage_response :: %{
@@ -311,15 +255,12 @@ defmodule SquareUp.Schema do
           team_member_wage: SquareUp.Schema.team_member_wage()
         }
 
-  def get_team_member_wage_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        team_member_wage: spec(SquareUp.Schema.team_member_wage())
-      })
-      |> selection([])
-    )
+  def get_team_member_wage_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      team_member_wage: Norm.Delegate.delegate(&SquareUp.Schema.team_member_wage/0)
+    })
+    |> selection([])
   end
 
   @type v1_update_order_request :: %{
@@ -330,18 +271,15 @@ defmodule SquareUp.Schema do
           shipped_tracking_number: binary()
         }
 
-  def v1_update_order_request(data) do
-    valid?(
-      data,
-      schema(%{
-        action: spec(is_binary()),
-        canceled_note: spec(is_binary()),
-        completed_note: spec(is_binary()),
-        refunded_note: spec(is_binary()),
-        shipped_tracking_number: spec(is_binary())
-      })
-      |> selection([:action])
-    )
+  def v1_update_order_request do
+    schema(%{
+      action: spec(is_binary()),
+      canceled_note: spec(is_binary()),
+      completed_note: spec(is_binary()),
+      refunded_note: spec(is_binary()),
+      shipped_tracking_number: spec(is_binary())
+    })
+    |> selection([:action])
   end
 
   @type tender :: %{
@@ -362,33 +300,32 @@ defmodule SquareUp.Schema do
           type: binary()
         }
 
-  def tender(data) do
-    valid?(
-      data,
-      schema(%{
-        additional_recipients: spec(coll_of(spec(SquareUp.Schema.additional_recipient()))),
-        amount_money: spec(SquareUp.Schema.money()),
-        bank_transfer_details: spec(SquareUp.Schema.tender_bank_transfer_details()),
-        card_details: spec(SquareUp.Schema.tender_card_details()),
-        cash_details: spec(SquareUp.Schema.tender_cash_details()),
-        created_at: spec(is_binary()),
-        customer_id: spec(is_binary()),
-        id: spec(is_binary()),
-        location_id: spec(is_binary()),
-        note: spec(is_binary()),
-        payment_id: spec(is_binary()),
-        processing_fee_money: spec(SquareUp.Schema.money()),
-        tip_money: spec(SquareUp.Schema.money()),
-        transaction_id: spec(is_binary()),
-        type: spec(is_binary())
-      })
-      |> selection([:type])
-    )
+  def tender do
+    schema(%{
+      additional_recipients:
+        spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.additional_recipient/0))),
+      amount_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      bank_transfer_details:
+        Norm.Delegate.delegate(&SquareUp.Schema.tender_bank_transfer_details/0),
+      card_details: Norm.Delegate.delegate(&SquareUp.Schema.tender_card_details/0),
+      cash_details: Norm.Delegate.delegate(&SquareUp.Schema.tender_cash_details/0),
+      created_at: spec(is_binary()),
+      customer_id: spec(is_binary()),
+      id: spec(is_binary()),
+      location_id: spec(is_binary()),
+      note: spec(is_binary()),
+      payment_id: spec(is_binary()),
+      processing_fee_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      tip_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      transaction_id: spec(is_binary()),
+      type: spec(is_binary())
+    })
+    |> selection([:type])
   end
 
   @type v1_create_refund_request_type :: binary()
-  def v1_create_refund_request_type(data) do
-    valid?(data, spec(is_binary()))
+  def v1_create_refund_request_type do
+    spec(is_binary())
   end
 
   @type catalog_query_range :: %{
@@ -397,26 +334,20 @@ defmodule SquareUp.Schema do
           attribute_name: binary()
         }
 
-  def catalog_query_range(data) do
-    valid?(
-      data,
-      schema(%{
-        attribute_max_value: spec(is_integer()),
-        attribute_min_value: spec(is_integer()),
-        attribute_name: spec(is_binary())
-      })
-      |> selection([:attribute_name])
-    )
+  def catalog_query_range do
+    schema(%{
+      attribute_max_value: spec(is_integer()),
+      attribute_min_value: spec(is_integer()),
+      attribute_name: spec(is_binary())
+    })
+    |> selection([:attribute_name])
   end
 
   @type invoice_sort :: %{field: binary(), order: binary()}
 
-  def invoice_sort(data) do
-    valid?(
-      data,
-      schema(%{field: spec(is_binary()), order: spec(is_binary())})
-      |> selection([:field])
-    )
+  def invoice_sort do
+    schema(%{field: spec(is_binary()), order: spec(is_binary())})
+    |> selection([:field])
   end
 
   @type cancel_invoice_response :: %{
@@ -424,25 +355,19 @@ defmodule SquareUp.Schema do
           invoice: SquareUp.Schema.invoice()
         }
 
-  def cancel_invoice_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        invoice: spec(SquareUp.Schema.invoice())
-      })
-      |> selection([])
-    )
+  def cancel_invoice_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      invoice: Norm.Delegate.delegate(&SquareUp.Schema.invoice/0)
+    })
+    |> selection([])
   end
 
   @type v1_list_categories_request :: %{}
 
-  def v1_list_categories_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def v1_list_categories_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type list_employee_wages_response :: %{
@@ -451,16 +376,13 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def list_employee_wages_response(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        employee_wages: spec(coll_of(spec(SquareUp.Schema.employee_wage()))),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def list_employee_wages_response do
+    schema(%{
+      cursor: spec(is_binary()),
+      employee_wages: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.employee_wage/0))),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type order_line_item_discount :: %{
@@ -477,39 +399,33 @@ defmodule SquareUp.Schema do
           uid: binary()
         }
 
-  def order_line_item_discount(data) do
-    valid?(
-      data,
-      schema(%{
-        amount_money: spec(SquareUp.Schema.money()),
-        applied_money: spec(SquareUp.Schema.money()),
-        catalog_object_id: spec(is_binary()),
-        metadata: schema(%{}),
-        name: spec(is_binary()),
-        percentage: spec(is_binary()),
-        pricing_rule_id: spec(is_binary()),
-        reward_ids: spec(coll_of(spec(is_binary()))),
-        scope: spec(is_binary()),
-        type: spec(is_binary()),
-        uid: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def order_line_item_discount do
+    schema(%{
+      amount_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      applied_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      catalog_object_id: spec(is_binary()),
+      metadata: schema(%{}),
+      name: spec(is_binary()),
+      percentage: spec(is_binary()),
+      pricing_rule_id: spec(is_binary()),
+      reward_ids: spec(coll_of(spec(is_binary()))),
+      scope: spec(is_binary()),
+      type: spec(is_binary()),
+      uid: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type delete_shift_response :: %{errors: [SquareUp.Schema.error()]}
 
-  def delete_shift_response(data) do
-    valid?(
-      data,
-      schema(%{errors: spec(coll_of(spec(SquareUp.Schema.error())))})
-      |> selection([])
-    )
+  def delete_shift_response do
+    schema(%{errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))})
+    |> selection([])
   end
 
   @type catalog_pricing_type :: binary()
-  def catalog_pricing_type(data) do
-    valid?(data, spec(is_binary()))
+  def catalog_pricing_type do
+    spec(is_binary())
   end
 
   @type create_order_request :: %{
@@ -518,50 +434,34 @@ defmodule SquareUp.Schema do
           order: SquareUp.Schema.order()
         }
 
-  def create_order_request(data) do
-    valid?(
-      data,
-      schema(%{
-        idempotency_key: spec(is_binary()),
-        location_id: spec(is_binary()),
-        order: spec(SquareUp.Schema.order())
-      })
-      |> selection([])
-    )
+  def create_order_request do
+    schema(%{
+      idempotency_key: spec(is_binary()),
+      location_id: spec(is_binary()),
+      order: Norm.Delegate.delegate(&SquareUp.Schema.order/0)
+    })
+    |> selection([])
   end
 
   @type v1_list_orders_request :: %{batch_token: binary(), limit: integer(), order: binary()}
 
-  def v1_list_orders_request(data) do
-    valid?(
-      data,
-      schema(%{
-        batch_token: spec(is_binary()),
-        limit: spec(is_integer()),
-        order: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def v1_list_orders_request do
+    schema(%{batch_token: spec(is_binary()), limit: spec(is_integer()), order: spec(is_binary())})
+    |> selection([])
   end
 
   @type v1_list_settlements_response :: %{items: [SquareUp.Schema.v1_settlement()]}
 
-  def v1_list_settlements_response(data) do
-    valid?(
-      data,
-      schema(%{items: spec(coll_of(spec(SquareUp.Schema.v1_settlement())))})
-      |> selection([])
-    )
+  def v1_list_settlements_response do
+    schema(%{items: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_settlement/0)))})
+    |> selection([])
   end
 
   @type v1_update_page_request :: %{body: SquareUp.Schema.v1_page()}
 
-  def v1_update_page_request(data) do
-    valid?(
-      data,
-      schema(%{body: spec(SquareUp.Schema.v1_page())})
-      |> selection([:body])
-    )
+  def v1_update_page_request do
+    schema(%{body: Norm.Delegate.delegate(&SquareUp.Schema.v1_page/0)})
+    |> selection([:body])
   end
 
   @type payment :: %{
@@ -595,46 +495,43 @@ defmodule SquareUp.Schema do
           updated_at: binary()
         }
 
-  def payment(data) do
-    valid?(
-      data,
-      schema(%{
-        amount_money: spec(SquareUp.Schema.money()),
-        app_fee_money: spec(SquareUp.Schema.money()),
-        billing_address: spec(SquareUp.Schema.address()),
-        buyer_email_address: spec(is_binary()),
-        card_details: spec(SquareUp.Schema.card_payment_details()),
-        created_at: spec(is_binary()),
-        customer_id: spec(is_binary()),
-        delay_action: spec(is_binary()),
-        delay_duration: spec(is_binary()),
-        delayed_until: spec(is_binary()),
-        employee_id: spec(is_binary()),
-        id: spec(is_binary()),
-        location_id: spec(is_binary()),
-        note: spec(is_binary()),
-        order_id: spec(is_binary()),
-        processing_fee: spec(coll_of(spec(SquareUp.Schema.processing_fee()))),
-        receipt_number: spec(is_binary()),
-        receipt_url: spec(is_binary()),
-        reference_id: spec(is_binary()),
-        refund_ids: spec(coll_of(spec(is_binary()))),
-        refunded_money: spec(SquareUp.Schema.money()),
-        shipping_address: spec(SquareUp.Schema.address()),
-        source_type: spec(is_binary()),
-        statement_description_identifier: spec(is_binary()),
-        status: spec(is_binary()),
-        tip_money: spec(SquareUp.Schema.money()),
-        total_money: spec(SquareUp.Schema.money()),
-        updated_at: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def payment do
+    schema(%{
+      amount_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      app_fee_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      billing_address: Norm.Delegate.delegate(&SquareUp.Schema.address/0),
+      buyer_email_address: spec(is_binary()),
+      card_details: Norm.Delegate.delegate(&SquareUp.Schema.card_payment_details/0),
+      created_at: spec(is_binary()),
+      customer_id: spec(is_binary()),
+      delay_action: spec(is_binary()),
+      delay_duration: spec(is_binary()),
+      delayed_until: spec(is_binary()),
+      employee_id: spec(is_binary()),
+      id: spec(is_binary()),
+      location_id: spec(is_binary()),
+      note: spec(is_binary()),
+      order_id: spec(is_binary()),
+      processing_fee: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.processing_fee/0))),
+      receipt_number: spec(is_binary()),
+      receipt_url: spec(is_binary()),
+      reference_id: spec(is_binary()),
+      refund_ids: spec(coll_of(spec(is_binary()))),
+      refunded_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      shipping_address: Norm.Delegate.delegate(&SquareUp.Schema.address/0),
+      source_type: spec(is_binary()),
+      statement_description_identifier: spec(is_binary()),
+      status: spec(is_binary()),
+      tip_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      total_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      updated_at: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type v1_cash_drawer_shift_event_type :: binary()
-  def v1_cash_drawer_shift_event_type(data) do
-    valid?(data, spec(is_binary()))
+  def v1_cash_drawer_shift_event_type do
+    spec(is_binary())
   end
 
   @type list_loyalty_programs_response :: %{
@@ -642,15 +539,12 @@ defmodule SquareUp.Schema do
           programs: [SquareUp.Schema.loyalty_program()]
         }
 
-  def list_loyalty_programs_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        programs: spec(coll_of(spec(SquareUp.Schema.loyalty_program())))
-      })
-      |> selection([])
-    )
+  def list_loyalty_programs_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      programs: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.loyalty_program/0)))
+    })
+    |> selection([])
   end
 
   @type v1_fee :: %{
@@ -666,33 +560,27 @@ defmodule SquareUp.Schema do
           v2_id: binary()
         }
 
-  def v1_fee(data) do
-    valid?(
-      data,
-      schema(%{
-        adjustment_type: spec(is_binary()),
-        applies_to_custom_amounts: spec(is_boolean()),
-        calculation_phase: spec(is_binary()),
-        enabled: spec(is_boolean()),
-        id: spec(is_binary()),
-        inclusion_type: spec(is_binary()),
-        name: spec(is_binary()),
-        rate: spec(is_binary()),
-        type: spec(is_binary()),
-        v2_id: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def v1_fee do
+    schema(%{
+      adjustment_type: spec(is_binary()),
+      applies_to_custom_amounts: spec(is_boolean()),
+      calculation_phase: spec(is_binary()),
+      enabled: spec(is_boolean()),
+      id: spec(is_binary()),
+      inclusion_type: spec(is_binary()),
+      name: spec(is_binary()),
+      rate: spec(is_binary()),
+      type: spec(is_binary()),
+      v2_id: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type v1_list_items_response :: %{items: [SquareUp.Schema.v1_item()]}
 
-  def v1_list_items_response(data) do
-    valid?(
-      data,
-      schema(%{items: spec(coll_of(spec(SquareUp.Schema.v1_item())))})
-      |> selection([])
-    )
+  def v1_list_items_response do
+    schema(%{items: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_item/0)))})
+    |> selection([])
   end
 
   @type tender_cash_details :: %{
@@ -700,15 +588,12 @@ defmodule SquareUp.Schema do
           change_back_money: SquareUp.Schema.money()
         }
 
-  def tender_cash_details(data) do
-    valid?(
-      data,
-      schema(%{
-        buyer_tendered_money: spec(SquareUp.Schema.money()),
-        change_back_money: spec(SquareUp.Schema.money())
-      })
-      |> selection([])
-    )
+  def tender_cash_details do
+    schema(%{
+      buyer_tendered_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      change_back_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0)
+    })
+    |> selection([])
   end
 
   @type v1_payment_itemization :: %{
@@ -728,27 +613,24 @@ defmodule SquareUp.Schema do
           total_money: SquareUp.Schema.v1_money()
         }
 
-  def v1_payment_itemization(data) do
-    valid?(
-      data,
-      schema(%{
-        discount_money: spec(SquareUp.Schema.v1_money()),
-        discounts: spec(coll_of(spec(SquareUp.Schema.v1_payment_discount()))),
-        gross_sales_money: spec(SquareUp.Schema.v1_money()),
-        item_detail: spec(SquareUp.Schema.v1_payment_item_detail()),
-        item_variation_name: spec(is_binary()),
-        itemization_type: spec(is_binary()),
-        modifiers: spec(coll_of(spec(SquareUp.Schema.v1_payment_modifier()))),
-        name: spec(is_binary()),
-        net_sales_money: spec(SquareUp.Schema.v1_money()),
-        notes: spec(is_binary()),
-        quantity: spec(is_number()),
-        single_quantity_money: spec(SquareUp.Schema.v1_money()),
-        taxes: spec(coll_of(spec(SquareUp.Schema.v1_payment_tax()))),
-        total_money: spec(SquareUp.Schema.v1_money())
-      })
-      |> selection([])
-    )
+  def v1_payment_itemization do
+    schema(%{
+      discount_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      discounts: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_payment_discount/0))),
+      gross_sales_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      item_detail: Norm.Delegate.delegate(&SquareUp.Schema.v1_payment_item_detail/0),
+      item_variation_name: spec(is_binary()),
+      itemization_type: spec(is_binary()),
+      modifiers: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_payment_modifier/0))),
+      name: spec(is_binary()),
+      net_sales_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      notes: spec(is_binary()),
+      quantity: spec(is_number()),
+      single_quantity_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      taxes: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_payment_tax/0))),
+      total_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0)
+    })
+    |> selection([])
   end
 
   @type publish_invoice_response :: %{
@@ -756,15 +638,12 @@ defmodule SquareUp.Schema do
           invoice: SquareUp.Schema.invoice()
         }
 
-  def publish_invoice_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        invoice: spec(SquareUp.Schema.invoice())
-      })
-      |> selection([])
-    )
+  def publish_invoice_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      invoice: Norm.Delegate.delegate(&SquareUp.Schema.invoice/0)
+    })
+    |> selection([])
   end
 
   @type employee_wage :: %{
@@ -774,17 +653,14 @@ defmodule SquareUp.Schema do
           title: binary()
         }
 
-  def employee_wage(data) do
-    valid?(
-      data,
-      schema(%{
-        employee_id: spec(is_binary()),
-        hourly_rate: spec(SquareUp.Schema.money()),
-        id: spec(is_binary()),
-        title: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def employee_wage do
+    schema(%{
+      employee_id: spec(is_binary()),
+      hourly_rate: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      id: spec(is_binary()),
+      title: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type update_shift_response :: %{
@@ -792,15 +668,12 @@ defmodule SquareUp.Schema do
           shift: SquareUp.Schema.shift()
         }
 
-  def update_shift_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        shift: spec(SquareUp.Schema.shift())
-      })
-      |> selection([])
-    )
+  def update_shift_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      shift: Norm.Delegate.delegate(&SquareUp.Schema.shift/0)
+    })
+    |> selection([])
   end
 
   @type catalog_modifier_list :: %{
@@ -810,42 +683,33 @@ defmodule SquareUp.Schema do
           selection_type: binary()
         }
 
-  def catalog_modifier_list(data) do
-    valid?(
-      data,
-      schema(%{
-        modifiers: spec(coll_of(spec(SquareUp.Schema.catalog_object()))),
-        name: spec(is_binary()),
-        ordinal: spec(is_integer()),
-        selection_type: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def catalog_modifier_list do
+    schema(%{
+      modifiers: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.catalog_object/0))),
+      name: spec(is_binary()),
+      ordinal: spec(is_integer()),
+      selection_type: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type v1_inventory_entry :: %{quantity_on_hand: number(), variation_id: binary()}
 
-  def v1_inventory_entry(data) do
-    valid?(
-      data,
-      schema(%{quantity_on_hand: spec(is_number()), variation_id: spec(is_binary())})
-      |> selection([])
-    )
+  def v1_inventory_entry do
+    schema(%{quantity_on_hand: spec(is_number()), variation_id: spec(is_binary())})
+    |> selection([])
   end
 
   @type v1_retrieve_cash_drawer_shift_request :: %{}
 
-  def v1_retrieve_cash_drawer_shift_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def v1_retrieve_cash_drawer_shift_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type v1_tender_entry_method :: binary()
-  def v1_tender_entry_method(data) do
-    valid?(data, spec(is_binary()))
+  def v1_tender_entry_method do
+    spec(is_binary())
   end
 
   @type update_item_modifier_lists_response :: %{
@@ -853,49 +717,37 @@ defmodule SquareUp.Schema do
           updated_at: binary()
         }
 
-  def update_item_modifier_lists_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        updated_at: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def update_item_modifier_lists_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      updated_at: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type get_shift_request :: %{}
 
-  def get_shift_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def get_shift_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type list_disputes_request :: %{cursor: binary(), location_id: binary(), states: [binary()]}
 
-  def list_disputes_request(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        location_id: spec(is_binary()),
-        states: spec(coll_of(spec(is_binary())))
-      })
-      |> selection([])
-    )
+  def list_disputes_request do
+    schema(%{
+      cursor: spec(is_binary()),
+      location_id: spec(is_binary()),
+      states: spec(coll_of(spec(is_binary())))
+    })
+    |> selection([])
   end
 
   @type add_group_to_customer_request :: %{}
 
-  def add_group_to_customer_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def add_group_to_customer_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type loyalty_event_redeem_reward :: %{
@@ -904,26 +756,20 @@ defmodule SquareUp.Schema do
           reward_id: binary()
         }
 
-  def loyalty_event_redeem_reward(data) do
-    valid?(
-      data,
-      schema(%{
-        loyalty_program_id: spec(is_binary()),
-        order_id: spec(is_binary()),
-        reward_id: spec(is_binary())
-      })
-      |> selection([:loyalty_program_id])
-    )
+  def loyalty_event_redeem_reward do
+    schema(%{
+      loyalty_program_id: spec(is_binary()),
+      order_id: spec(is_binary()),
+      reward_id: spec(is_binary())
+    })
+    |> selection([:loyalty_program_id])
   end
 
   @type v1_list_payments_response :: %{items: [SquareUp.Schema.v1_payment()]}
 
-  def v1_list_payments_response(data) do
-    valid?(
-      data,
-      schema(%{items: spec(coll_of(spec(SquareUp.Schema.v1_payment())))})
-      |> selection([])
-    )
+  def v1_list_payments_response do
+    schema(%{items: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_payment/0)))})
+    |> selection([])
   end
 
   @type refund_payment_response :: %{
@@ -931,25 +777,19 @@ defmodule SquareUp.Schema do
           refund: SquareUp.Schema.payment_refund()
         }
 
-  def refund_payment_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        refund: spec(SquareUp.Schema.payment_refund())
-      })
-      |> selection([])
-    )
+  def refund_payment_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      refund: Norm.Delegate.delegate(&SquareUp.Schema.payment_refund/0)
+    })
+    |> selection([])
   end
 
   @type v1_delete_modifier_option_request :: %{}
 
-  def v1_delete_modifier_option_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def v1_delete_modifier_option_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type v1_list_employees_request :: %{
@@ -964,32 +804,26 @@ defmodule SquareUp.Schema do
           status: binary()
         }
 
-  def v1_list_employees_request(data) do
-    valid?(
-      data,
-      schema(%{
-        batch_token: spec(is_binary()),
-        begin_created_at: spec(is_binary()),
-        begin_updated_at: spec(is_binary()),
-        end_created_at: spec(is_binary()),
-        end_updated_at: spec(is_binary()),
-        external_id: spec(is_binary()),
-        limit: spec(is_integer()),
-        order: spec(is_binary()),
-        status: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def v1_list_employees_request do
+    schema(%{
+      batch_token: spec(is_binary()),
+      begin_created_at: spec(is_binary()),
+      begin_updated_at: spec(is_binary()),
+      end_created_at: spec(is_binary()),
+      end_updated_at: spec(is_binary()),
+      external_id: spec(is_binary()),
+      limit: spec(is_integer()),
+      order: spec(is_binary()),
+      status: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type cash_drawer_device :: %{id: binary(), name: binary()}
 
-  def cash_drawer_device(data) do
-    valid?(
-      data,
-      schema(%{id: spec(is_binary()), name: spec(is_binary())})
-      |> selection([])
-    )
+  def cash_drawer_device do
+    schema(%{id: spec(is_binary()), name: spec(is_binary())})
+    |> selection([])
   end
 
   @type search_loyalty_rewards_response :: %{
@@ -998,16 +832,13 @@ defmodule SquareUp.Schema do
           rewards: [SquareUp.Schema.loyalty_reward()]
         }
 
-  def search_loyalty_rewards_response(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        rewards: spec(coll_of(spec(SquareUp.Schema.loyalty_reward())))
-      })
-      |> selection([])
-    )
+  def search_loyalty_rewards_response do
+    schema(%{
+      cursor: spec(is_binary()),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      rewards: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.loyalty_reward/0)))
+    })
+    |> selection([])
   end
 
   @type customer_query :: %{
@@ -1015,20 +846,17 @@ defmodule SquareUp.Schema do
           sort: SquareUp.Schema.customer_sort()
         }
 
-  def customer_query(data) do
-    valid?(
-      data,
-      schema(%{
-        filter: spec(SquareUp.Schema.customer_filter()),
-        sort: spec(SquareUp.Schema.customer_sort())
-      })
-      |> selection([])
-    )
+  def customer_query do
+    schema(%{
+      filter: Norm.Delegate.delegate(&SquareUp.Schema.customer_filter/0),
+      sort: Norm.Delegate.delegate(&SquareUp.Schema.customer_sort/0)
+    })
+    |> selection([])
   end
 
   @type measurement_unit_generic :: binary()
-  def measurement_unit_generic(data) do
-    valid?(data, spec(is_binary()))
+  def measurement_unit_generic do
+    spec(is_binary())
   end
 
   @type create_payment_response :: %{
@@ -1036,15 +864,12 @@ defmodule SquareUp.Schema do
           payment: SquareUp.Schema.payment()
         }
 
-  def create_payment_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        payment: spec(SquareUp.Schema.payment())
-      })
-      |> selection([])
-    )
+  def create_payment_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      payment: Norm.Delegate.delegate(&SquareUp.Schema.payment/0)
+    })
+    |> selection([])
   end
 
   @type loyalty_reward :: %{
@@ -1059,22 +884,19 @@ defmodule SquareUp.Schema do
           updated_at: binary()
         }
 
-  def loyalty_reward(data) do
-    valid?(
-      data,
-      schema(%{
-        created_at: spec(is_binary()),
-        id: spec(is_binary()),
-        loyalty_account_id: spec(is_binary()),
-        order_id: spec(is_binary()),
-        points: spec(is_integer()),
-        redeemed_at: spec(is_binary()),
-        reward_tier_id: spec(is_binary()),
-        status: spec(is_binary()),
-        updated_at: spec(is_binary())
-      })
-      |> selection([:loyalty_account_id, :reward_tier_id])
-    )
+  def loyalty_reward do
+    schema(%{
+      created_at: spec(is_binary()),
+      id: spec(is_binary()),
+      loyalty_account_id: spec(is_binary()),
+      order_id: spec(is_binary()),
+      points: spec(is_integer()),
+      redeemed_at: spec(is_binary()),
+      reward_tier_id: spec(is_binary()),
+      status: spec(is_binary()),
+      updated_at: spec(is_binary())
+    })
+    |> selection([:loyalty_account_id, :reward_tier_id])
   end
 
   @type inventory_transfer :: %{
@@ -1092,25 +914,22 @@ defmodule SquareUp.Schema do
           to_location_id: binary()
         }
 
-  def inventory_transfer(data) do
-    valid?(
-      data,
-      schema(%{
-        catalog_object_id: spec(is_binary()),
-        catalog_object_type: spec(is_binary()),
-        created_at: spec(is_binary()),
-        employee_id: spec(is_binary()),
-        from_location_id: spec(is_binary()),
-        id: spec(is_binary()),
-        occurred_at: spec(is_binary()),
-        quantity: spec(is_binary()),
-        reference_id: spec(is_binary()),
-        source: spec(SquareUp.Schema.source_application()),
-        state: spec(is_binary()),
-        to_location_id: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def inventory_transfer do
+    schema(%{
+      catalog_object_id: spec(is_binary()),
+      catalog_object_type: spec(is_binary()),
+      created_at: spec(is_binary()),
+      employee_id: spec(is_binary()),
+      from_location_id: spec(is_binary()),
+      id: spec(is_binary()),
+      occurred_at: spec(is_binary()),
+      quantity: spec(is_binary()),
+      reference_id: spec(is_binary()),
+      source: Norm.Delegate.delegate(&SquareUp.Schema.source_application/0),
+      state: spec(is_binary()),
+      to_location_id: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type batch_retrieve_catalog_objects_response :: %{
@@ -1119,16 +938,13 @@ defmodule SquareUp.Schema do
           related_objects: [SquareUp.Schema.catalog_object()]
         }
 
-  def batch_retrieve_catalog_objects_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        objects: spec(coll_of(spec(SquareUp.Schema.catalog_object()))),
-        related_objects: spec(coll_of(spec(SquareUp.Schema.catalog_object())))
-      })
-      |> selection([])
-    )
+  def batch_retrieve_catalog_objects_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      objects: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.catalog_object/0))),
+      related_objects: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.catalog_object/0)))
+    })
+    |> selection([])
   end
 
   @type refund :: %{
@@ -1144,41 +960,28 @@ defmodule SquareUp.Schema do
           transaction_id: binary()
         }
 
-  def refund(data) do
-    valid?(
-      data,
-      schema(%{
-        additional_recipients: spec(coll_of(spec(SquareUp.Schema.additional_recipient()))),
-        amount_money: spec(SquareUp.Schema.money()),
-        created_at: spec(is_binary()),
-        id: spec(is_binary()),
-        location_id: spec(is_binary()),
-        processing_fee_money: spec(SquareUp.Schema.money()),
-        reason: spec(is_binary()),
-        status: spec(is_binary()),
-        tender_id: spec(is_binary()),
-        transaction_id: spec(is_binary())
-      })
-      |> selection([
-        :id,
-        :location_id,
-        :transaction_id,
-        :tender_id,
-        :reason,
-        :amount_money,
-        :status
-      ])
-    )
+  def refund do
+    schema(%{
+      additional_recipients:
+        spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.additional_recipient/0))),
+      amount_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      created_at: spec(is_binary()),
+      id: spec(is_binary()),
+      location_id: spec(is_binary()),
+      processing_fee_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      reason: spec(is_binary()),
+      status: spec(is_binary()),
+      tender_id: spec(is_binary()),
+      transaction_id: spec(is_binary())
+    })
+    |> selection([:id, :location_id, :transaction_id, :tender_id, :reason, :amount_money, :status])
   end
 
   @type v1_retrieve_employee_role_request :: %{}
 
-  def v1_retrieve_employee_role_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def v1_retrieve_employee_role_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type revoke_token_request :: %{
@@ -1188,27 +991,21 @@ defmodule SquareUp.Schema do
           revoke_only_access_token: boolean()
         }
 
-  def revoke_token_request(data) do
-    valid?(
-      data,
-      schema(%{
-        access_token: spec(is_binary()),
-        client_id: spec(is_binary()),
-        merchant_id: spec(is_binary()),
-        revoke_only_access_token: spec(is_boolean())
-      })
-      |> selection([])
-    )
+  def revoke_token_request do
+    schema(%{
+      access_token: spec(is_binary()),
+      client_id: spec(is_binary()),
+      merchant_id: spec(is_binary()),
+      revoke_only_access_token: spec(is_boolean())
+    })
+    |> selection([])
   end
 
   @type list_subscription_events_request :: %{cursor: binary(), limit: integer()}
 
-  def list_subscription_events_request(data) do
-    valid?(
-      data,
-      schema(%{cursor: spec(is_binary()), limit: spec(is_integer())})
-      |> selection([])
-    )
+  def list_subscription_events_request do
+    schema(%{cursor: spec(is_binary()), limit: spec(is_integer())})
+    |> selection([])
   end
 
   @type invoice_recipient :: %{
@@ -1221,30 +1018,24 @@ defmodule SquareUp.Schema do
           phone_number: binary()
         }
 
-  def invoice_recipient(data) do
-    valid?(
-      data,
-      schema(%{
-        address: spec(SquareUp.Schema.address()),
-        company_name: spec(is_binary()),
-        customer_id: spec(is_binary()),
-        email_address: spec(is_binary()),
-        family_name: spec(is_binary()),
-        given_name: spec(is_binary()),
-        phone_number: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def invoice_recipient do
+    schema(%{
+      address: Norm.Delegate.delegate(&SquareUp.Schema.address/0),
+      company_name: spec(is_binary()),
+      customer_id: spec(is_binary()),
+      email_address: spec(is_binary()),
+      family_name: spec(is_binary()),
+      given_name: spec(is_binary()),
+      phone_number: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type retrieve_subscription_request :: %{}
 
-  def retrieve_subscription_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def retrieve_subscription_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type calculate_loyalty_points_response :: %{
@@ -1252,12 +1043,12 @@ defmodule SquareUp.Schema do
           points: integer()
         }
 
-  def calculate_loyalty_points_response(data) do
-    valid?(
-      data,
-      schema(%{errors: spec(coll_of(spec(SquareUp.Schema.error()))), points: spec(is_integer())})
-      |> selection([])
-    )
+  def calculate_loyalty_points_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      points: spec(is_integer())
+    })
+    |> selection([])
   end
 
   @type v1_bank_account :: %{
@@ -1271,21 +1062,18 @@ defmodule SquareUp.Schema do
           type: binary()
         }
 
-  def v1_bank_account(data) do
-    valid?(
-      data,
-      schema(%{
-        account_number_suffix: spec(is_binary()),
-        bank_name: spec(is_binary()),
-        currency_code: spec(is_binary()),
-        id: spec(is_binary()),
-        merchant_id: spec(is_binary()),
-        name: spec(is_binary()),
-        routing_number: spec(is_binary()),
-        type: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def v1_bank_account do
+    schema(%{
+      account_number_suffix: spec(is_binary()),
+      bank_name: spec(is_binary()),
+      currency_code: spec(is_binary()),
+      id: spec(is_binary()),
+      merchant_id: spec(is_binary()),
+      name: spec(is_binary()),
+      routing_number: spec(is_binary()),
+      type: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type order_line_item_applied_discount :: %{
@@ -1294,26 +1082,23 @@ defmodule SquareUp.Schema do
           uid: binary()
         }
 
-  def order_line_item_applied_discount(data) do
-    valid?(
-      data,
-      schema(%{
-        applied_money: spec(SquareUp.Schema.money()),
-        discount_uid: spec(is_binary()),
-        uid: spec(is_binary())
-      })
-      |> selection([:discount_uid])
-    )
+  def order_line_item_applied_discount do
+    schema(%{
+      applied_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      discount_uid: spec(is_binary()),
+      uid: spec(is_binary())
+    })
+    |> selection([:discount_uid])
   end
 
   @type register_domain_response :: %{errors: [SquareUp.Schema.error()], status: binary()}
 
-  def register_domain_response(data) do
-    valid?(
-      data,
-      schema(%{errors: spec(coll_of(spec(SquareUp.Schema.error()))), status: spec(is_binary())})
-      |> selection([])
-    )
+  def register_domain_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      status: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type bank_account :: %{
@@ -1336,71 +1121,59 @@ defmodule SquareUp.Schema do
           version: integer()
         }
 
-  def bank_account(data) do
-    valid?(
-      data,
-      schema(%{
-        account_number_suffix: spec(is_binary()),
-        account_type: spec(is_binary()),
-        bank_name: spec(is_binary()),
-        country: spec(is_binary()),
-        creditable: spec(is_boolean()),
-        currency: spec(is_binary()),
-        debit_mandate_reference_id: spec(is_binary()),
-        debitable: spec(is_boolean()),
-        fingerprint: spec(is_binary()),
-        holder_name: spec(is_binary()),
-        id: spec(is_binary()),
-        location_id: spec(is_binary()),
-        primary_bank_identification_number: spec(is_binary()),
-        reference_id: spec(is_binary()),
-        secondary_bank_identification_number: spec(is_binary()),
-        status: spec(is_binary()),
-        version: spec(is_integer())
-      })
-      |> selection([
-        :id,
-        :account_number_suffix,
-        :country,
-        :currency,
-        :account_type,
-        :holder_name,
-        :primary_bank_identification_number,
-        :status,
-        :creditable,
-        :debitable
-      ])
-    )
+  def bank_account do
+    schema(%{
+      account_number_suffix: spec(is_binary()),
+      account_type: spec(is_binary()),
+      bank_name: spec(is_binary()),
+      country: spec(is_binary()),
+      creditable: spec(is_boolean()),
+      currency: spec(is_binary()),
+      debit_mandate_reference_id: spec(is_binary()),
+      debitable: spec(is_boolean()),
+      fingerprint: spec(is_binary()),
+      holder_name: spec(is_binary()),
+      id: spec(is_binary()),
+      location_id: spec(is_binary()),
+      primary_bank_identification_number: spec(is_binary()),
+      reference_id: spec(is_binary()),
+      secondary_bank_identification_number: spec(is_binary()),
+      status: spec(is_binary()),
+      version: spec(is_integer())
+    })
+    |> selection([
+      :id,
+      :account_number_suffix,
+      :country,
+      :currency,
+      :account_type,
+      :holder_name,
+      :primary_bank_identification_number,
+      :status,
+      :creditable,
+      :debitable
+    ])
   end
 
   @type list_catalog_request :: %{cursor: binary(), types: binary()}
 
-  def list_catalog_request(data) do
-    valid?(
-      data,
-      schema(%{cursor: spec(is_binary()), types: spec(is_binary())})
-      |> selection([])
-    )
+  def list_catalog_request do
+    schema(%{cursor: spec(is_binary()), types: spec(is_binary())})
+    |> selection([])
   end
 
   @type update_customer_group_request :: %{group: SquareUp.Schema.customer_group()}
 
-  def update_customer_group_request(data) do
-    valid?(
-      data,
-      schema(%{group: spec(SquareUp.Schema.customer_group())})
-      |> selection([:group])
-    )
+  def update_customer_group_request do
+    schema(%{group: Norm.Delegate.delegate(&SquareUp.Schema.customer_group/0)})
+    |> selection([:group])
   end
 
   @type delete_customer_card_request :: %{}
 
-  def delete_customer_card_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def delete_customer_card_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type accumulate_loyalty_points_request :: %{
@@ -1409,16 +1182,14 @@ defmodule SquareUp.Schema do
           location_id: binary()
         }
 
-  def accumulate_loyalty_points_request(data) do
-    valid?(
-      data,
-      schema(%{
-        accumulate_points: spec(SquareUp.Schema.loyalty_event_accumulate_points()),
-        idempotency_key: spec(is_binary()),
-        location_id: spec(is_binary())
-      })
-      |> selection([:accumulate_points, :idempotency_key, :location_id])
-    )
+  def accumulate_loyalty_points_request do
+    schema(%{
+      accumulate_points:
+        Norm.Delegate.delegate(&SquareUp.Schema.loyalty_event_accumulate_points/0),
+      idempotency_key: spec(is_binary()),
+      location_id: spec(is_binary())
+    })
+    |> selection([:accumulate_points, :idempotency_key, :location_id])
   end
 
   @type create_customer_response :: %{
@@ -1426,15 +1197,12 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def create_customer_response(data) do
-    valid?(
-      data,
-      schema(%{
-        customer: spec(SquareUp.Schema.customer()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def create_customer_response do
+    schema(%{
+      customer: Norm.Delegate.delegate(&SquareUp.Schema.customer/0),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type batch_retrieve_inventory_counts_response :: %{
@@ -1443,16 +1211,13 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def batch_retrieve_inventory_counts_response(data) do
-    valid?(
-      data,
-      schema(%{
-        counts: spec(coll_of(spec(SquareUp.Schema.inventory_count()))),
-        cursor: spec(is_binary()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def batch_retrieve_inventory_counts_response do
+    schema(%{
+      counts: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.inventory_count/0))),
+      cursor: spec(is_binary()),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type retrieve_location_response :: %{
@@ -1460,15 +1225,12 @@ defmodule SquareUp.Schema do
           location: SquareUp.Schema.location()
         }
 
-  def retrieve_location_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        location: spec(SquareUp.Schema.location())
-      })
-      |> selection([])
-    )
+  def retrieve_location_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      location: Norm.Delegate.delegate(&SquareUp.Schema.location/0)
+    })
+    |> selection([])
   end
 
   @type list_payments_response :: %{
@@ -1477,26 +1239,20 @@ defmodule SquareUp.Schema do
           payments: [SquareUp.Schema.payment()]
         }
 
-  def list_payments_response(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        payments: spec(coll_of(spec(SquareUp.Schema.payment())))
-      })
-      |> selection([])
-    )
+  def list_payments_response do
+    schema(%{
+      cursor: spec(is_binary()),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      payments: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.payment/0)))
+    })
+    |> selection([])
   end
 
   @type search_orders_state_filter :: %{states: [binary()]}
 
-  def search_orders_state_filter(data) do
-    valid?(
-      data,
-      schema(%{states: spec(coll_of(spec(is_binary())))})
-      |> selection([:states])
-    )
+  def search_orders_state_filter do
+    schema(%{states: spec(coll_of(spec(is_binary())))})
+    |> selection([:states])
   end
 
   @type accumulate_loyalty_points_response :: %{
@@ -1504,25 +1260,22 @@ defmodule SquareUp.Schema do
           event: SquareUp.Schema.loyalty_event()
         }
 
-  def accumulate_loyalty_points_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        event: spec(SquareUp.Schema.loyalty_event())
-      })
-      |> selection([])
-    )
+  def accumulate_loyalty_points_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      event: Norm.Delegate.delegate(&SquareUp.Schema.loyalty_event/0)
+    })
+    |> selection([])
   end
 
   @type create_shift_request :: %{idempotency_key: binary(), shift: SquareUp.Schema.shift()}
 
-  def create_shift_request(data) do
-    valid?(
-      data,
-      schema(%{idempotency_key: spec(is_binary()), shift: spec(SquareUp.Schema.shift())})
-      |> selection([:shift])
-    )
+  def create_shift_request do
+    schema(%{
+      idempotency_key: spec(is_binary()),
+      shift: Norm.Delegate.delegate(&SquareUp.Schema.shift/0)
+    })
+    |> selection([:shift])
   end
 
   @type update_customer_group_response :: %{
@@ -1530,15 +1283,12 @@ defmodule SquareUp.Schema do
           group: SquareUp.Schema.customer_group()
         }
 
-  def update_customer_group_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        group: spec(SquareUp.Schema.customer_group())
-      })
-      |> selection([])
-    )
+  def update_customer_group_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      group: Norm.Delegate.delegate(&SquareUp.Schema.customer_group/0)
+    })
+    |> selection([])
   end
 
   @type list_break_types_response :: %{
@@ -1547,16 +1297,13 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def list_break_types_response(data) do
-    valid?(
-      data,
-      schema(%{
-        break_types: spec(coll_of(spec(SquareUp.Schema.break_type()))),
-        cursor: spec(is_binary()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def list_break_types_response do
+    schema(%{
+      break_types: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.break_type/0))),
+      cursor: spec(is_binary()),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type batch_retrieve_orders_response :: %{
@@ -1564,15 +1311,12 @@ defmodule SquareUp.Schema do
           orders: [SquareUp.Schema.order()]
         }
 
-  def batch_retrieve_orders_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        orders: spec(coll_of(spec(SquareUp.Schema.order())))
-      })
-      |> selection([])
-    )
+  def batch_retrieve_orders_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      orders: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.order/0)))
+    })
+    |> selection([])
   end
 
   @type list_transactions_response :: %{
@@ -1581,16 +1325,13 @@ defmodule SquareUp.Schema do
           transactions: [SquareUp.Schema.transaction()]
         }
 
-  def list_transactions_response(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        transactions: spec(coll_of(spec(SquareUp.Schema.transaction())))
-      })
-      |> selection([])
-    )
+  def list_transactions_response do
+    schema(%{
+      cursor: spec(is_binary()),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      transactions: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.transaction/0)))
+    })
+    |> selection([])
   end
 
   @type catalog_custom_attribute_value :: %{
@@ -1604,21 +1345,18 @@ defmodule SquareUp.Schema do
           type: binary()
         }
 
-  def catalog_custom_attribute_value(data) do
-    valid?(
-      data,
-      schema(%{
-        boolean_value: spec(is_boolean()),
-        custom_attribute_definition_id: spec(is_binary()),
-        key: spec(is_binary()),
-        name: spec(is_binary()),
-        number_value: spec(is_binary()),
-        selection_uid_values: spec(coll_of(spec(is_binary()))),
-        string_value: spec(is_binary()),
-        type: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def catalog_custom_attribute_value do
+    schema(%{
+      boolean_value: spec(is_boolean()),
+      custom_attribute_definition_id: spec(is_binary()),
+      key: spec(is_binary()),
+      name: spec(is_binary()),
+      number_value: spec(is_binary()),
+      selection_uid_values: spec(coll_of(spec(is_binary()))),
+      string_value: spec(is_binary()),
+      type: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type tip_settings :: %{
@@ -1627,46 +1365,34 @@ defmodule SquareUp.Schema do
           separate_tip_screen: boolean()
         }
 
-  def tip_settings(data) do
-    valid?(
-      data,
-      schema(%{
-        allow_tipping: spec(is_boolean()),
-        custom_tip_field: spec(is_boolean()),
-        separate_tip_screen: spec(is_boolean())
-      })
-      |> selection([])
-    )
+  def tip_settings do
+    schema(%{
+      allow_tipping: spec(is_boolean()),
+      custom_tip_field: spec(is_boolean()),
+      separate_tip_screen: spec(is_boolean())
+    })
+    |> selection([])
   end
 
   @type get_bank_account_request :: %{}
 
-  def get_bank_account_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def get_bank_account_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type add_group_to_customer_response :: %{errors: [SquareUp.Schema.error()]}
 
-  def add_group_to_customer_response(data) do
-    valid?(
-      data,
-      schema(%{errors: spec(coll_of(spec(SquareUp.Schema.error())))})
-      |> selection([])
-    )
+  def add_group_to_customer_response do
+    schema(%{errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))})
+    |> selection([])
   end
 
   @type retrieve_employee_request :: %{}
 
-  def retrieve_employee_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def retrieve_employee_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type list_cash_drawer_shifts_request :: %{
@@ -1678,19 +1404,16 @@ defmodule SquareUp.Schema do
           sort_order: binary()
         }
 
-  def list_cash_drawer_shifts_request(data) do
-    valid?(
-      data,
-      schema(%{
-        begin_time: spec(is_binary()),
-        cursor: spec(is_binary()),
-        end_time: spec(is_binary()),
-        limit: spec(is_integer()),
-        location_id: spec(is_binary()),
-        sort_order: spec(is_binary())
-      })
-      |> selection([:location_id])
-    )
+  def list_cash_drawer_shifts_request do
+    schema(%{
+      begin_time: spec(is_binary()),
+      cursor: spec(is_binary()),
+      end_time: spec(is_binary()),
+      limit: spec(is_integer()),
+      location_id: spec(is_binary()),
+      sort_order: spec(is_binary())
+    })
+    |> selection([:location_id])
   end
 
   @type search_shifts_request :: %{
@@ -1699,16 +1422,13 @@ defmodule SquareUp.Schema do
           query: SquareUp.Schema.shift_query()
         }
 
-  def search_shifts_request(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        limit: spec(is_integer()),
-        query: spec(SquareUp.Schema.shift_query())
-      })
-      |> selection([])
-    )
+  def search_shifts_request do
+    schema(%{
+      cursor: spec(is_binary()),
+      limit: spec(is_integer()),
+      query: Norm.Delegate.delegate(&SquareUp.Schema.shift_query/0)
+    })
+    |> selection([])
   end
 
   @type batch_change_inventory_request :: %{
@@ -1717,26 +1437,23 @@ defmodule SquareUp.Schema do
           ignore_unchanged_counts: boolean()
         }
 
-  def batch_change_inventory_request(data) do
-    valid?(
-      data,
-      schema(%{
-        changes: spec(coll_of(spec(SquareUp.Schema.inventory_change()))),
-        idempotency_key: spec(is_binary()),
-        ignore_unchanged_counts: spec(is_boolean())
-      })
-      |> selection([])
-    )
+  def batch_change_inventory_request do
+    schema(%{
+      changes: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.inventory_change/0))),
+      idempotency_key: spec(is_binary()),
+      ignore_unchanged_counts: spec(is_boolean())
+    })
+    |> selection([])
   end
 
   @type location_type :: binary()
-  def location_type(data) do
-    valid?(data, spec(is_binary()))
+  def location_type do
+    spec(is_binary())
   end
 
   @type exclude_strategy :: binary()
-  def exclude_strategy(data) do
-    valid?(data, spec(is_binary()))
+  def exclude_strategy do
+    spec(is_binary())
   end
 
   @type additional_recipient :: %{
@@ -1746,22 +1463,19 @@ defmodule SquareUp.Schema do
           receivable_id: binary()
         }
 
-  def additional_recipient(data) do
-    valid?(
-      data,
-      schema(%{
-        amount_money: spec(SquareUp.Schema.money()),
-        description: spec(is_binary()),
-        location_id: spec(is_binary()),
-        receivable_id: spec(is_binary())
-      })
-      |> selection([:location_id, :description, :amount_money])
-    )
+  def additional_recipient do
+    schema(%{
+      amount_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      description: spec(is_binary()),
+      location_id: spec(is_binary()),
+      receivable_id: spec(is_binary())
+    })
+    |> selection([:location_id, :description, :amount_money])
   end
 
   @type v1_payment_itemization_itemization_type :: binary()
-  def v1_payment_itemization_itemization_type(data) do
-    valid?(data, spec(is_binary()))
+  def v1_payment_itemization_itemization_type do
+    spec(is_binary())
   end
 
   @type adjust_loyalty_points_request :: %{
@@ -1769,25 +1483,19 @@ defmodule SquareUp.Schema do
           idempotency_key: binary()
         }
 
-  def adjust_loyalty_points_request(data) do
-    valid?(
-      data,
-      schema(%{
-        adjust_points: spec(SquareUp.Schema.loyalty_event_adjust_points()),
-        idempotency_key: spec(is_binary())
-      })
-      |> selection([:idempotency_key, :adjust_points])
-    )
+  def adjust_loyalty_points_request do
+    schema(%{
+      adjust_points: Norm.Delegate.delegate(&SquareUp.Schema.loyalty_event_adjust_points/0),
+      idempotency_key: spec(is_binary())
+    })
+    |> selection([:idempotency_key, :adjust_points])
   end
 
   @type loyalty_event_type_filter :: %{types: [binary()]}
 
-  def loyalty_event_type_filter(data) do
-    valid?(
-      data,
-      schema(%{types: spec(coll_of(spec(is_binary())))})
-      |> selection([:types])
-    )
+  def loyalty_event_type_filter do
+    schema(%{types: spec(coll_of(spec(is_binary())))})
+    |> selection([:types])
   end
 
   @type search_orders_date_time_filter :: %{
@@ -1796,31 +1504,25 @@ defmodule SquareUp.Schema do
           updated_at: SquareUp.Schema.time_range()
         }
 
-  def search_orders_date_time_filter(data) do
-    valid?(
-      data,
-      schema(%{
-        closed_at: spec(SquareUp.Schema.time_range()),
-        created_at: spec(SquareUp.Schema.time_range()),
-        updated_at: spec(SquareUp.Schema.time_range())
-      })
-      |> selection([])
-    )
+  def search_orders_date_time_filter do
+    schema(%{
+      closed_at: Norm.Delegate.delegate(&SquareUp.Schema.time_range/0),
+      created_at: Norm.Delegate.delegate(&SquareUp.Schema.time_range/0),
+      updated_at: Norm.Delegate.delegate(&SquareUp.Schema.time_range/0)
+    })
+    |> selection([])
   end
 
   @type cancel_invoice_request :: %{version: integer()}
 
-  def cancel_invoice_request(data) do
-    valid?(
-      data,
-      schema(%{version: spec(is_integer())})
-      |> selection([:version])
-    )
+  def cancel_invoice_request do
+    schema(%{version: spec(is_integer())})
+    |> selection([:version])
   end
 
   @type v1_merchant_business_type :: binary()
-  def v1_merchant_business_type(data) do
-    valid?(data, spec(is_binary()))
+  def v1_merchant_business_type do
+    spec(is_binary())
   end
 
   @type calculate_loyalty_points_request :: %{
@@ -1828,15 +1530,12 @@ defmodule SquareUp.Schema do
           transaction_amount_money: SquareUp.Schema.money()
         }
 
-  def calculate_loyalty_points_request(data) do
-    valid?(
-      data,
-      schema(%{
-        order_id: spec(is_binary()),
-        transaction_amount_money: spec(SquareUp.Schema.money())
-      })
-      |> selection([])
-    )
+  def calculate_loyalty_points_request do
+    schema(%{
+      order_id: spec(is_binary()),
+      transaction_amount_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0)
+    })
+    |> selection([])
   end
 
   @type processing_fee :: %{
@@ -1845,16 +1544,13 @@ defmodule SquareUp.Schema do
           type: binary()
         }
 
-  def processing_fee(data) do
-    valid?(
-      data,
-      schema(%{
-        amount_money: spec(SquareUp.Schema.money()),
-        effective_at: spec(is_binary()),
-        type: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def processing_fee do
+    schema(%{
+      amount_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      effective_at: spec(is_binary()),
+      type: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type create_customer_card_request :: %{
@@ -1864,31 +1560,25 @@ defmodule SquareUp.Schema do
           verification_token: binary()
         }
 
-  def create_customer_card_request(data) do
-    valid?(
-      data,
-      schema(%{
-        billing_address: spec(SquareUp.Schema.address()),
-        card_nonce: spec(is_binary()),
-        cardholder_name: spec(is_binary()),
-        verification_token: spec(is_binary())
-      })
-      |> selection([:card_nonce])
-    )
+  def create_customer_card_request do
+    schema(%{
+      billing_address: Norm.Delegate.delegate(&SquareUp.Schema.address/0),
+      card_nonce: spec(is_binary()),
+      cardholder_name: spec(is_binary()),
+      verification_token: spec(is_binary())
+    })
+    |> selection([:card_nonce])
   end
 
   @type filter_value :: %{all: [binary()], any: [binary()], none: [binary()]}
 
-  def filter_value(data) do
-    valid?(
-      data,
-      schema(%{
-        all: spec(coll_of(spec(is_binary()))),
-        any: spec(coll_of(spec(is_binary()))),
-        none: spec(coll_of(spec(is_binary())))
-      })
-      |> selection([])
-    )
+  def filter_value do
+    schema(%{
+      all: spec(coll_of(spec(is_binary()))),
+      any: spec(coll_of(spec(is_binary()))),
+      none: spec(coll_of(spec(is_binary())))
+    })
+    |> selection([])
   end
 
   @type retrieve_inventory_count_response :: %{
@@ -1897,26 +1587,20 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def retrieve_inventory_count_response(data) do
-    valid?(
-      data,
-      schema(%{
-        counts: spec(coll_of(spec(SquareUp.Schema.inventory_count()))),
-        cursor: spec(is_binary()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def retrieve_inventory_count_response do
+    schema(%{
+      counts: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.inventory_count/0))),
+      cursor: spec(is_binary()),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type dispute_evidence_file :: %{filename: binary(), filetype: binary()}
 
-  def dispute_evidence_file(data) do
-    valid?(
-      data,
-      schema(%{filename: spec(is_binary()), filetype: spec(is_binary())})
-      |> selection([])
-    )
+  def dispute_evidence_file do
+    schema(%{filename: spec(is_binary()), filetype: spec(is_binary())})
+    |> selection([])
   end
 
   @type loyalty_event_create_reward :: %{
@@ -1925,21 +1609,18 @@ defmodule SquareUp.Schema do
           reward_id: binary()
         }
 
-  def loyalty_event_create_reward(data) do
-    valid?(
-      data,
-      schema(%{
-        loyalty_program_id: spec(is_binary()),
-        points: spec(is_integer()),
-        reward_id: spec(is_binary())
-      })
-      |> selection([:loyalty_program_id, :points])
-    )
+  def loyalty_event_create_reward do
+    schema(%{
+      loyalty_program_id: spec(is_binary()),
+      points: spec(is_integer()),
+      reward_id: spec(is_binary())
+    })
+    |> selection([:loyalty_program_id, :points])
   end
 
   @type inventory_alert_type :: binary()
-  def inventory_alert_type(data) do
-    valid?(data, spec(is_binary()))
+  def inventory_alert_type do
+    spec(is_binary())
   end
 
   @type v1_payment_surcharge :: %{
@@ -1953,31 +1634,28 @@ defmodule SquareUp.Schema do
           type: binary()
         }
 
-  def v1_payment_surcharge(data) do
-    valid?(
-      data,
-      schema(%{
-        amount_money: spec(SquareUp.Schema.v1_money()),
-        applied_money: spec(SquareUp.Schema.v1_money()),
-        name: spec(is_binary()),
-        rate: spec(is_binary()),
-        surcharge_id: spec(is_binary()),
-        taxable: spec(is_boolean()),
-        taxes: spec(coll_of(spec(SquareUp.Schema.v1_payment_tax()))),
-        type: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def v1_payment_surcharge do
+    schema(%{
+      amount_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      applied_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      name: spec(is_binary()),
+      rate: spec(is_binary()),
+      surcharge_id: spec(is_binary()),
+      taxable: spec(is_boolean()),
+      taxes: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_payment_tax/0))),
+      type: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type v1_discount_discount_type :: binary()
-  def v1_discount_discount_type(data) do
-    valid?(data, spec(is_binary()))
+  def v1_discount_discount_type do
+    spec(is_binary())
   end
 
   @type loyalty_event_source :: binary()
-  def loyalty_event_source(data) do
-    valid?(data, spec(is_binary()))
+  def loyalty_event_source do
+    spec(is_binary())
   end
 
   @type catalog_quick_amounts_settings :: %{
@@ -1986,16 +1664,13 @@ defmodule SquareUp.Schema do
           option: binary()
         }
 
-  def catalog_quick_amounts_settings(data) do
-    valid?(
-      data,
-      schema(%{
-        amounts: spec(coll_of(spec(SquareUp.Schema.catalog_quick_amount()))),
-        eligible_for_auto_amounts: spec(is_boolean()),
-        option: spec(is_binary())
-      })
-      |> selection([:option])
-    )
+  def catalog_quick_amounts_settings do
+    schema(%{
+      amounts: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.catalog_quick_amount/0))),
+      eligible_for_auto_amounts: spec(is_boolean()),
+      option: spec(is_binary())
+    })
+    |> selection([:option])
   end
 
   @type get_terminal_checkout_response :: %{
@@ -2003,15 +1678,12 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def get_terminal_checkout_response(data) do
-    valid?(
-      data,
-      schema(%{
-        checkout: spec(SquareUp.Schema.terminal_checkout()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def get_terminal_checkout_response do
+    schema(%{
+      checkout: Norm.Delegate.delegate(&SquareUp.Schema.terminal_checkout/0),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type item_variation_location_overrides :: %{
@@ -2023,19 +1695,16 @@ defmodule SquareUp.Schema do
           track_inventory: boolean()
         }
 
-  def item_variation_location_overrides(data) do
-    valid?(
-      data,
-      schema(%{
-        inventory_alert_threshold: spec(is_integer()),
-        inventory_alert_type: spec(is_binary()),
-        location_id: spec(is_binary()),
-        price_money: spec(SquareUp.Schema.money()),
-        pricing_type: spec(is_binary()),
-        track_inventory: spec(is_boolean())
-      })
-      |> selection([])
-    )
+  def item_variation_location_overrides do
+    schema(%{
+      inventory_alert_threshold: spec(is_integer()),
+      inventory_alert_type: spec(is_binary()),
+      location_id: spec(is_binary()),
+      price_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      pricing_type: spec(is_binary()),
+      track_inventory: spec(is_boolean())
+    })
+    |> selection([])
   end
 
   @type terminal_checkout :: %{
@@ -2052,24 +1721,21 @@ defmodule SquareUp.Schema do
           updated_at: binary()
         }
 
-  def terminal_checkout(data) do
-    valid?(
-      data,
-      schema(%{
-        amount_money: spec(SquareUp.Schema.money()),
-        cancel_reason: spec(is_binary()),
-        created_at: spec(is_binary()),
-        deadline_duration: spec(is_binary()),
-        device_options: spec(SquareUp.Schema.device_checkout_options()),
-        id: spec(is_binary()),
-        note: spec(is_binary()),
-        payment_ids: spec(coll_of(spec(is_binary()))),
-        reference_id: spec(is_binary()),
-        status: spec(is_binary()),
-        updated_at: spec(is_binary())
-      })
-      |> selection([:amount_money, :device_options])
-    )
+  def terminal_checkout do
+    schema(%{
+      amount_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      cancel_reason: spec(is_binary()),
+      created_at: spec(is_binary()),
+      deadline_duration: spec(is_binary()),
+      device_options: Norm.Delegate.delegate(&SquareUp.Schema.device_checkout_options/0),
+      id: spec(is_binary()),
+      note: spec(is_binary()),
+      payment_ids: spec(coll_of(spec(is_binary()))),
+      reference_id: spec(is_binary()),
+      status: spec(is_binary()),
+      updated_at: spec(is_binary())
+    })
+    |> selection([:amount_money, :device_options])
   end
 
   @type bulk_update_team_members_response :: %{
@@ -2077,12 +1743,12 @@ defmodule SquareUp.Schema do
           team_members: map()
         }
 
-  def bulk_update_team_members_response(data) do
-    valid?(
-      data,
-      schema(%{errors: spec(coll_of(spec(SquareUp.Schema.error()))), team_members: schema(%{})})
-      |> selection([])
-    )
+  def bulk_update_team_members_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      team_members: schema(%{})
+    })
+    |> selection([])
   end
 
   @type loyalty_program :: %{
@@ -2097,51 +1763,45 @@ defmodule SquareUp.Schema do
           updated_at: binary()
         }
 
-  def loyalty_program(data) do
-    valid?(
-      data,
-      schema(%{
-        accrual_rules: spec(coll_of(spec(SquareUp.Schema.loyalty_program_accrual_rule()))),
-        created_at: spec(is_binary()),
-        expiration_policy: spec(SquareUp.Schema.loyalty_program_expiration_policy()),
-        id: spec(is_binary()),
-        location_ids: spec(coll_of(spec(is_binary()))),
-        reward_tiers: spec(coll_of(spec(SquareUp.Schema.loyalty_program_reward_tier()))),
-        status: spec(is_binary()),
-        terminology: spec(SquareUp.Schema.loyalty_program_terminology()),
-        updated_at: spec(is_binary())
-      })
-      |> selection([
-        :id,
-        :status,
-        :reward_tiers,
-        :terminology,
-        :location_ids,
-        :created_at,
-        :updated_at,
-        :accrual_rules
-      ])
-    )
+  def loyalty_program do
+    schema(%{
+      accrual_rules:
+        spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.loyalty_program_accrual_rule/0))),
+      created_at: spec(is_binary()),
+      expiration_policy:
+        Norm.Delegate.delegate(&SquareUp.Schema.loyalty_program_expiration_policy/0),
+      id: spec(is_binary()),
+      location_ids: spec(coll_of(spec(is_binary()))),
+      reward_tiers:
+        spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.loyalty_program_reward_tier/0))),
+      status: spec(is_binary()),
+      terminology: Norm.Delegate.delegate(&SquareUp.Schema.loyalty_program_terminology/0),
+      updated_at: spec(is_binary())
+    })
+    |> selection([
+      :id,
+      :status,
+      :reward_tiers,
+      :terminology,
+      :location_ids,
+      :created_at,
+      :updated_at,
+      :accrual_rules
+    ])
   end
 
   @type v1_list_orders_response :: %{items: [SquareUp.Schema.v1_order()]}
 
-  def v1_list_orders_response(data) do
-    valid?(
-      data,
-      schema(%{items: spec(coll_of(spec(SquareUp.Schema.v1_order())))})
-      |> selection([])
-    )
+  def v1_list_orders_response do
+    schema(%{items: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_order/0)))})
+    |> selection([])
   end
 
   @type loyalty_event_query :: %{filter: SquareUp.Schema.loyalty_event_filter()}
 
-  def loyalty_event_query(data) do
-    valid?(
-      data,
-      schema(%{filter: spec(SquareUp.Schema.loyalty_event_filter())})
-      |> selection([])
-    )
+  def loyalty_event_query do
+    schema(%{filter: Norm.Delegate.delegate(&SquareUp.Schema.loyalty_event_filter/0)})
+    |> selection([])
   end
 
   @type search_orders_response :: %{
@@ -2151,37 +1811,31 @@ defmodule SquareUp.Schema do
           orders: [SquareUp.Schema.order()]
         }
 
-  def search_orders_response(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        order_entries: spec(coll_of(spec(SquareUp.Schema.order_entry()))),
-        orders: spec(coll_of(spec(SquareUp.Schema.order())))
-      })
-      |> selection([])
-    )
+  def search_orders_response do
+    schema(%{
+      cursor: spec(is_binary()),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      order_entries: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.order_entry/0))),
+      orders: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.order/0)))
+    })
+    |> selection([])
   end
 
   @type shift_wage :: %{hourly_rate: SquareUp.Schema.money(), title: binary()}
 
-  def shift_wage(data) do
-    valid?(
-      data,
-      schema(%{hourly_rate: spec(SquareUp.Schema.money()), title: spec(is_binary())})
-      |> selection([])
-    )
+  def shift_wage do
+    schema(%{
+      hourly_rate: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      title: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type v1_delete_modifier_list_request :: %{}
 
-  def v1_delete_modifier_list_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def v1_delete_modifier_list_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type cash_drawer_shift_summary :: %{
@@ -2196,57 +1850,45 @@ defmodule SquareUp.Schema do
           state: binary()
         }
 
-  def cash_drawer_shift_summary(data) do
-    valid?(
-      data,
-      schema(%{
-        closed_at: spec(is_binary()),
-        closed_cash_money: spec(SquareUp.Schema.money()),
-        description: spec(is_binary()),
-        ended_at: spec(is_binary()),
-        expected_cash_money: spec(SquareUp.Schema.money()),
-        id: spec(is_binary()),
-        opened_at: spec(is_binary()),
-        opened_cash_money: spec(SquareUp.Schema.money()),
-        state: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def cash_drawer_shift_summary do
+    schema(%{
+      closed_at: spec(is_binary()),
+      closed_cash_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      description: spec(is_binary()),
+      ended_at: spec(is_binary()),
+      expected_cash_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      id: spec(is_binary()),
+      opened_at: spec(is_binary()),
+      opened_cash_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      state: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type catalog_query_text :: %{keywords: [binary()]}
 
-  def catalog_query_text(data) do
-    valid?(
-      data,
-      schema(%{keywords: spec(coll_of(spec(is_binary())))})
-      |> selection([:keywords])
-    )
+  def catalog_query_text do
+    schema(%{keywords: spec(coll_of(spec(is_binary())))})
+    |> selection([:keywords])
   end
 
   @type search_orders_source_filter :: %{source_names: [binary()]}
 
-  def search_orders_source_filter(data) do
-    valid?(
-      data,
-      schema(%{source_names: spec(coll_of(spec(is_binary())))})
-      |> selection([])
-    )
+  def search_orders_source_filter do
+    schema(%{source_names: spec(coll_of(spec(is_binary())))})
+    |> selection([])
   end
 
   @type job_assignment_pay_type :: binary()
-  def job_assignment_pay_type(data) do
-    valid?(data, spec(is_binary()))
+  def job_assignment_pay_type do
+    spec(is_binary())
   end
 
   @type loyalty_event_date_time_filter :: %{created_at: SquareUp.Schema.time_range()}
 
-  def loyalty_event_date_time_filter(data) do
-    valid?(
-      data,
-      schema(%{created_at: spec(SquareUp.Schema.time_range())})
-      |> selection([:created_at])
-    )
+  def loyalty_event_date_time_filter do
+    schema(%{created_at: Norm.Delegate.delegate(&SquareUp.Schema.time_range/0)})
+    |> selection([:created_at])
   end
 
   @type order_fulfillment_shipment_details :: %{
@@ -2267,43 +1909,37 @@ defmodule SquareUp.Schema do
           tracking_url: binary()
         }
 
-  def order_fulfillment_shipment_details(data) do
-    valid?(
-      data,
-      schema(%{
-        cancel_reason: spec(is_binary()),
-        canceled_at: spec(is_binary()),
-        carrier: spec(is_binary()),
-        expected_shipped_at: spec(is_binary()),
-        failed_at: spec(is_binary()),
-        failure_reason: spec(is_binary()),
-        in_progress_at: spec(is_binary()),
-        packaged_at: spec(is_binary()),
-        placed_at: spec(is_binary()),
-        recipient: spec(SquareUp.Schema.order_fulfillment_recipient()),
-        shipped_at: spec(is_binary()),
-        shipping_note: spec(is_binary()),
-        shipping_type: spec(is_binary()),
-        tracking_number: spec(is_binary()),
-        tracking_url: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def order_fulfillment_shipment_details do
+    schema(%{
+      cancel_reason: spec(is_binary()),
+      canceled_at: spec(is_binary()),
+      carrier: spec(is_binary()),
+      expected_shipped_at: spec(is_binary()),
+      failed_at: spec(is_binary()),
+      failure_reason: spec(is_binary()),
+      in_progress_at: spec(is_binary()),
+      packaged_at: spec(is_binary()),
+      placed_at: spec(is_binary()),
+      recipient: Norm.Delegate.delegate(&SquareUp.Schema.order_fulfillment_recipient/0),
+      shipped_at: spec(is_binary()),
+      shipping_note: spec(is_binary()),
+      shipping_type: spec(is_binary()),
+      tracking_number: spec(is_binary()),
+      tracking_url: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type register_domain_request :: %{domain_name: binary()}
 
-  def register_domain_request(data) do
-    valid?(
-      data,
-      schema(%{domain_name: spec(is_binary())})
-      |> selection([:domain_name])
-    )
+  def register_domain_request do
+    schema(%{domain_name: spec(is_binary())})
+    |> selection([:domain_name])
   end
 
   @type v1_variation_inventory_alert_type :: binary()
-  def v1_variation_inventory_alert_type(data) do
-    valid?(data, spec(is_binary()))
+  def v1_variation_inventory_alert_type do
+    spec(is_binary())
   end
 
   @type order_created :: %{
@@ -2314,18 +1950,15 @@ defmodule SquareUp.Schema do
           version: integer()
         }
 
-  def order_created(data) do
-    valid?(
-      data,
-      schema(%{
-        created_at: spec(is_binary()),
-        location_id: spec(is_binary()),
-        order_id: spec(is_binary()),
-        state: spec(is_binary()),
-        version: spec(is_integer())
-      })
-      |> selection([])
-    )
+  def order_created do
+    schema(%{
+      created_at: spec(is_binary()),
+      location_id: spec(is_binary()),
+      order_id: spec(is_binary()),
+      state: spec(is_binary()),
+      version: spec(is_integer())
+    })
+    |> selection([])
   end
 
   @type catalog_tax :: %{
@@ -2337,39 +1970,33 @@ defmodule SquareUp.Schema do
           percentage: binary()
         }
 
-  def catalog_tax(data) do
-    valid?(
-      data,
-      schema(%{
-        applies_to_custom_amounts: spec(is_boolean()),
-        calculation_phase: spec(is_binary()),
-        enabled: spec(is_boolean()),
-        inclusion_type: spec(is_binary()),
-        name: spec(is_binary()),
-        percentage: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def catalog_tax do
+    schema(%{
+      applies_to_custom_amounts: spec(is_boolean()),
+      calculation_phase: spec(is_binary()),
+      enabled: spec(is_boolean()),
+      inclusion_type: spec(is_binary()),
+      name: spec(is_binary()),
+      percentage: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type invoice_sort_field :: binary()
-  def invoice_sort_field(data) do
-    valid?(data, spec(is_binary()))
+  def invoice_sort_field do
+    spec(is_binary())
   end
 
   @type v1_order_history_entry_action :: binary()
-  def v1_order_history_entry_action(data) do
-    valid?(data, spec(is_binary()))
+  def v1_order_history_entry_action do
+    spec(is_binary())
   end
 
   @type v1_list_items_request :: %{batch_token: binary()}
 
-  def v1_list_items_request(data) do
-    valid?(
-      data,
-      schema(%{batch_token: spec(is_binary())})
-      |> selection([])
-    )
+  def v1_list_items_request do
+    schema(%{batch_token: spec(is_binary())})
+    |> selection([])
   end
 
   @type order_quantity_unit :: %{
@@ -2377,20 +2004,17 @@ defmodule SquareUp.Schema do
           precision: integer()
         }
 
-  def order_quantity_unit(data) do
-    valid?(
-      data,
-      schema(%{
-        measurement_unit: spec(SquareUp.Schema.measurement_unit()),
-        precision: spec(is_integer())
-      })
-      |> selection([])
-    )
+  def order_quantity_unit do
+    schema(%{
+      measurement_unit: Norm.Delegate.delegate(&SquareUp.Schema.measurement_unit/0),
+      precision: spec(is_integer())
+    })
+    |> selection([])
   end
 
   @type v1_update_modifier_list_request_selection_type :: binary()
-  def v1_update_modifier_list_request_selection_type(data) do
-    valid?(data, spec(is_binary()))
+  def v1_update_modifier_list_request_selection_type do
+    spec(is_binary())
   end
 
   @type create_checkout_response :: %{
@@ -2398,25 +2022,19 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def create_checkout_response(data) do
-    valid?(
-      data,
-      schema(%{
-        checkout: spec(SquareUp.Schema.checkout()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def create_checkout_response do
+    schema(%{
+      checkout: Norm.Delegate.delegate(&SquareUp.Schema.checkout/0),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type disputed_payment :: %{payment_id: binary()}
 
-  def disputed_payment(data) do
-    valid?(
-      data,
-      schema(%{payment_id: spec(is_binary())})
-      |> selection([])
-    )
+  def disputed_payment do
+    schema(%{payment_id: spec(is_binary())})
+    |> selection([])
   end
 
   @type catalog_item_modifier_list_info :: %{
@@ -2427,108 +2045,85 @@ defmodule SquareUp.Schema do
           modifier_overrides: [SquareUp.Schema.catalog_modifier_override()]
         }
 
-  def catalog_item_modifier_list_info(data) do
-    valid?(
-      data,
-      schema(%{
-        enabled: spec(is_boolean()),
-        max_selected_modifiers: spec(is_integer()),
-        min_selected_modifiers: spec(is_integer()),
-        modifier_list_id: spec(is_binary()),
-        modifier_overrides: spec(coll_of(spec(SquareUp.Schema.catalog_modifier_override())))
-      })
-      |> selection([:modifier_list_id])
-    )
+  def catalog_item_modifier_list_info do
+    schema(%{
+      enabled: spec(is_boolean()),
+      max_selected_modifiers: spec(is_integer()),
+      min_selected_modifiers: spec(is_integer()),
+      modifier_list_id: spec(is_binary()),
+      modifier_overrides:
+        spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.catalog_modifier_override/0)))
+    })
+    |> selection([:modifier_list_id])
   end
 
   @type catalog_custom_attribute_definition_type :: binary()
-  def catalog_custom_attribute_definition_type(data) do
-    valid?(data, spec(is_binary()))
+  def catalog_custom_attribute_definition_type do
+    spec(is_binary())
   end
 
   @type retrieve_inventory_adjustment_request :: %{}
 
-  def retrieve_inventory_adjustment_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def retrieve_inventory_adjustment_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type device :: %{id: binary(), name: binary()}
 
-  def device(data) do
-    valid?(
-      data,
-      schema(%{id: spec(is_binary()), name: spec(is_binary())})
-      |> selection([])
-    )
+  def device do
+    schema(%{id: spec(is_binary()), name: spec(is_binary())})
+    |> selection([])
   end
 
   @type v1_merchant_account_type :: binary()
-  def v1_merchant_account_type(data) do
-    valid?(data, spec(is_binary()))
+  def v1_merchant_account_type do
+    spec(is_binary())
   end
 
   @type measurement_unit_custom :: %{abbreviation: binary(), name: binary()}
 
-  def measurement_unit_custom(data) do
-    valid?(
-      data,
-      schema(%{abbreviation: spec(is_binary()), name: spec(is_binary())})
-      |> selection([:name, :abbreviation])
-    )
+  def measurement_unit_custom do
+    schema(%{abbreviation: spec(is_binary()), name: spec(is_binary())})
+    |> selection([:name, :abbreviation])
   end
 
   @type coordinates :: %{latitude: number(), longitude: number()}
 
-  def coordinates(data) do
-    valid?(
-      data,
-      schema(%{latitude: spec(is_number()), longitude: spec(is_number())})
-      |> selection([])
-    )
+  def coordinates do
+    schema(%{latitude: spec(is_number()), longitude: spec(is_number())})
+    |> selection([])
   end
 
   @type list_dispute_evidence_request :: %{}
 
-  def list_dispute_evidence_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def list_dispute_evidence_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type order_source :: %{name: binary()}
 
-  def order_source(data) do
-    valid?(
-      data,
-      schema(%{name: spec(is_binary())})
-      |> selection([])
-    )
+  def order_source do
+    schema(%{name: spec(is_binary())})
+    |> selection([])
   end
 
   @type measurement_unit_area :: binary()
-  def measurement_unit_area(data) do
-    valid?(data, spec(is_binary()))
+  def measurement_unit_area do
+    spec(is_binary())
   end
 
   @type list_merchants_request :: %{cursor: integer()}
 
-  def list_merchants_request(data) do
-    valid?(
-      data,
-      schema(%{cursor: spec(is_integer())})
-      |> selection([])
-    )
+  def list_merchants_request do
+    schema(%{cursor: spec(is_integer())})
+    |> selection([])
   end
 
   @type dispute_evidence_type :: binary()
-  def dispute_evidence_type(data) do
-    valid?(data, spec(is_binary()))
+  def dispute_evidence_type do
+    spec(is_binary())
   end
 
   @type v1_tender :: %{
@@ -2550,49 +2145,40 @@ defmodule SquareUp.Schema do
           type: binary()
         }
 
-  def v1_tender(data) do
-    valid?(
-      data,
-      schema(%{
-        card_brand: spec(is_binary()),
-        change_back_money: spec(SquareUp.Schema.v1_money()),
-        employee_id: spec(is_binary()),
-        entry_method: spec(is_binary()),
-        id: spec(is_binary()),
-        is_exchange: spec(is_boolean()),
-        name: spec(is_binary()),
-        pan_suffix: spec(is_binary()),
-        payment_note: spec(is_binary()),
-        receipt_url: spec(is_binary()),
-        refunded_money: spec(SquareUp.Schema.v1_money()),
-        settled_at: spec(is_binary()),
-        tendered_at: spec(is_binary()),
-        tendered_money: spec(SquareUp.Schema.v1_money()),
-        total_money: spec(SquareUp.Schema.v1_money()),
-        type: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def v1_tender do
+    schema(%{
+      card_brand: spec(is_binary()),
+      change_back_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      employee_id: spec(is_binary()),
+      entry_method: spec(is_binary()),
+      id: spec(is_binary()),
+      is_exchange: spec(is_boolean()),
+      name: spec(is_binary()),
+      pan_suffix: spec(is_binary()),
+      payment_note: spec(is_binary()),
+      receipt_url: spec(is_binary()),
+      refunded_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      settled_at: spec(is_binary()),
+      tendered_at: spec(is_binary()),
+      tendered_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      total_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      type: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type delete_customer_response :: %{errors: [SquareUp.Schema.error()]}
 
-  def delete_customer_response(data) do
-    valid?(
-      data,
-      schema(%{errors: spec(coll_of(spec(SquareUp.Schema.error())))})
-      |> selection([])
-    )
+  def delete_customer_response do
+    schema(%{errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))})
+    |> selection([])
   end
 
   @type delete_invoice_request :: %{version: integer()}
 
-  def delete_invoice_request(data) do
-    valid?(
-      data,
-      schema(%{version: spec(is_integer())})
-      |> selection([])
-    )
+  def delete_invoice_request do
+    schema(%{version: spec(is_integer())})
+    |> selection([])
   end
 
   @type v1_discount :: %{
@@ -2606,26 +2192,23 @@ defmodule SquareUp.Schema do
           v2_id: binary()
         }
 
-  def v1_discount(data) do
-    valid?(
-      data,
-      schema(%{
-        amount_money: spec(SquareUp.Schema.v1_money()),
-        color: spec(is_binary()),
-        discount_type: spec(is_binary()),
-        id: spec(is_binary()),
-        name: spec(is_binary()),
-        pin_required: spec(is_boolean()),
-        rate: spec(is_binary()),
-        v2_id: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def v1_discount do
+    schema(%{
+      amount_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      color: spec(is_binary()),
+      discount_type: spec(is_binary()),
+      id: spec(is_binary()),
+      name: spec(is_binary()),
+      pin_required: spec(is_boolean()),
+      rate: spec(is_binary()),
+      v2_id: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type v1_list_employees_request_status :: binary()
-  def v1_list_employees_request_status(data) do
-    valid?(data, spec(is_binary()))
+  def v1_list_employees_request_status do
+    spec(is_binary())
   end
 
   @type v1_list_cash_drawer_shifts_request :: %{
@@ -2634,21 +2217,14 @@ defmodule SquareUp.Schema do
           order: binary()
         }
 
-  def v1_list_cash_drawer_shifts_request(data) do
-    valid?(
-      data,
-      schema(%{
-        begin_time: spec(is_binary()),
-        end_time: spec(is_binary()),
-        order: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def v1_list_cash_drawer_shifts_request do
+    schema(%{begin_time: spec(is_binary()), end_time: spec(is_binary()), order: spec(is_binary())})
+    |> selection([])
   end
 
   @type loyalty_program_status :: binary()
-  def loyalty_program_status(data) do
-    valid?(data, spec(is_binary()))
+  def loyalty_program_status do
+    spec(is_binary())
   end
 
   @type v1_list_settlements_request :: %{
@@ -2660,29 +2236,23 @@ defmodule SquareUp.Schema do
           status: binary()
         }
 
-  def v1_list_settlements_request(data) do
-    valid?(
-      data,
-      schema(%{
-        batch_token: spec(is_binary()),
-        begin_time: spec(is_binary()),
-        end_time: spec(is_binary()),
-        limit: spec(is_integer()),
-        order: spec(is_binary()),
-        status: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def v1_list_settlements_request do
+    schema(%{
+      batch_token: spec(is_binary()),
+      begin_time: spec(is_binary()),
+      end_time: spec(is_binary()),
+      limit: spec(is_integer()),
+      order: spec(is_binary()),
+      status: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type v1_apply_fee_request :: %{}
 
-  def v1_apply_fee_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def v1_apply_fee_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type order_line_item :: %{
@@ -2705,31 +2275,30 @@ defmodule SquareUp.Schema do
           variation_total_price_money: SquareUp.Schema.money()
         }
 
-  def order_line_item(data) do
-    valid?(
-      data,
-      schema(%{
-        applied_discounts:
-          spec(coll_of(spec(SquareUp.Schema.order_line_item_applied_discount()))),
-        applied_taxes: spec(coll_of(spec(SquareUp.Schema.order_line_item_applied_tax()))),
-        base_price_money: spec(SquareUp.Schema.money()),
-        catalog_object_id: spec(is_binary()),
-        gross_sales_money: spec(SquareUp.Schema.money()),
-        metadata: schema(%{}),
-        modifiers: spec(coll_of(spec(SquareUp.Schema.order_line_item_modifier()))),
-        name: spec(is_binary()),
-        note: spec(is_binary()),
-        quantity: spec(is_binary()),
-        quantity_unit: spec(SquareUp.Schema.order_quantity_unit()),
-        total_discount_money: spec(SquareUp.Schema.money()),
-        total_money: spec(SquareUp.Schema.money()),
-        total_tax_money: spec(SquareUp.Schema.money()),
-        uid: spec(is_binary()),
-        variation_name: spec(is_binary()),
-        variation_total_price_money: spec(SquareUp.Schema.money())
-      })
-      |> selection([:quantity])
-    )
+  def order_line_item do
+    schema(%{
+      applied_discounts:
+        spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.order_line_item_applied_discount/0))),
+      applied_taxes:
+        spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.order_line_item_applied_tax/0))),
+      base_price_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      catalog_object_id: spec(is_binary()),
+      gross_sales_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      metadata: schema(%{}),
+      modifiers:
+        spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.order_line_item_modifier/0))),
+      name: spec(is_binary()),
+      note: spec(is_binary()),
+      quantity: spec(is_binary()),
+      quantity_unit: Norm.Delegate.delegate(&SquareUp.Schema.order_quantity_unit/0),
+      total_discount_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      total_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      total_tax_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      uid: spec(is_binary()),
+      variation_name: spec(is_binary()),
+      variation_total_price_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0)
+    })
+    |> selection([:quantity])
   end
 
   @type catalog_info_response :: %{
@@ -2738,44 +2307,36 @@ defmodule SquareUp.Schema do
           standard_unit_description_group: SquareUp.Schema.standard_unit_description_group()
         }
 
-  def catalog_info_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        limits: spec(SquareUp.Schema.catalog_info_response_limits()),
-        standard_unit_description_group: spec(SquareUp.Schema.standard_unit_description_group())
-      })
-      |> selection([])
-    )
+  def catalog_info_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      limits: Norm.Delegate.delegate(&SquareUp.Schema.catalog_info_response_limits/0),
+      standard_unit_description_group:
+        Norm.Delegate.delegate(&SquareUp.Schema.standard_unit_description_group/0)
+    })
+    |> selection([])
   end
 
   @type customer_inclusion_exclusion :: binary()
-  def customer_inclusion_exclusion(data) do
-    valid?(data, spec(is_binary()))
+  def customer_inclusion_exclusion do
+    spec(is_binary())
   end
 
   @type update_item_taxes_response :: %{errors: [SquareUp.Schema.error()], updated_at: binary()}
 
-  def update_item_taxes_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        updated_at: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def update_item_taxes_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      updated_at: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type v1_retrieve_timecard_request :: %{}
 
-  def v1_retrieve_timecard_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def v1_retrieve_timecard_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type charge_request :: %{
@@ -2795,37 +2356,32 @@ defmodule SquareUp.Schema do
           verification_token: binary()
         }
 
-  def charge_request(data) do
-    valid?(
-      data,
-      schema(%{
-        additional_recipients: spec(coll_of(spec(SquareUp.Schema.additional_recipient()))),
-        amount_money: spec(SquareUp.Schema.money()),
-        billing_address: spec(SquareUp.Schema.address()),
-        buyer_email_address: spec(is_binary()),
-        card_nonce: spec(is_binary()),
-        customer_card_id: spec(is_binary()),
-        customer_id: spec(is_binary()),
-        delay_capture: spec(is_boolean()),
-        idempotency_key: spec(is_binary()),
-        note: spec(is_binary()),
-        order_id: spec(is_binary()),
-        reference_id: spec(is_binary()),
-        shipping_address: spec(SquareUp.Schema.address()),
-        verification_token: spec(is_binary())
-      })
-      |> selection([:idempotency_key, :amount_money])
-    )
+  def charge_request do
+    schema(%{
+      additional_recipients:
+        spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.additional_recipient/0))),
+      amount_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      billing_address: Norm.Delegate.delegate(&SquareUp.Schema.address/0),
+      buyer_email_address: spec(is_binary()),
+      card_nonce: spec(is_binary()),
+      customer_card_id: spec(is_binary()),
+      customer_id: spec(is_binary()),
+      delay_capture: spec(is_boolean()),
+      idempotency_key: spec(is_binary()),
+      note: spec(is_binary()),
+      order_id: spec(is_binary()),
+      reference_id: spec(is_binary()),
+      shipping_address: Norm.Delegate.delegate(&SquareUp.Schema.address/0),
+      verification_token: spec(is_binary())
+    })
+    |> selection([:idempotency_key, :amount_money])
   end
 
   @type customer_sort :: %{field: binary(), order: binary()}
 
-  def customer_sort(data) do
-    valid?(
-      data,
-      schema(%{field: spec(is_binary()), order: spec(is_binary())})
-      |> selection([])
-    )
+  def customer_sort do
+    schema(%{field: spec(is_binary()), order: spec(is_binary())})
+    |> selection([])
   end
 
   @type retrieve_customer_segment_response :: %{
@@ -2833,15 +2389,12 @@ defmodule SquareUp.Schema do
           segment: SquareUp.Schema.customer_segment()
         }
 
-  def retrieve_customer_segment_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        segment: spec(SquareUp.Schema.customer_segment())
-      })
-      |> selection([])
-    )
+  def retrieve_customer_segment_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      segment: Norm.Delegate.delegate(&SquareUp.Schema.customer_segment/0)
+    })
+    |> selection([])
   end
 
   @type order_updated :: %{
@@ -2853,19 +2406,16 @@ defmodule SquareUp.Schema do
           version: integer()
         }
 
-  def order_updated(data) do
-    valid?(
-      data,
-      schema(%{
-        created_at: spec(is_binary()),
-        location_id: spec(is_binary()),
-        order_id: spec(is_binary()),
-        state: spec(is_binary()),
-        updated_at: spec(is_binary()),
-        version: spec(is_integer())
-      })
-      |> selection([])
-    )
+  def order_updated do
+    schema(%{
+      created_at: spec(is_binary()),
+      location_id: spec(is_binary()),
+      order_id: spec(is_binary()),
+      state: spec(is_binary()),
+      updated_at: spec(is_binary()),
+      version: spec(is_integer())
+    })
+    |> selection([])
   end
 
   @type loyalty_event :: %{
@@ -2884,26 +2434,24 @@ defmodule SquareUp.Schema do
           type: binary()
         }
 
-  def loyalty_event(data) do
-    valid?(
-      data,
-      schema(%{
-        accumulate_points: spec(SquareUp.Schema.loyalty_event_accumulate_points()),
-        adjust_points: spec(SquareUp.Schema.loyalty_event_adjust_points()),
-        create_reward: spec(SquareUp.Schema.loyalty_event_create_reward()),
-        created_at: spec(is_binary()),
-        delete_reward: spec(SquareUp.Schema.loyalty_event_delete_reward()),
-        expire_points: spec(SquareUp.Schema.loyalty_event_expire_points()),
-        id: spec(is_binary()),
-        location_id: spec(is_binary()),
-        loyalty_account_id: spec(is_binary()),
-        other_event: spec(SquareUp.Schema.loyalty_event_other()),
-        redeem_reward: spec(SquareUp.Schema.loyalty_event_redeem_reward()),
-        source: spec(is_binary()),
-        type: spec(is_binary())
-      })
-      |> selection([:id, :type, :created_at, :loyalty_account_id, :source])
-    )
+  def loyalty_event do
+    schema(%{
+      accumulate_points:
+        Norm.Delegate.delegate(&SquareUp.Schema.loyalty_event_accumulate_points/0),
+      adjust_points: Norm.Delegate.delegate(&SquareUp.Schema.loyalty_event_adjust_points/0),
+      create_reward: Norm.Delegate.delegate(&SquareUp.Schema.loyalty_event_create_reward/0),
+      created_at: spec(is_binary()),
+      delete_reward: Norm.Delegate.delegate(&SquareUp.Schema.loyalty_event_delete_reward/0),
+      expire_points: Norm.Delegate.delegate(&SquareUp.Schema.loyalty_event_expire_points/0),
+      id: spec(is_binary()),
+      location_id: spec(is_binary()),
+      loyalty_account_id: spec(is_binary()),
+      other_event: Norm.Delegate.delegate(&SquareUp.Schema.loyalty_event_other/0),
+      redeem_reward: Norm.Delegate.delegate(&SquareUp.Schema.loyalty_event_redeem_reward/0),
+      source: spec(is_binary()),
+      type: spec(is_binary())
+    })
+    |> selection([:id, :type, :created_at, :loyalty_account_id, :source])
   end
 
   @type v1_list_refunds_request :: %{
@@ -2914,18 +2462,15 @@ defmodule SquareUp.Schema do
           order: binary()
         }
 
-  def v1_list_refunds_request(data) do
-    valid?(
-      data,
-      schema(%{
-        batch_token: spec(is_binary()),
-        begin_time: spec(is_binary()),
-        end_time: spec(is_binary()),
-        limit: spec(is_integer()),
-        order: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def v1_list_refunds_request do
+    schema(%{
+      batch_token: spec(is_binary()),
+      begin_time: spec(is_binary()),
+      end_time: spec(is_binary()),
+      limit: spec(is_integer()),
+      order: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type inventory_physical_count :: %{
@@ -2942,24 +2487,21 @@ defmodule SquareUp.Schema do
           state: binary()
         }
 
-  def inventory_physical_count(data) do
-    valid?(
-      data,
-      schema(%{
-        catalog_object_id: spec(is_binary()),
-        catalog_object_type: spec(is_binary()),
-        created_at: spec(is_binary()),
-        employee_id: spec(is_binary()),
-        id: spec(is_binary()),
-        location_id: spec(is_binary()),
-        occurred_at: spec(is_binary()),
-        quantity: spec(is_binary()),
-        reference_id: spec(is_binary()),
-        source: spec(SquareUp.Schema.source_application()),
-        state: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def inventory_physical_count do
+    schema(%{
+      catalog_object_id: spec(is_binary()),
+      catalog_object_type: spec(is_binary()),
+      created_at: spec(is_binary()),
+      employee_id: spec(is_binary()),
+      id: spec(is_binary()),
+      location_id: spec(is_binary()),
+      occurred_at: spec(is_binary()),
+      quantity: spec(is_binary()),
+      reference_id: spec(is_binary()),
+      source: Norm.Delegate.delegate(&SquareUp.Schema.source_application/0),
+      state: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type search_subscriptions_response :: %{
@@ -2968,26 +2510,20 @@ defmodule SquareUp.Schema do
           subscriptions: [SquareUp.Schema.subscription()]
         }
 
-  def search_subscriptions_response(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        subscriptions: spec(coll_of(spec(SquareUp.Schema.subscription())))
-      })
-      |> selection([])
-    )
+  def search_subscriptions_response do
+    schema(%{
+      cursor: spec(is_binary()),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      subscriptions: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.subscription/0)))
+    })
+    |> selection([])
   end
 
   @type renew_token_request :: %{access_token: binary()}
 
-  def renew_token_request(data) do
-    valid?(
-      data,
-      schema(%{access_token: spec(is_binary())})
-      |> selection([])
-    )
+  def renew_token_request do
+    schema(%{access_token: spec(is_binary())})
+    |> selection([])
   end
 
   @type cancel_subscription_response :: %{
@@ -2995,34 +2531,28 @@ defmodule SquareUp.Schema do
           subscription: SquareUp.Schema.subscription()
         }
 
-  def cancel_subscription_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        subscription: spec(SquareUp.Schema.subscription())
-      })
-      |> selection([])
-    )
+  def cancel_subscription_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      subscription: Norm.Delegate.delegate(&SquareUp.Schema.subscription/0)
+    })
+    |> selection([])
   end
 
   @type list_customers_request :: %{cursor: binary(), sort_field: binary(), sort_order: binary()}
 
-  def list_customers_request(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        sort_field: spec(is_binary()),
-        sort_order: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def list_customers_request do
+    schema(%{
+      cursor: spec(is_binary()),
+      sort_field: spec(is_binary()),
+      sort_order: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type v1_page_cell_object_type :: binary()
-  def v1_page_cell_object_type(data) do
-    valid?(data, spec(is_binary()))
+  def v1_page_cell_object_type do
+    spec(is_binary())
   end
 
   @type get_bank_account_response :: %{
@@ -3030,15 +2560,12 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def get_bank_account_response(data) do
-    valid?(
-      data,
-      schema(%{
-        bank_account: spec(SquareUp.Schema.bank_account()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def get_bank_account_response do
+    schema(%{
+      bank_account: Norm.Delegate.delegate(&SquareUp.Schema.bank_account/0),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type loyalty_event_filter :: %{
@@ -3049,23 +2576,21 @@ defmodule SquareUp.Schema do
           type_filter: SquareUp.Schema.loyalty_event_type_filter()
         }
 
-  def loyalty_event_filter(data) do
-    valid?(
-      data,
-      schema(%{
-        date_time_filter: spec(SquareUp.Schema.loyalty_event_date_time_filter()),
-        location_filter: spec(SquareUp.Schema.loyalty_event_location_filter()),
-        loyalty_account_filter: spec(SquareUp.Schema.loyalty_event_loyalty_account_filter()),
-        order_filter: spec(SquareUp.Schema.loyalty_event_order_filter()),
-        type_filter: spec(SquareUp.Schema.loyalty_event_type_filter())
-      })
-      |> selection([])
-    )
+  def loyalty_event_filter do
+    schema(%{
+      date_time_filter: Norm.Delegate.delegate(&SquareUp.Schema.loyalty_event_date_time_filter/0),
+      location_filter: Norm.Delegate.delegate(&SquareUp.Schema.loyalty_event_location_filter/0),
+      loyalty_account_filter:
+        Norm.Delegate.delegate(&SquareUp.Schema.loyalty_event_loyalty_account_filter/0),
+      order_filter: Norm.Delegate.delegate(&SquareUp.Schema.loyalty_event_order_filter/0),
+      type_filter: Norm.Delegate.delegate(&SquareUp.Schema.loyalty_event_type_filter/0)
+    })
+    |> selection([])
   end
 
   @type v1_variation_pricing_type :: binary()
-  def v1_variation_pricing_type(data) do
-    valid?(data, spec(is_binary()))
+  def v1_variation_pricing_type do
+    spec(is_binary())
   end
 
   @type create_customer_card_response :: %{
@@ -3073,25 +2598,19 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def create_customer_card_response(data) do
-    valid?(
-      data,
-      schema(%{
-        card: spec(SquareUp.Schema.card()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def create_customer_card_response do
+    schema(%{
+      card: Norm.Delegate.delegate(&SquareUp.Schema.card/0),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type revoke_token_response :: %{success: boolean()}
 
-  def revoke_token_response(data) do
-    valid?(
-      data,
-      schema(%{success: spec(is_boolean())})
-      |> selection([])
-    )
+  def revoke_token_response do
+    schema(%{success: spec(is_boolean())})
+    |> selection([])
   end
 
   @type break :: %{
@@ -3104,30 +2623,24 @@ defmodule SquareUp.Schema do
           start_at: binary()
         }
 
-  def break(data) do
-    valid?(
-      data,
-      schema(%{
-        break_type_id: spec(is_binary()),
-        end_at: spec(is_binary()),
-        expected_duration: spec(is_binary()),
-        id: spec(is_binary()),
-        is_paid: spec(is_boolean()),
-        name: spec(is_binary()),
-        start_at: spec(is_binary())
-      })
-      |> selection([:start_at, :break_type_id, :name, :expected_duration, :is_paid])
-    )
+  def break do
+    schema(%{
+      break_type_id: spec(is_binary()),
+      end_at: spec(is_binary()),
+      expected_duration: spec(is_binary()),
+      id: spec(is_binary()),
+      is_paid: spec(is_boolean()),
+      name: spec(is_binary()),
+      start_at: spec(is_binary())
+    })
+    |> selection([:start_at, :break_type_id, :name, :expected_duration, :is_paid])
   end
 
   @type catalog_custom_attribute_definition_number_config :: %{precision: integer()}
 
-  def catalog_custom_attribute_definition_number_config(data) do
-    valid?(
-      data,
-      schema(%{precision: spec(is_integer())})
-      |> selection([])
-    )
+  def catalog_custom_attribute_definition_number_config do
+    schema(%{precision: spec(is_integer())})
+    |> selection([])
   end
 
   @type workweek_config :: %{
@@ -3139,44 +2652,35 @@ defmodule SquareUp.Schema do
           version: integer()
         }
 
-  def workweek_config(data) do
-    valid?(
-      data,
-      schema(%{
-        created_at: spec(is_binary()),
-        id: spec(is_binary()),
-        start_of_day_local_time: spec(is_binary()),
-        start_of_week: spec(is_binary()),
-        updated_at: spec(is_binary()),
-        version: spec(is_integer())
-      })
-      |> selection([:start_of_week, :start_of_day_local_time])
-    )
+  def workweek_config do
+    schema(%{
+      created_at: spec(is_binary()),
+      id: spec(is_binary()),
+      start_of_day_local_time: spec(is_binary()),
+      start_of_week: spec(is_binary()),
+      updated_at: spec(is_binary()),
+      version: spec(is_integer())
+    })
+    |> selection([:start_of_week, :start_of_day_local_time])
   end
 
   @type error :: %{category: binary(), code: binary(), detail: binary(), field: binary()}
 
-  def error(data) do
-    valid?(
-      data,
-      schema(%{
-        category: spec(is_binary()),
-        code: spec(is_binary()),
-        detail: spec(is_binary()),
-        field: spec(is_binary())
-      })
-      |> selection([:category, :code])
-    )
+  def error do
+    schema(%{
+      category: spec(is_binary()),
+      code: spec(is_binary()),
+      detail: spec(is_binary()),
+      field: spec(is_binary())
+    })
+    |> selection([:category, :code])
   end
 
   @type bulk_create_team_members_request :: %{team_members: map()}
 
-  def bulk_create_team_members_request(data) do
-    valid?(
-      data,
-      schema(%{team_members: schema(%{})})
-      |> selection([:team_members])
-    )
+  def bulk_create_team_members_request do
+    schema(%{team_members: schema(%{})})
+    |> selection([:team_members])
   end
 
   @type search_catalog_objects_request :: %{
@@ -3189,35 +2693,29 @@ defmodule SquareUp.Schema do
           query: SquareUp.Schema.catalog_query()
         }
 
-  def search_catalog_objects_request(data) do
-    valid?(
-      data,
-      schema(%{
-        begin_time: spec(is_binary()),
-        cursor: spec(is_binary()),
-        include_deleted_objects: spec(is_boolean()),
-        include_related_objects: spec(is_boolean()),
-        limit: spec(is_integer()),
-        object_types: spec(coll_of(spec(is_binary()))),
-        query: spec(SquareUp.Schema.catalog_query())
-      })
-      |> selection([])
-    )
+  def search_catalog_objects_request do
+    schema(%{
+      begin_time: spec(is_binary()),
+      cursor: spec(is_binary()),
+      include_deleted_objects: spec(is_boolean()),
+      include_related_objects: spec(is_boolean()),
+      limit: spec(is_integer()),
+      object_types: spec(coll_of(spec(is_binary()))),
+      query: Norm.Delegate.delegate(&SquareUp.Schema.catalog_query/0)
+    })
+    |> selection([])
   end
 
   @type v1_remove_fee_request :: %{}
 
-  def v1_remove_fee_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def v1_remove_fee_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type v1_settlement_entry_type :: binary()
-  def v1_settlement_entry_type(data) do
-    valid?(data, spec(is_binary()))
+  def v1_settlement_entry_type do
+    spec(is_binary())
   end
 
   @type accept_dispute_response :: %{
@@ -3225,30 +2723,24 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def accept_dispute_response(data) do
-    valid?(
-      data,
-      schema(%{
-        dispute: spec(SquareUp.Schema.dispute()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def accept_dispute_response do
+    schema(%{
+      dispute: Norm.Delegate.delegate(&SquareUp.Schema.dispute/0),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type order_fulfillment_pickup_details_schedule_type :: binary()
-  def order_fulfillment_pickup_details_schedule_type(data) do
-    valid?(data, spec(is_binary()))
+  def order_fulfillment_pickup_details_schedule_type do
+    spec(is_binary())
   end
 
   @type v1_delete_item_request :: %{}
 
-  def v1_delete_item_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def v1_delete_item_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type retrieve_merchant_response :: %{
@@ -3256,25 +2748,19 @@ defmodule SquareUp.Schema do
           merchant: SquareUp.Schema.merchant()
         }
 
-  def retrieve_merchant_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        merchant: spec(SquareUp.Schema.merchant())
-      })
-      |> selection([])
-    )
+  def retrieve_merchant_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      merchant: Norm.Delegate.delegate(&SquareUp.Schema.merchant/0)
+    })
+    |> selection([])
   end
 
   @type v1_list_timecard_events_request :: %{}
 
-  def v1_list_timecard_events_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def v1_list_timecard_events_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type v1_modifier_list :: %{
@@ -3285,23 +2771,21 @@ defmodule SquareUp.Schema do
           v2_id: binary()
         }
 
-  def v1_modifier_list(data) do
-    valid?(
-      data,
-      schema(%{
-        id: spec(is_binary()),
-        modifier_options: spec(coll_of(spec(SquareUp.Schema.v1_modifier_option()))),
-        name: spec(is_binary()),
-        selection_type: spec(is_binary()),
-        v2_id: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def v1_modifier_list do
+    schema(%{
+      id: spec(is_binary()),
+      modifier_options:
+        spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_modifier_option/0))),
+      name: spec(is_binary()),
+      selection_type: spec(is_binary()),
+      v2_id: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type loyalty_program_reward_definition_scope :: binary()
-  def loyalty_program_reward_definition_scope(data) do
-    valid?(data, spec(is_binary()))
+  def loyalty_program_reward_definition_scope do
+    spec(is_binary())
   end
 
   @type v1_timecard :: %{
@@ -3319,60 +2803,48 @@ defmodule SquareUp.Schema do
           updated_at: binary()
         }
 
-  def v1_timecard(data) do
-    valid?(
-      data,
-      schema(%{
-        clockin_location_id: spec(is_binary()),
-        clockin_time: spec(is_binary()),
-        clockout_location_id: spec(is_binary()),
-        clockout_time: spec(is_binary()),
-        created_at: spec(is_binary()),
-        deleted: spec(is_boolean()),
-        doubletime_seconds_worked: spec(is_number()),
-        employee_id: spec(is_binary()),
-        id: spec(is_binary()),
-        overtime_seconds_worked: spec(is_number()),
-        regular_seconds_worked: spec(is_number()),
-        updated_at: spec(is_binary())
-      })
-      |> selection([:employee_id])
-    )
+  def v1_timecard do
+    schema(%{
+      clockin_location_id: spec(is_binary()),
+      clockin_time: spec(is_binary()),
+      clockout_location_id: spec(is_binary()),
+      clockout_time: spec(is_binary()),
+      created_at: spec(is_binary()),
+      deleted: spec(is_boolean()),
+      doubletime_seconds_worked: spec(is_number()),
+      employee_id: spec(is_binary()),
+      id: spec(is_binary()),
+      overtime_seconds_worked: spec(is_number()),
+      regular_seconds_worked: spec(is_number()),
+      updated_at: spec(is_binary())
+    })
+    |> selection([:employee_id])
   end
 
   @type weekday :: binary()
-  def weekday(data) do
-    valid?(data, spec(is_binary()))
+  def weekday do
+    spec(is_binary())
   end
 
   @type v1_list_categories_response :: %{items: [SquareUp.Schema.v1_category()]}
 
-  def v1_list_categories_response(data) do
-    valid?(
-      data,
-      schema(%{items: spec(coll_of(spec(SquareUp.Schema.v1_category())))})
-      |> selection([])
-    )
+  def v1_list_categories_response do
+    schema(%{items: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_category/0)))})
+    |> selection([])
   end
 
   @type shift_sort :: %{field: binary(), order: binary()}
 
-  def shift_sort(data) do
-    valid?(
-      data,
-      schema(%{field: spec(is_binary()), order: spec(is_binary())})
-      |> selection([])
-    )
+  def shift_sort do
+    schema(%{field: spec(is_binary()), order: spec(is_binary())})
+    |> selection([])
   end
 
   @type terminal_checkout_query_sort :: %{sort_order: binary()}
 
-  def terminal_checkout_query_sort(data) do
-    valid?(
-      data,
-      schema(%{sort_order: spec(is_binary())})
-      |> selection([])
-    )
+  def terminal_checkout_query_sort do
+    schema(%{sort_order: spec(is_binary())})
+    |> selection([])
   end
 
   @type order_fulfillment_updated_update :: %{
@@ -3381,26 +2853,20 @@ defmodule SquareUp.Schema do
           old_state: binary()
         }
 
-  def order_fulfillment_updated_update(data) do
-    valid?(
-      data,
-      schema(%{
-        fulfillment_uid: spec(is_binary()),
-        new_state: spec(is_binary()),
-        old_state: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def order_fulfillment_updated_update do
+    schema(%{
+      fulfillment_uid: spec(is_binary()),
+      new_state: spec(is_binary()),
+      old_state: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type v1_delete_page_cell_request :: %{column: binary(), row: binary()}
 
-  def v1_delete_page_cell_request(data) do
-    valid?(
-      data,
-      schema(%{column: spec(is_binary()), row: spec(is_binary())})
-      |> selection([])
-    )
+  def v1_delete_page_cell_request do
+    schema(%{column: spec(is_binary()), row: spec(is_binary())})
+    |> selection([])
   end
 
   @type update_customer_request :: %{
@@ -3416,48 +2882,39 @@ defmodule SquareUp.Schema do
           reference_id: binary()
         }
 
-  def update_customer_request(data) do
-    valid?(
-      data,
-      schema(%{
-        address: spec(SquareUp.Schema.address()),
-        birthday: spec(is_binary()),
-        company_name: spec(is_binary()),
-        email_address: spec(is_binary()),
-        family_name: spec(is_binary()),
-        given_name: spec(is_binary()),
-        nickname: spec(is_binary()),
-        note: spec(is_binary()),
-        phone_number: spec(is_binary()),
-        reference_id: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def update_customer_request do
+    schema(%{
+      address: Norm.Delegate.delegate(&SquareUp.Schema.address/0),
+      birthday: spec(is_binary()),
+      company_name: spec(is_binary()),
+      email_address: spec(is_binary()),
+      family_name: spec(is_binary()),
+      given_name: spec(is_binary()),
+      nickname: spec(is_binary()),
+      note: spec(is_binary()),
+      phone_number: spec(is_binary()),
+      reference_id: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type catalog_object_batch :: %{objects: [SquareUp.Schema.catalog_object()]}
 
-  def catalog_object_batch(data) do
-    valid?(
-      data,
-      schema(%{objects: spec(coll_of(spec(SquareUp.Schema.catalog_object())))})
-      |> selection([:objects])
-    )
+  def catalog_object_batch do
+    schema(%{objects: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.catalog_object/0)))})
+    |> selection([:objects])
   end
 
   @type v1_create_discount_request :: %{body: SquareUp.Schema.v1_discount()}
 
-  def v1_create_discount_request(data) do
-    valid?(
-      data,
-      schema(%{body: spec(SquareUp.Schema.v1_discount())})
-      |> selection([])
-    )
+  def v1_create_discount_request do
+    schema(%{body: Norm.Delegate.delegate(&SquareUp.Schema.v1_discount/0)})
+    |> selection([])
   end
 
   @type order_state :: binary()
-  def order_state(data) do
-    valid?(data, spec(is_binary()))
+  def order_state do
+    spec(is_binary())
   end
 
   @type update_invoice_request :: %{
@@ -3466,16 +2923,13 @@ defmodule SquareUp.Schema do
           invoice: SquareUp.Schema.invoice()
         }
 
-  def update_invoice_request(data) do
-    valid?(
-      data,
-      schema(%{
-        fields_to_clear: spec(coll_of(spec(is_binary()))),
-        idempotency_key: spec(is_binary()),
-        invoice: spec(SquareUp.Schema.invoice())
-      })
-      |> selection([:invoice])
-    )
+  def update_invoice_request do
+    schema(%{
+      fields_to_clear: spec(coll_of(spec(is_binary()))),
+      idempotency_key: spec(is_binary()),
+      invoice: Norm.Delegate.delegate(&SquareUp.Schema.invoice/0)
+    })
+    |> selection([:invoice])
   end
 
   @type merchant :: %{
@@ -3488,35 +2942,29 @@ defmodule SquareUp.Schema do
           status: binary()
         }
 
-  def merchant(data) do
-    valid?(
-      data,
-      schema(%{
-        business_name: spec(is_binary()),
-        country: spec(is_binary()),
-        currency: spec(is_binary()),
-        id: spec(is_binary()),
-        language_code: spec(is_binary()),
-        main_location_id: spec(is_binary()),
-        status: spec(is_binary())
-      })
-      |> selection([:country])
-    )
+  def merchant do
+    schema(%{
+      business_name: spec(is_binary()),
+      country: spec(is_binary()),
+      currency: spec(is_binary()),
+      id: spec(is_binary()),
+      language_code: spec(is_binary()),
+      main_location_id: spec(is_binary()),
+      status: spec(is_binary())
+    })
+    |> selection([:country])
   end
 
   @type v1_create_variation_request :: %{body: SquareUp.Schema.v1_variation()}
 
-  def v1_create_variation_request(data) do
-    valid?(
-      data,
-      schema(%{body: spec(SquareUp.Schema.v1_variation())})
-      |> selection([])
-    )
+  def v1_create_variation_request do
+    schema(%{body: Norm.Delegate.delegate(&SquareUp.Schema.v1_variation/0)})
+    |> selection([])
   end
 
   @type product_type :: binary()
-  def product_type(data) do
-    valid?(data, spec(is_binary()))
+  def product_type do
+    spec(is_binary())
   end
 
   @type submit_evidence_response :: %{
@@ -3524,25 +2972,22 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def submit_evidence_response(data) do
-    valid?(
-      data,
-      schema(%{
-        dispute: spec(SquareUp.Schema.dispute()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def submit_evidence_response do
+    schema(%{
+      dispute: Norm.Delegate.delegate(&SquareUp.Schema.dispute/0),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type tender_card_details_status :: binary()
-  def tender_card_details_status(data) do
-    valid?(data, spec(is_binary()))
+  def tender_card_details_status do
+    spec(is_binary())
   end
 
   @type invoice_request_type :: binary()
-  def invoice_request_type(data) do
-    valid?(data, spec(is_binary()))
+  def invoice_request_type do
+    spec(is_binary())
   end
 
   @type order_line_item_applied_tax :: %{
@@ -3551,16 +2996,13 @@ defmodule SquareUp.Schema do
           uid: binary()
         }
 
-  def order_line_item_applied_tax(data) do
-    valid?(
-      data,
-      schema(%{
-        applied_money: spec(SquareUp.Schema.money()),
-        tax_uid: spec(is_binary()),
-        uid: spec(is_binary())
-      })
-      |> selection([:tax_uid])
-    )
+  def order_line_item_applied_tax do
+    schema(%{
+      applied_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      tax_uid: spec(is_binary()),
+      uid: spec(is_binary())
+    })
+    |> selection([:tax_uid])
   end
 
   @type order_line_item_modifier :: %{
@@ -3571,58 +3013,46 @@ defmodule SquareUp.Schema do
           uid: binary()
         }
 
-  def order_line_item_modifier(data) do
-    valid?(
-      data,
-      schema(%{
-        base_price_money: spec(SquareUp.Schema.money()),
-        catalog_object_id: spec(is_binary()),
-        name: spec(is_binary()),
-        total_price_money: spec(SquareUp.Schema.money()),
-        uid: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def order_line_item_modifier do
+    schema(%{
+      base_price_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      catalog_object_id: spec(is_binary()),
+      name: spec(is_binary()),
+      total_price_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      uid: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type v1_payment_tax_inclusion_type :: binary()
-  def v1_payment_tax_inclusion_type(data) do
-    valid?(data, spec(is_binary()))
+  def v1_payment_tax_inclusion_type do
+    spec(is_binary())
   end
 
   @type tender_bank_transfer_details :: %{status: binary()}
 
-  def tender_bank_transfer_details(data) do
-    valid?(
-      data,
-      schema(%{status: spec(is_binary())})
-      |> selection([])
-    )
+  def tender_bank_transfer_details do
+    schema(%{status: spec(is_binary())})
+    |> selection([])
   end
 
   @type v1_item_type :: binary()
-  def v1_item_type(data) do
-    valid?(data, spec(is_binary()))
+  def v1_item_type do
+    spec(is_binary())
   end
 
   @type v1_update_category_request :: %{body: SquareUp.Schema.v1_category()}
 
-  def v1_update_category_request(data) do
-    valid?(
-      data,
-      schema(%{body: spec(SquareUp.Schema.v1_category())})
-      |> selection([:body])
-    )
+  def v1_update_category_request do
+    schema(%{body: Norm.Delegate.delegate(&SquareUp.Schema.v1_category/0)})
+    |> selection([:body])
   end
 
   @type retrieve_merchant_request :: %{}
 
-  def retrieve_merchant_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def retrieve_merchant_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type create_team_member_request :: %{
@@ -3630,15 +3060,12 @@ defmodule SquareUp.Schema do
           team_member: SquareUp.Schema.team_member()
         }
 
-  def create_team_member_request(data) do
-    valid?(
-      data,
-      schema(%{
-        idempotency_key: spec(is_binary()),
-        team_member: spec(SquareUp.Schema.team_member())
-      })
-      |> selection([])
-    )
+  def create_team_member_request do
+    schema(%{
+      idempotency_key: spec(is_binary()),
+      team_member: Norm.Delegate.delegate(&SquareUp.Schema.team_member/0)
+    })
+    |> selection([])
   end
 
   @type update_workweek_config_response :: %{
@@ -3646,15 +3073,12 @@ defmodule SquareUp.Schema do
           workweek_config: SquareUp.Schema.workweek_config()
         }
 
-  def update_workweek_config_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        workweek_config: spec(SquareUp.Schema.workweek_config())
-      })
-      |> selection([])
-    )
+  def update_workweek_config_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      workweek_config: Norm.Delegate.delegate(&SquareUp.Schema.workweek_config/0)
+    })
+    |> selection([])
   end
 
   @type retrieve_loyalty_reward_response :: %{
@@ -3662,15 +3086,12 @@ defmodule SquareUp.Schema do
           reward: SquareUp.Schema.loyalty_reward()
         }
 
-  def retrieve_loyalty_reward_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        reward: spec(SquareUp.Schema.loyalty_reward())
-      })
-      |> selection([])
-    )
+  def retrieve_loyalty_reward_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      reward: Norm.Delegate.delegate(&SquareUp.Schema.loyalty_reward/0)
+    })
+    |> selection([])
   end
 
   @type adjust_loyalty_points_response :: %{
@@ -3678,15 +3099,12 @@ defmodule SquareUp.Schema do
           event: SquareUp.Schema.loyalty_event()
         }
 
-  def adjust_loyalty_points_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        event: spec(SquareUp.Schema.loyalty_event())
-      })
-      |> selection([])
-    )
+  def adjust_loyalty_points_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      event: Norm.Delegate.delegate(&SquareUp.Schema.loyalty_event/0)
+    })
+    |> selection([])
   end
 
   @type catalog_item :: %{
@@ -3706,28 +3124,26 @@ defmodule SquareUp.Schema do
           variations: [SquareUp.Schema.catalog_object()]
         }
 
-  def catalog_item(data) do
-    valid?(
-      data,
-      schema(%{
-        abbreviation: spec(is_binary()),
-        available_electronically: spec(is_boolean()),
-        available_for_pickup: spec(is_boolean()),
-        available_online: spec(is_boolean()),
-        category_id: spec(is_binary()),
-        description: spec(is_binary()),
-        item_options: spec(coll_of(spec(SquareUp.Schema.catalog_item_option_for_item()))),
-        label_color: spec(is_binary()),
-        modifier_list_info:
-          spec(coll_of(spec(SquareUp.Schema.catalog_item_modifier_list_info()))),
-        name: spec(is_binary()),
-        product_type: spec(is_binary()),
-        skip_modifier_screen: spec(is_boolean()),
-        tax_ids: spec(coll_of(spec(is_binary()))),
-        variations: spec(coll_of(spec(SquareUp.Schema.catalog_object())))
-      })
-      |> selection([])
-    )
+  def catalog_item do
+    schema(%{
+      abbreviation: spec(is_binary()),
+      available_electronically: spec(is_boolean()),
+      available_for_pickup: spec(is_boolean()),
+      available_online: spec(is_boolean()),
+      category_id: spec(is_binary()),
+      description: spec(is_binary()),
+      item_options:
+        spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.catalog_item_option_for_item/0))),
+      label_color: spec(is_binary()),
+      modifier_list_info:
+        spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.catalog_item_modifier_list_info/0))),
+      name: spec(is_binary()),
+      product_type: spec(is_binary()),
+      skip_modifier_screen: spec(is_boolean()),
+      tax_ids: spec(coll_of(spec(is_binary()))),
+      variations: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.catalog_object/0)))
+    })
+    |> selection([])
   end
 
   @type customer_filter :: %{
@@ -3740,20 +3156,17 @@ defmodule SquareUp.Schema do
           updated_at: SquareUp.Schema.time_range()
         }
 
-  def customer_filter(data) do
-    valid?(
-      data,
-      schema(%{
-        created_at: spec(SquareUp.Schema.time_range()),
-        creation_source: spec(SquareUp.Schema.customer_creation_source_filter()),
-        email_address: spec(SquareUp.Schema.customer_text_filter()),
-        group_ids: spec(SquareUp.Schema.filter_value()),
-        phone_number: spec(SquareUp.Schema.customer_text_filter()),
-        reference_id: spec(SquareUp.Schema.customer_text_filter()),
-        updated_at: spec(SquareUp.Schema.time_range())
-      })
-      |> selection([])
-    )
+  def customer_filter do
+    schema(%{
+      created_at: Norm.Delegate.delegate(&SquareUp.Schema.time_range/0),
+      creation_source: Norm.Delegate.delegate(&SquareUp.Schema.customer_creation_source_filter/0),
+      email_address: Norm.Delegate.delegate(&SquareUp.Schema.customer_text_filter/0),
+      group_ids: Norm.Delegate.delegate(&SquareUp.Schema.filter_value/0),
+      phone_number: Norm.Delegate.delegate(&SquareUp.Schema.customer_text_filter/0),
+      reference_id: Norm.Delegate.delegate(&SquareUp.Schema.customer_text_filter/0),
+      updated_at: Norm.Delegate.delegate(&SquareUp.Schema.time_range/0)
+    })
+    |> selection([])
   end
 
   @type batch_delete_catalog_objects_response :: %{
@@ -3762,16 +3175,13 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def batch_delete_catalog_objects_response(data) do
-    valid?(
-      data,
-      schema(%{
-        deleted_at: spec(is_binary()),
-        deleted_object_ids: spec(coll_of(spec(is_binary()))),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def batch_delete_catalog_objects_response do
+    schema(%{
+      deleted_at: spec(is_binary()),
+      deleted_object_ids: spec(coll_of(spec(is_binary()))),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type list_payment_refunds_response :: %{
@@ -3780,36 +3190,27 @@ defmodule SquareUp.Schema do
           refunds: [SquareUp.Schema.payment_refund()]
         }
 
-  def list_payment_refunds_response(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        refunds: spec(coll_of(spec(SquareUp.Schema.payment_refund())))
-      })
-      |> selection([])
-    )
+  def list_payment_refunds_response do
+    schema(%{
+      cursor: spec(is_binary()),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      refunds: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.payment_refund/0)))
+    })
+    |> selection([])
   end
 
   @type batch_retrieve_orders_request :: %{location_id: binary(), order_ids: [binary()]}
 
-  def batch_retrieve_orders_request(data) do
-    valid?(
-      data,
-      schema(%{location_id: spec(is_binary()), order_ids: spec(coll_of(spec(is_binary())))})
-      |> selection([:order_ids])
-    )
+  def batch_retrieve_orders_request do
+    schema(%{location_id: spec(is_binary()), order_ids: spec(coll_of(spec(is_binary())))})
+    |> selection([:order_ids])
   end
 
   @type retrieve_location_request :: %{}
 
-  def retrieve_location_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def retrieve_location_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type dispute :: %{
@@ -3829,55 +3230,46 @@ defmodule SquareUp.Schema do
           version: integer()
         }
 
-  def dispute(data) do
-    valid?(
-      data,
-      schema(%{
-        amount_money: spec(SquareUp.Schema.money()),
-        brand_dispute_id: spec(is_binary()),
-        card_brand: spec(is_binary()),
-        created_at: spec(is_binary()),
-        dispute_id: spec(is_binary()),
-        disputed_payment: spec(SquareUp.Schema.disputed_payment()),
-        due_at: spec(is_binary()),
-        evidence_ids: spec(coll_of(spec(is_binary()))),
-        location_id: spec(is_binary()),
-        reason: spec(is_binary()),
-        reported_date: spec(is_binary()),
-        state: spec(is_binary()),
-        updated_at: spec(is_binary()),
-        version: spec(is_integer())
-      })
-      |> selection([])
-    )
+  def dispute do
+    schema(%{
+      amount_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      brand_dispute_id: spec(is_binary()),
+      card_brand: spec(is_binary()),
+      created_at: spec(is_binary()),
+      dispute_id: spec(is_binary()),
+      disputed_payment: Norm.Delegate.delegate(&SquareUp.Schema.disputed_payment/0),
+      due_at: spec(is_binary()),
+      evidence_ids: spec(coll_of(spec(is_binary()))),
+      location_id: spec(is_binary()),
+      reason: spec(is_binary()),
+      reported_date: spec(is_binary()),
+      state: spec(is_binary()),
+      updated_at: spec(is_binary()),
+      version: spec(is_integer())
+    })
+    |> selection([])
   end
 
   @type invoice_filter :: %{customer_ids: [binary()], location_ids: [binary()]}
 
-  def invoice_filter(data) do
-    valid?(
-      data,
-      schema(%{
-        customer_ids: spec(coll_of(spec(is_binary()))),
-        location_ids: spec(coll_of(spec(is_binary())))
-      })
-      |> selection([:location_ids])
-    )
+  def invoice_filter do
+    schema(%{
+      customer_ids: spec(coll_of(spec(is_binary()))),
+      location_ids: spec(coll_of(spec(is_binary())))
+    })
+    |> selection([:location_ids])
   end
 
   @type v1_employee_role_permissions :: binary()
-  def v1_employee_role_permissions(data) do
-    valid?(data, spec(is_binary()))
+  def v1_employee_role_permissions do
+    spec(is_binary())
   end
 
   @type v1_create_page_request :: %{body: SquareUp.Schema.v1_page()}
 
-  def v1_create_page_request(data) do
-    valid?(
-      data,
-      schema(%{body: spec(SquareUp.Schema.v1_page())})
-      |> selection([])
-    )
+  def v1_create_page_request do
+    schema(%{body: Norm.Delegate.delegate(&SquareUp.Schema.v1_page/0)})
+    |> selection([])
   end
 
   @type order :: %{
@@ -3912,42 +3304,41 @@ defmodule SquareUp.Schema do
           version: integer()
         }
 
-  def order(data) do
-    valid?(
-      data,
-      schema(%{
-        closed_at: spec(is_binary()),
-        created_at: spec(is_binary()),
-        customer_id: spec(is_binary()),
-        discounts: spec(coll_of(spec(SquareUp.Schema.order_line_item_discount()))),
-        fulfillments: spec(coll_of(spec(SquareUp.Schema.order_fulfillment()))),
-        id: spec(is_binary()),
-        line_items: spec(coll_of(spec(SquareUp.Schema.order_line_item()))),
-        location_id: spec(is_binary()),
-        metadata: schema(%{}),
-        net_amounts: spec(SquareUp.Schema.order_money_amounts()),
-        pricing_options: spec(SquareUp.Schema.order_pricing_options()),
-        reference_id: spec(is_binary()),
-        refunds: spec(coll_of(spec(SquareUp.Schema.refund()))),
-        return_amounts: spec(SquareUp.Schema.order_money_amounts()),
-        returns: spec(coll_of(spec(SquareUp.Schema.order_return()))),
-        rewards: spec(coll_of(spec(SquareUp.Schema.order_reward()))),
-        rounding_adjustment: spec(SquareUp.Schema.order_rounding_adjustment()),
-        service_charges: spec(coll_of(spec(SquareUp.Schema.order_service_charge()))),
-        source: spec(SquareUp.Schema.order_source()),
-        state: spec(is_binary()),
-        taxes: spec(coll_of(spec(SquareUp.Schema.order_line_item_tax()))),
-        tenders: spec(coll_of(spec(SquareUp.Schema.tender()))),
-        total_discount_money: spec(SquareUp.Schema.money()),
-        total_money: spec(SquareUp.Schema.money()),
-        total_service_charge_money: spec(SquareUp.Schema.money()),
-        total_tax_money: spec(SquareUp.Schema.money()),
-        total_tip_money: spec(SquareUp.Schema.money()),
-        updated_at: spec(is_binary()),
-        version: spec(is_integer())
-      })
-      |> selection([:location_id])
-    )
+  def order do
+    schema(%{
+      closed_at: spec(is_binary()),
+      created_at: spec(is_binary()),
+      customer_id: spec(is_binary()),
+      discounts:
+        spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.order_line_item_discount/0))),
+      fulfillments: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.order_fulfillment/0))),
+      id: spec(is_binary()),
+      line_items: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.order_line_item/0))),
+      location_id: spec(is_binary()),
+      metadata: schema(%{}),
+      net_amounts: Norm.Delegate.delegate(&SquareUp.Schema.order_money_amounts/0),
+      pricing_options: Norm.Delegate.delegate(&SquareUp.Schema.order_pricing_options/0),
+      reference_id: spec(is_binary()),
+      refunds: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.refund/0))),
+      return_amounts: Norm.Delegate.delegate(&SquareUp.Schema.order_money_amounts/0),
+      returns: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.order_return/0))),
+      rewards: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.order_reward/0))),
+      rounding_adjustment: Norm.Delegate.delegate(&SquareUp.Schema.order_rounding_adjustment/0),
+      service_charges:
+        spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.order_service_charge/0))),
+      source: Norm.Delegate.delegate(&SquareUp.Schema.order_source/0),
+      state: spec(is_binary()),
+      taxes: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.order_line_item_tax/0))),
+      tenders: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.tender/0))),
+      total_discount_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      total_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      total_service_charge_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      total_tax_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      total_tip_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      updated_at: spec(is_binary()),
+      version: spec(is_integer())
+    })
+    |> selection([:location_id])
   end
 
   @type measurement_unit :: %{
@@ -3961,21 +3352,18 @@ defmodule SquareUp.Schema do
           weight_unit: binary()
         }
 
-  def measurement_unit(data) do
-    valid?(
-      data,
-      schema(%{
-        area_unit: spec(is_binary()),
-        custom_unit: spec(SquareUp.Schema.measurement_unit_custom()),
-        generic_unit: spec(is_binary()),
-        length_unit: spec(is_binary()),
-        time_unit: spec(is_binary()),
-        type: spec(is_binary()),
-        volume_unit: spec(is_binary()),
-        weight_unit: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def measurement_unit do
+    schema(%{
+      area_unit: spec(is_binary()),
+      custom_unit: Norm.Delegate.delegate(&SquareUp.Schema.measurement_unit_custom/0),
+      generic_unit: spec(is_binary()),
+      length_unit: spec(is_binary()),
+      time_unit: spec(is_binary()),
+      type: spec(is_binary()),
+      volume_unit: spec(is_binary()),
+      weight_unit: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type loyalty_event_adjust_points :: %{
@@ -3984,21 +3372,18 @@ defmodule SquareUp.Schema do
           reason: binary()
         }
 
-  def loyalty_event_adjust_points(data) do
-    valid?(
-      data,
-      schema(%{
-        loyalty_program_id: spec(is_binary()),
-        points: spec(is_integer()),
-        reason: spec(is_binary())
-      })
-      |> selection([:points])
-    )
+  def loyalty_event_adjust_points do
+    schema(%{
+      loyalty_program_id: spec(is_binary()),
+      points: spec(is_integer()),
+      reason: spec(is_binary())
+    })
+    |> selection([:points])
   end
 
   @type catalog_discount_modify_tax_basis :: binary()
-  def catalog_discount_modify_tax_basis(data) do
-    valid?(data, spec(is_binary()))
+  def catalog_discount_modify_tax_basis do
+    spec(is_binary())
   end
 
   @type search_team_members_request :: %{
@@ -4007,74 +3392,62 @@ defmodule SquareUp.Schema do
           query: SquareUp.Schema.search_team_members_query()
         }
 
-  def search_team_members_request(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        limit: spec(is_integer()),
-        query: spec(SquareUp.Schema.search_team_members_query())
-      })
-      |> selection([])
-    )
+  def search_team_members_request do
+    schema(%{
+      cursor: spec(is_binary()),
+      limit: spec(is_integer()),
+      query: Norm.Delegate.delegate(&SquareUp.Schema.search_team_members_query/0)
+    })
+    |> selection([])
   end
 
   @type catalog_custom_attribute_definition_app_visibility :: binary()
-  def catalog_custom_attribute_definition_app_visibility(data) do
-    valid?(data, spec(is_binary()))
+  def catalog_custom_attribute_definition_app_visibility do
+    spec(is_binary())
   end
 
   @type list_loyalty_programs_request :: %{}
 
-  def list_loyalty_programs_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def list_loyalty_programs_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type loyalty_event_type :: binary()
-  def loyalty_event_type(data) do
-    valid?(data, spec(is_binary()))
+  def loyalty_event_type do
+    spec(is_binary())
   end
 
   @type update_shift_request :: %{shift: SquareUp.Schema.shift()}
 
-  def update_shift_request(data) do
-    valid?(
-      data,
-      schema(%{shift: spec(SquareUp.Schema.shift())})
-      |> selection([:shift])
-    )
+  def update_shift_request do
+    schema(%{shift: Norm.Delegate.delegate(&SquareUp.Schema.shift/0)})
+    |> selection([:shift])
   end
 
   @type catalog_item_product_type :: binary()
-  def catalog_item_product_type(data) do
-    valid?(data, spec(is_binary()))
+  def catalog_item_product_type do
+    spec(is_binary())
   end
 
   @type catalog_quick_amount_type :: binary()
-  def catalog_quick_amount_type(data) do
-    valid?(data, spec(is_binary()))
+  def catalog_quick_amount_type do
+    spec(is_binary())
   end
 
   @type pay_order_response :: %{errors: [SquareUp.Schema.error()], order: SquareUp.Schema.order()}
 
-  def pay_order_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        order: spec(SquareUp.Schema.order())
-      })
-      |> selection([])
-    )
+  def pay_order_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      order: Norm.Delegate.delegate(&SquareUp.Schema.order/0)
+    })
+    |> selection([])
   end
 
   @type team_member_assigned_locations_assignment_type :: binary()
-  def team_member_assigned_locations_assignment_type(data) do
-    valid?(data, spec(is_binary()))
+  def team_member_assigned_locations_assignment_type do
+    spec(is_binary())
   end
 
   @type v1_payment_item_detail :: %{
@@ -4084,17 +3457,14 @@ defmodule SquareUp.Schema do
           sku: binary()
         }
 
-  def v1_payment_item_detail(data) do
-    valid?(
-      data,
-      schema(%{
-        category_name: spec(is_binary()),
-        item_id: spec(is_binary()),
-        item_variation_id: spec(is_binary()),
-        sku: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def v1_payment_item_detail do
+    schema(%{
+      category_name: spec(is_binary()),
+      item_id: spec(is_binary()),
+      item_variation_id: spec(is_binary()),
+      sku: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type v1_item :: %{
@@ -4117,40 +3487,34 @@ defmodule SquareUp.Schema do
           visibility: binary()
         }
 
-  def v1_item(data) do
-    valid?(
-      data,
-      schema(%{
-        abbreviation: spec(is_binary()),
-        available_for_pickup: spec(is_boolean()),
-        available_online: spec(is_boolean()),
-        category: spec(SquareUp.Schema.v1_category()),
-        category_id: spec(is_binary()),
-        color: spec(is_binary()),
-        description: spec(is_binary()),
-        fees: spec(coll_of(spec(SquareUp.Schema.v1_fee()))),
-        id: spec(is_binary()),
-        master_image: spec(SquareUp.Schema.v1_item_image()),
-        modifier_lists: spec(coll_of(spec(SquareUp.Schema.v1_modifier_list()))),
-        name: spec(is_binary()),
-        taxable: spec(is_boolean()),
-        type: spec(is_binary()),
-        v2_id: spec(is_binary()),
-        variations: spec(coll_of(spec(SquareUp.Schema.v1_variation()))),
-        visibility: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def v1_item do
+    schema(%{
+      abbreviation: spec(is_binary()),
+      available_for_pickup: spec(is_boolean()),
+      available_online: spec(is_boolean()),
+      category: Norm.Delegate.delegate(&SquareUp.Schema.v1_category/0),
+      category_id: spec(is_binary()),
+      color: spec(is_binary()),
+      description: spec(is_binary()),
+      fees: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_fee/0))),
+      id: spec(is_binary()),
+      master_image: Norm.Delegate.delegate(&SquareUp.Schema.v1_item_image/0),
+      modifier_lists: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_modifier_list/0))),
+      name: spec(is_binary()),
+      taxable: spec(is_boolean()),
+      type: spec(is_binary()),
+      v2_id: spec(is_binary()),
+      variations: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_variation/0))),
+      visibility: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type update_break_type_request :: %{break_type: SquareUp.Schema.break_type()}
 
-  def update_break_type_request(data) do
-    valid?(
-      data,
-      schema(%{break_type: spec(SquareUp.Schema.break_type())})
-      |> selection([:break_type])
-    )
+  def update_break_type_request do
+    schema(%{break_type: Norm.Delegate.delegate(&SquareUp.Schema.break_type/0)})
+    |> selection([:break_type])
   end
 
   @type create_order_response :: %{
@@ -4158,30 +3522,24 @@ defmodule SquareUp.Schema do
           order: SquareUp.Schema.order()
         }
 
-  def create_order_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        order: spec(SquareUp.Schema.order())
-      })
-      |> selection([])
-    )
+  def create_order_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      order: Norm.Delegate.delegate(&SquareUp.Schema.order/0)
+    })
+    |> selection([])
   end
 
   @type v1_remove_modifier_list_request :: %{}
 
-  def v1_remove_modifier_list_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def v1_remove_modifier_list_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type v1_settlement_status :: binary()
-  def v1_settlement_status(data) do
-    valid?(data, spec(is_binary()))
+  def v1_settlement_status do
+    spec(is_binary())
   end
 
   @type search_orders_filter :: %{
@@ -4192,28 +3550,23 @@ defmodule SquareUp.Schema do
           state_filter: SquareUp.Schema.search_orders_state_filter()
         }
 
-  def search_orders_filter(data) do
-    valid?(
-      data,
-      schema(%{
-        customer_filter: spec(SquareUp.Schema.search_orders_customer_filter()),
-        date_time_filter: spec(SquareUp.Schema.search_orders_date_time_filter()),
-        fulfillment_filter: spec(SquareUp.Schema.search_orders_fulfillment_filter()),
-        source_filter: spec(SquareUp.Schema.search_orders_source_filter()),
-        state_filter: spec(SquareUp.Schema.search_orders_state_filter())
-      })
-      |> selection([])
-    )
+  def search_orders_filter do
+    schema(%{
+      customer_filter: Norm.Delegate.delegate(&SquareUp.Schema.search_orders_customer_filter/0),
+      date_time_filter: Norm.Delegate.delegate(&SquareUp.Schema.search_orders_date_time_filter/0),
+      fulfillment_filter:
+        Norm.Delegate.delegate(&SquareUp.Schema.search_orders_fulfillment_filter/0),
+      source_filter: Norm.Delegate.delegate(&SquareUp.Schema.search_orders_source_filter/0),
+      state_filter: Norm.Delegate.delegate(&SquareUp.Schema.search_orders_state_filter/0)
+    })
+    |> selection([])
   end
 
   @type delete_break_type_response :: %{errors: [SquareUp.Schema.error()]}
 
-  def delete_break_type_response(data) do
-    valid?(
-      data,
-      schema(%{errors: spec(coll_of(spec(SquareUp.Schema.error())))})
-      |> selection([])
-    )
+  def delete_break_type_response do
+    schema(%{errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))})
+    |> selection([])
   end
 
   @type order_line_item_tax :: %{
@@ -4227,46 +3580,37 @@ defmodule SquareUp.Schema do
           uid: binary()
         }
 
-  def order_line_item_tax(data) do
-    valid?(
-      data,
-      schema(%{
-        applied_money: spec(SquareUp.Schema.money()),
-        catalog_object_id: spec(is_binary()),
-        metadata: schema(%{}),
-        name: spec(is_binary()),
-        percentage: spec(is_binary()),
-        scope: spec(is_binary()),
-        type: spec(is_binary()),
-        uid: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def order_line_item_tax do
+    schema(%{
+      applied_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      catalog_object_id: spec(is_binary()),
+      metadata: schema(%{}),
+      name: spec(is_binary()),
+      percentage: spec(is_binary()),
+      scope: spec(is_binary()),
+      type: spec(is_binary()),
+      uid: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type v1_delete_discount_request :: %{}
 
-  def v1_delete_discount_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def v1_delete_discount_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type get_break_type_request :: %{}
 
-  def get_break_type_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def get_break_type_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type customer_creation_source :: binary()
-  def customer_creation_source(data) do
-    valid?(data, spec(is_binary()))
+  def customer_creation_source do
+    spec(is_binary())
   end
 
   @type checkout :: %{
@@ -4282,73 +3626,56 @@ defmodule SquareUp.Schema do
           redirect_url: binary()
         }
 
-  def checkout(data) do
-    valid?(
-      data,
-      schema(%{
-        additional_recipients: spec(coll_of(spec(SquareUp.Schema.additional_recipient()))),
-        ask_for_shipping_address: spec(is_boolean()),
-        checkout_page_url: spec(is_binary()),
-        created_at: spec(is_binary()),
-        id: spec(is_binary()),
-        merchant_support_email: spec(is_binary()),
-        order: spec(SquareUp.Schema.order()),
-        pre_populate_buyer_email: spec(is_binary()),
-        pre_populate_shipping_address: spec(SquareUp.Schema.address()),
-        redirect_url: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def checkout do
+    schema(%{
+      additional_recipients:
+        spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.additional_recipient/0))),
+      ask_for_shipping_address: spec(is_boolean()),
+      checkout_page_url: spec(is_binary()),
+      created_at: spec(is_binary()),
+      id: spec(is_binary()),
+      merchant_support_email: spec(is_binary()),
+      order: Norm.Delegate.delegate(&SquareUp.Schema.order/0),
+      pre_populate_buyer_email: spec(is_binary()),
+      pre_populate_shipping_address: Norm.Delegate.delegate(&SquareUp.Schema.address/0),
+      redirect_url: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type catalog_custom_attribute_definition_string_config :: %{enforce_uniqueness: boolean()}
 
-  def catalog_custom_attribute_definition_string_config(data) do
-    valid?(
-      data,
-      schema(%{enforce_uniqueness: spec(is_boolean())})
-      |> selection([])
-    )
+  def catalog_custom_attribute_definition_string_config do
+    schema(%{enforce_uniqueness: spec(is_boolean())})
+    |> selection([])
   end
 
   @type cancel_payment_request :: %{}
 
-  def cancel_payment_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def cancel_payment_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type v1_retrieve_order_request :: %{}
 
-  def v1_retrieve_order_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def v1_retrieve_order_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type remove_group_from_customer_request :: %{}
 
-  def remove_group_from_customer_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def remove_group_from_customer_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type retrieve_customer_request :: %{}
 
-  def retrieve_customer_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def retrieve_customer_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type update_order_request :: %{
@@ -4357,16 +3684,13 @@ defmodule SquareUp.Schema do
           order: SquareUp.Schema.order()
         }
 
-  def update_order_request(data) do
-    valid?(
-      data,
-      schema(%{
-        fields_to_clear: spec(coll_of(spec(is_binary()))),
-        idempotency_key: spec(is_binary()),
-        order: spec(SquareUp.Schema.order())
-      })
-      |> selection([])
-    )
+  def update_order_request do
+    schema(%{
+      fields_to_clear: spec(coll_of(spec(is_binary()))),
+      idempotency_key: spec(is_binary()),
+      order: Norm.Delegate.delegate(&SquareUp.Schema.order/0)
+    })
+    |> selection([])
   end
 
   @type list_locations_response :: %{
@@ -4374,52 +3698,40 @@ defmodule SquareUp.Schema do
           locations: [SquareUp.Schema.location()]
         }
 
-  def list_locations_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        locations: spec(coll_of(spec(SquareUp.Schema.location())))
-      })
-      |> selection([])
-    )
+  def list_locations_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      locations: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.location/0)))
+    })
+    |> selection([])
   end
 
   @type catalog_query_item_variations_for_item_option_values :: %{
           item_option_value_ids: [binary()]
         }
 
-  def catalog_query_item_variations_for_item_option_values(data) do
-    valid?(
-      data,
-      schema(%{item_option_value_ids: spec(coll_of(spec(is_binary())))})
-      |> selection([])
-    )
+  def catalog_query_item_variations_for_item_option_values do
+    schema(%{item_option_value_ids: spec(coll_of(spec(is_binary())))})
+    |> selection([])
   end
 
   @type v1_page_cell_placeholder_type :: binary()
-  def v1_page_cell_placeholder_type(data) do
-    valid?(data, spec(is_binary()))
+  def v1_page_cell_placeholder_type do
+    spec(is_binary())
   end
 
   @type complete_payment_request :: %{}
 
-  def complete_payment_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def complete_payment_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type cancel_subscription_request :: %{}
 
-  def cancel_subscription_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def cancel_subscription_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type batch_upsert_catalog_objects_request :: %{
@@ -4427,15 +3739,12 @@ defmodule SquareUp.Schema do
           idempotency_key: binary()
         }
 
-  def batch_upsert_catalog_objects_request(data) do
-    valid?(
-      data,
-      schema(%{
-        batches: spec(coll_of(spec(SquareUp.Schema.catalog_object_batch()))),
-        idempotency_key: spec(is_binary())
-      })
-      |> selection([:idempotency_key, :batches])
-    )
+  def batch_upsert_catalog_objects_request do
+    schema(%{
+      batches: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.catalog_object_batch/0))),
+      idempotency_key: spec(is_binary())
+    })
+    |> selection([:idempotency_key, :batches])
   end
 
   @type location :: %{
@@ -4466,38 +3775,35 @@ defmodule SquareUp.Schema do
           website_url: binary()
         }
 
-  def location(data) do
-    valid?(
-      data,
-      schema(%{
-        address: spec(SquareUp.Schema.address()),
-        business_email: spec(is_binary()),
-        business_hours: spec(SquareUp.Schema.business_hours()),
-        business_name: spec(is_binary()),
-        capabilities: spec(coll_of(spec(is_binary()))),
-        coordinates: spec(SquareUp.Schema.coordinates()),
-        country: spec(is_binary()),
-        created_at: spec(is_binary()),
-        currency: spec(is_binary()),
-        description: spec(is_binary()),
-        facebook_url: spec(is_binary()),
-        id: spec(is_binary()),
-        instagram_username: spec(is_binary()),
-        language_code: spec(is_binary()),
-        logo_url: spec(is_binary()),
-        mcc: spec(is_binary()),
-        merchant_id: spec(is_binary()),
-        name: spec(is_binary()),
-        phone_number: spec(is_binary()),
-        pos_background_url: spec(is_binary()),
-        status: spec(is_binary()),
-        timezone: spec(is_binary()),
-        twitter_username: spec(is_binary()),
-        type: spec(is_binary()),
-        website_url: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def location do
+    schema(%{
+      address: Norm.Delegate.delegate(&SquareUp.Schema.address/0),
+      business_email: spec(is_binary()),
+      business_hours: Norm.Delegate.delegate(&SquareUp.Schema.business_hours/0),
+      business_name: spec(is_binary()),
+      capabilities: spec(coll_of(spec(is_binary()))),
+      coordinates: Norm.Delegate.delegate(&SquareUp.Schema.coordinates/0),
+      country: spec(is_binary()),
+      created_at: spec(is_binary()),
+      currency: spec(is_binary()),
+      description: spec(is_binary()),
+      facebook_url: spec(is_binary()),
+      id: spec(is_binary()),
+      instagram_username: spec(is_binary()),
+      language_code: spec(is_binary()),
+      logo_url: spec(is_binary()),
+      mcc: spec(is_binary()),
+      merchant_id: spec(is_binary()),
+      name: spec(is_binary()),
+      phone_number: spec(is_binary()),
+      pos_background_url: spec(is_binary()),
+      status: spec(is_binary()),
+      timezone: spec(is_binary()),
+      twitter_username: spec(is_binary()),
+      type: spec(is_binary()),
+      website_url: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type inventory_change :: %{
@@ -4507,62 +3813,50 @@ defmodule SquareUp.Schema do
           type: binary()
         }
 
-  def inventory_change(data) do
-    valid?(
-      data,
-      schema(%{
-        adjustment: spec(SquareUp.Schema.inventory_adjustment()),
-        physical_count: spec(SquareUp.Schema.inventory_physical_count()),
-        transfer: spec(SquareUp.Schema.inventory_transfer()),
-        type: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def inventory_change do
+    schema(%{
+      adjustment: Norm.Delegate.delegate(&SquareUp.Schema.inventory_adjustment/0),
+      physical_count: Norm.Delegate.delegate(&SquareUp.Schema.inventory_physical_count/0),
+      transfer: Norm.Delegate.delegate(&SquareUp.Schema.inventory_transfer/0),
+      type: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type ecom_visibility :: binary()
-  def ecom_visibility(data) do
-    valid?(data, spec(is_binary()))
+  def ecom_visibility do
+    spec(is_binary())
   end
 
   @type loyalty_event_location_filter :: %{location_ids: [binary()]}
 
-  def loyalty_event_location_filter(data) do
-    valid?(
-      data,
-      schema(%{location_ids: spec(coll_of(spec(is_binary())))})
-      |> selection([:location_ids])
-    )
+  def loyalty_event_location_filter do
+    schema(%{location_ids: spec(coll_of(spec(is_binary())))})
+    |> selection([:location_ids])
   end
 
   @type invoice_request_method :: binary()
-  def invoice_request_method(data) do
-    valid?(data, spec(is_binary()))
+  def invoice_request_method do
+    spec(is_binary())
   end
 
   @type v1_update_order_request_action :: binary()
-  def v1_update_order_request_action(data) do
-    valid?(data, spec(is_binary()))
+  def v1_update_order_request_action do
+    spec(is_binary())
   end
 
   @type publish_invoice_request :: %{idempotency_key: binary(), version: integer()}
 
-  def publish_invoice_request(data) do
-    valid?(
-      data,
-      schema(%{idempotency_key: spec(is_binary()), version: spec(is_integer())})
-      |> selection([:version])
-    )
+  def publish_invoice_request do
+    schema(%{idempotency_key: spec(is_binary()), version: spec(is_integer())})
+    |> selection([:version])
   end
 
   @type cancel_payment_by_idempotency_key_request :: %{idempotency_key: binary()}
 
-  def cancel_payment_by_idempotency_key_request(data) do
-    valid?(
-      data,
-      schema(%{idempotency_key: spec(is_binary())})
-      |> selection([:idempotency_key])
-    )
+  def cancel_payment_by_idempotency_key_request do
+    schema(%{idempotency_key: spec(is_binary())})
+    |> selection([:idempotency_key])
   end
 
   @type search_invoices_request :: %{
@@ -4571,26 +3865,20 @@ defmodule SquareUp.Schema do
           query: SquareUp.Schema.invoice_query()
         }
 
-  def search_invoices_request(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        limit: spec(is_integer()),
-        query: spec(SquareUp.Schema.invoice_query())
-      })
-      |> selection([:query])
-    )
+  def search_invoices_request do
+    schema(%{
+      cursor: spec(is_binary()),
+      limit: spec(is_integer()),
+      query: Norm.Delegate.delegate(&SquareUp.Schema.invoice_query/0)
+    })
+    |> selection([:query])
   end
 
   @type catalog_item_option_for_item :: %{item_option_id: binary()}
 
-  def catalog_item_option_for_item(data) do
-    valid?(
-      data,
-      schema(%{item_option_id: spec(is_binary())})
-      |> selection([])
-    )
+  def catalog_item_option_for_item do
+    schema(%{item_option_id: spec(is_binary())})
+    |> selection([])
   end
 
   @type invoice_query :: %{
@@ -4598,15 +3886,12 @@ defmodule SquareUp.Schema do
           sort: SquareUp.Schema.invoice_sort()
         }
 
-  def invoice_query(data) do
-    valid?(
-      data,
-      schema(%{
-        filter: spec(SquareUp.Schema.invoice_filter()),
-        sort: spec(SquareUp.Schema.invoice_sort())
-      })
-      |> selection([:filter])
-    )
+  def invoice_query do
+    schema(%{
+      filter: Norm.Delegate.delegate(&SquareUp.Schema.invoice_filter/0),
+      sort: Norm.Delegate.delegate(&SquareUp.Schema.invoice_sort/0)
+    })
+    |> selection([:filter])
   end
 
   @type catalog_item_variation :: %{
@@ -4627,30 +3912,35 @@ defmodule SquareUp.Schema do
           user_data: binary()
         }
 
-  def catalog_item_variation(data) do
-    valid?(
-      data,
-      schema(%{
-        inventory_alert_threshold: spec(is_integer()),
-        inventory_alert_type: spec(is_binary()),
-        item_id: spec(is_binary()),
-        item_option_values:
-          spec(coll_of(spec(SquareUp.Schema.catalog_item_option_value_for_item_variation()))),
-        location_overrides:
-          spec(coll_of(spec(SquareUp.Schema.item_variation_location_overrides()))),
-        measurement_unit_id: spec(is_binary()),
-        name: spec(is_binary()),
-        ordinal: spec(is_integer()),
-        price_money: spec(SquareUp.Schema.money()),
-        pricing_type: spec(is_binary()),
-        service_duration: spec(is_integer()),
-        sku: spec(is_binary()),
-        track_inventory: spec(is_boolean()),
-        upc: spec(is_binary()),
-        user_data: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def catalog_item_variation do
+    schema(%{
+      inventory_alert_threshold: spec(is_integer()),
+      inventory_alert_type: spec(is_binary()),
+      item_id: spec(is_binary()),
+      item_option_values:
+        spec(
+          coll_of(
+            Norm.Delegate.delegate(
+              &SquareUp.Schema.catalog_item_option_value_for_item_variation/0
+            )
+          )
+        ),
+      location_overrides:
+        spec(
+          coll_of(Norm.Delegate.delegate(&SquareUp.Schema.item_variation_location_overrides/0))
+        ),
+      measurement_unit_id: spec(is_binary()),
+      name: spec(is_binary()),
+      ordinal: spec(is_integer()),
+      price_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      pricing_type: spec(is_binary()),
+      service_duration: spec(is_integer()),
+      sku: spec(is_binary()),
+      track_inventory: spec(is_boolean()),
+      upc: spec(is_binary()),
+      user_data: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type upsert_catalog_object_request :: %{
@@ -4658,12 +3948,12 @@ defmodule SquareUp.Schema do
           object: SquareUp.Schema.catalog_object()
         }
 
-  def upsert_catalog_object_request(data) do
-    valid?(
-      data,
-      schema(%{idempotency_key: spec(is_binary()), object: spec(SquareUp.Schema.catalog_object())})
-      |> selection([:idempotency_key, :object])
-    )
+  def upsert_catalog_object_request do
+    schema(%{
+      idempotency_key: spec(is_binary()),
+      object: Norm.Delegate.delegate(&SquareUp.Schema.catalog_object/0)
+    })
+    |> selection([:idempotency_key, :object])
   end
 
   @type break_type :: %{
@@ -4677,31 +3967,25 @@ defmodule SquareUp.Schema do
           version: integer()
         }
 
-  def break_type(data) do
-    valid?(
-      data,
-      schema(%{
-        break_name: spec(is_binary()),
-        created_at: spec(is_binary()),
-        expected_duration: spec(is_binary()),
-        id: spec(is_binary()),
-        is_paid: spec(is_boolean()),
-        location_id: spec(is_binary()),
-        updated_at: spec(is_binary()),
-        version: spec(is_integer())
-      })
-      |> selection([:location_id, :break_name, :expected_duration, :is_paid])
-    )
+  def break_type do
+    schema(%{
+      break_name: spec(is_binary()),
+      created_at: spec(is_binary()),
+      expected_duration: spec(is_binary()),
+      id: spec(is_binary()),
+      is_paid: spec(is_boolean()),
+      location_id: spec(is_binary()),
+      updated_at: spec(is_binary()),
+      version: spec(is_integer())
+    })
+    |> selection([:location_id, :break_name, :expected_duration, :is_paid])
   end
 
   @type v1_delete_fee_request :: %{}
 
-  def v1_delete_fee_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def v1_delete_fee_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type create_terminal_checkout_response :: %{
@@ -4709,25 +3993,19 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def create_terminal_checkout_response(data) do
-    valid?(
-      data,
-      schema(%{
-        checkout: spec(SquareUp.Schema.terminal_checkout()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def create_terminal_checkout_response do
+    schema(%{
+      checkout: Norm.Delegate.delegate(&SquareUp.Schema.terminal_checkout/0),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type capture_transaction_request :: %{}
 
-  def capture_transaction_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def capture_transaction_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type subscription_event :: %{
@@ -4737,22 +4015,19 @@ defmodule SquareUp.Schema do
           subscription_event_type: binary()
         }
 
-  def subscription_event(data) do
-    valid?(
-      data,
-      schema(%{
-        effective_date: spec(is_binary()),
-        id: spec(is_binary()),
-        plan_id: spec(is_binary()),
-        subscription_event_type: spec(is_binary())
-      })
-      |> selection([:id, :subscription_event_type, :effective_date, :plan_id])
-    )
+  def subscription_event do
+    schema(%{
+      effective_date: spec(is_binary()),
+      id: spec(is_binary()),
+      plan_id: spec(is_binary()),
+      subscription_event_type: spec(is_binary())
+    })
+    |> selection([:id, :subscription_event_type, :effective_date, :plan_id])
   end
 
   @type v1_bank_account_type :: binary()
-  def v1_bank_account_type(data) do
-    valid?(data, spec(is_binary()))
+  def v1_bank_account_type do
+    spec(is_binary())
   end
 
   @type catalog_info_response_limits :: %{
@@ -4769,24 +4044,21 @@ defmodule SquareUp.Schema do
           update_item_taxes_max_taxes_to_enable: integer()
         }
 
-  def catalog_info_response_limits(data) do
-    valid?(
-      data,
-      schema(%{
-        batch_delete_max_object_ids: spec(is_integer()),
-        batch_retrieve_max_object_ids: spec(is_integer()),
-        batch_upsert_max_objects_per_batch: spec(is_integer()),
-        batch_upsert_max_total_objects: spec(is_integer()),
-        search_max_page_limit: spec(is_integer()),
-        update_item_modifier_lists_max_item_ids: spec(is_integer()),
-        update_item_modifier_lists_max_modifier_lists_to_disable: spec(is_integer()),
-        update_item_modifier_lists_max_modifier_lists_to_enable: spec(is_integer()),
-        update_item_taxes_max_item_ids: spec(is_integer()),
-        update_item_taxes_max_taxes_to_disable: spec(is_integer()),
-        update_item_taxes_max_taxes_to_enable: spec(is_integer())
-      })
-      |> selection([])
-    )
+  def catalog_info_response_limits do
+    schema(%{
+      batch_delete_max_object_ids: spec(is_integer()),
+      batch_retrieve_max_object_ids: spec(is_integer()),
+      batch_upsert_max_objects_per_batch: spec(is_integer()),
+      batch_upsert_max_total_objects: spec(is_integer()),
+      search_max_page_limit: spec(is_integer()),
+      update_item_modifier_lists_max_item_ids: spec(is_integer()),
+      update_item_modifier_lists_max_modifier_lists_to_disable: spec(is_integer()),
+      update_item_modifier_lists_max_modifier_lists_to_enable: spec(is_integer()),
+      update_item_taxes_max_item_ids: spec(is_integer()),
+      update_item_taxes_max_taxes_to_disable: spec(is_integer()),
+      update_item_taxes_max_taxes_to_enable: spec(is_integer())
+    })
+    |> selection([])
   end
 
   @type retrieve_dispute_evidence_response :: %{
@@ -4794,25 +4066,19 @@ defmodule SquareUp.Schema do
           evidence: SquareUp.Schema.dispute_evidence()
         }
 
-  def retrieve_dispute_evidence_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        evidence: spec(SquareUp.Schema.dispute_evidence())
-      })
-      |> selection([])
-    )
+  def retrieve_dispute_evidence_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      evidence: Norm.Delegate.delegate(&SquareUp.Schema.dispute_evidence/0)
+    })
+    |> selection([])
   end
 
   @type loyalty_program_terminology :: %{one: binary(), other: binary()}
 
-  def loyalty_program_terminology(data) do
-    valid?(
-      data,
-      schema(%{one: spec(is_binary()), other: spec(is_binary())})
-      |> selection([:one, :other])
-    )
+  def loyalty_program_terminology do
+    schema(%{one: spec(is_binary()), other: spec(is_binary())})
+    |> selection([:one, :other])
   end
 
   @type catalog_measurement_unit :: %{
@@ -4820,25 +4086,22 @@ defmodule SquareUp.Schema do
           precision: integer()
         }
 
-  def catalog_measurement_unit(data) do
-    valid?(
-      data,
-      schema(%{
-        measurement_unit: spec(SquareUp.Schema.measurement_unit()),
-        precision: spec(is_integer())
-      })
-      |> selection([])
-    )
+  def catalog_measurement_unit do
+    schema(%{
+      measurement_unit: Norm.Delegate.delegate(&SquareUp.Schema.measurement_unit/0),
+      precision: spec(is_integer())
+    })
+    |> selection([])
   end
 
   @type subscription_status :: binary()
-  def subscription_status(data) do
-    valid?(data, spec(is_binary()))
+  def subscription_status do
+    spec(is_binary())
   end
 
   @type v1_modifier_list_selection_type :: binary()
-  def v1_modifier_list_selection_type(data) do
-    valid?(data, spec(is_binary()))
+  def v1_modifier_list_selection_type do
+    spec(is_binary())
   end
 
   @type order_return_line_item :: %{
@@ -4861,41 +4124,37 @@ defmodule SquareUp.Schema do
           variation_total_price_money: SquareUp.Schema.money()
         }
 
-  def order_return_line_item(data) do
-    valid?(
-      data,
-      schema(%{
-        applied_discounts:
-          spec(coll_of(spec(SquareUp.Schema.order_line_item_applied_discount()))),
-        applied_taxes: spec(coll_of(spec(SquareUp.Schema.order_line_item_applied_tax()))),
-        base_price_money: spec(SquareUp.Schema.money()),
-        catalog_object_id: spec(is_binary()),
-        gross_return_money: spec(SquareUp.Schema.money()),
-        name: spec(is_binary()),
-        note: spec(is_binary()),
-        quantity: spec(is_binary()),
-        quantity_unit: spec(SquareUp.Schema.order_quantity_unit()),
-        return_modifiers: spec(coll_of(spec(SquareUp.Schema.order_return_line_item_modifier()))),
-        source_line_item_uid: spec(is_binary()),
-        total_discount_money: spec(SquareUp.Schema.money()),
-        total_money: spec(SquareUp.Schema.money()),
-        total_tax_money: spec(SquareUp.Schema.money()),
-        uid: spec(is_binary()),
-        variation_name: spec(is_binary()),
-        variation_total_price_money: spec(SquareUp.Schema.money())
-      })
-      |> selection([:quantity])
-    )
+  def order_return_line_item do
+    schema(%{
+      applied_discounts:
+        spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.order_line_item_applied_discount/0))),
+      applied_taxes:
+        spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.order_line_item_applied_tax/0))),
+      base_price_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      catalog_object_id: spec(is_binary()),
+      gross_return_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      name: spec(is_binary()),
+      note: spec(is_binary()),
+      quantity: spec(is_binary()),
+      quantity_unit: Norm.Delegate.delegate(&SquareUp.Schema.order_quantity_unit/0),
+      return_modifiers:
+        spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.order_return_line_item_modifier/0))),
+      source_line_item_uid: spec(is_binary()),
+      total_discount_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      total_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      total_tax_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      uid: spec(is_binary()),
+      variation_name: spec(is_binary()),
+      variation_total_price_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0)
+    })
+    |> selection([:quantity])
   end
 
   @type cancel_terminal_checkout_request :: %{}
 
-  def cancel_terminal_checkout_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def cancel_terminal_checkout_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type loyalty_program_reward_definition :: %{
@@ -4907,19 +4166,16 @@ defmodule SquareUp.Schema do
           scope: binary()
         }
 
-  def loyalty_program_reward_definition(data) do
-    valid?(
-      data,
-      schema(%{
-        catalog_object_ids: spec(coll_of(spec(is_binary()))),
-        discount_type: spec(is_binary()),
-        fixed_discount_money: spec(SquareUp.Schema.money()),
-        max_discount_money: spec(SquareUp.Schema.money()),
-        percentage_discount: spec(is_binary()),
-        scope: spec(is_binary())
-      })
-      |> selection([:scope, :discount_type])
-    )
+  def loyalty_program_reward_definition do
+    schema(%{
+      catalog_object_ids: spec(coll_of(spec(is_binary()))),
+      discount_type: spec(is_binary()),
+      fixed_discount_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      max_discount_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      percentage_discount: spec(is_binary()),
+      scope: spec(is_binary())
+    })
+    |> selection([:scope, :discount_type])
   end
 
   @type charge_request_additional_recipient :: %{
@@ -4928,56 +4184,41 @@ defmodule SquareUp.Schema do
           location_id: binary()
         }
 
-  def charge_request_additional_recipient(data) do
-    valid?(
-      data,
-      schema(%{
-        amount_money: spec(SquareUp.Schema.money()),
-        description: spec(is_binary()),
-        location_id: spec(is_binary())
-      })
-      |> selection([:location_id, :description, :amount_money])
-    )
+  def charge_request_additional_recipient do
+    schema(%{
+      amount_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      description: spec(is_binary()),
+      location_id: spec(is_binary())
+    })
+    |> selection([:location_id, :description, :amount_money])
   end
 
   @type catalog_query_items_for_modifier_list :: %{modifier_list_ids: [binary()]}
 
-  def catalog_query_items_for_modifier_list(data) do
-    valid?(
-      data,
-      schema(%{modifier_list_ids: spec(coll_of(spec(is_binary())))})
-      |> selection([:modifier_list_ids])
-    )
+  def catalog_query_items_for_modifier_list do
+    schema(%{modifier_list_ids: spec(coll_of(spec(is_binary())))})
+    |> selection([:modifier_list_ids])
   end
 
   @type v1_list_timecard_events_response :: %{items: [SquareUp.Schema.v1_timecard_event()]}
 
-  def v1_list_timecard_events_response(data) do
-    valid?(
-      data,
-      schema(%{items: spec(coll_of(spec(SquareUp.Schema.v1_timecard_event())))})
-      |> selection([])
-    )
+  def v1_list_timecard_events_response do
+    schema(%{items: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_timecard_event/0)))})
+    |> selection([])
   end
 
   @type v1_retrieve_settlement_request :: %{}
 
-  def v1_retrieve_settlement_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def v1_retrieve_settlement_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type v1_delete_timecard_request :: %{}
 
-  def v1_delete_timecard_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def v1_delete_timecard_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type list_catalog_response :: %{
@@ -4986,16 +4227,13 @@ defmodule SquareUp.Schema do
           objects: [SquareUp.Schema.catalog_object()]
         }
 
-  def list_catalog_response(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        objects: spec(coll_of(spec(SquareUp.Schema.catalog_object())))
-      })
-      |> selection([])
-    )
+  def list_catalog_response do
+    schema(%{
+      cursor: spec(is_binary()),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      objects: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.catalog_object/0)))
+    })
+    |> selection([])
   end
 
   @type list_customers_response :: %{
@@ -5004,31 +4242,25 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def list_customers_response(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        customers: spec(coll_of(spec(SquareUp.Schema.customer()))),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def list_customers_response do
+    schema(%{
+      cursor: spec(is_binary()),
+      customers: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.customer/0))),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type range :: %{max: binary(), min: binary()}
 
-  def range(data) do
-    valid?(
-      data,
-      schema(%{max: spec(is_binary()), min: spec(is_binary())})
-      |> selection([])
-    )
+  def range do
+    schema(%{max: spec(is_binary()), min: spec(is_binary())})
+    |> selection([])
   end
 
   @type shift_filter_status :: binary()
-  def shift_filter_status(data) do
-    valid?(data, spec(is_binary()))
+  def shift_filter_status do
+    spec(is_binary())
   end
 
   @type list_transactions_request :: %{
@@ -5038,17 +4270,14 @@ defmodule SquareUp.Schema do
           sort_order: binary()
         }
 
-  def list_transactions_request(data) do
-    valid?(
-      data,
-      schema(%{
-        begin_time: spec(is_binary()),
-        cursor: spec(is_binary()),
-        end_time: spec(is_binary()),
-        sort_order: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def list_transactions_request do
+    schema(%{
+      begin_time: spec(is_binary()),
+      cursor: spec(is_binary()),
+      end_time: spec(is_binary()),
+      sort_order: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type update_customer_response :: %{
@@ -5056,25 +4285,19 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def update_customer_response(data) do
-    valid?(
-      data,
-      schema(%{
-        customer: spec(SquareUp.Schema.customer()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def update_customer_response do
+    schema(%{
+      customer: Norm.Delegate.delegate(&SquareUp.Schema.customer/0),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type v1_list_fees_request :: %{}
 
-  def v1_list_fees_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def v1_list_fees_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type update_subscription_response :: %{
@@ -5082,15 +4305,12 @@ defmodule SquareUp.Schema do
           subscription: SquareUp.Schema.subscription()
         }
 
-  def update_subscription_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        subscription: spec(SquareUp.Schema.subscription())
-      })
-      |> selection([])
-    )
+  def update_subscription_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      subscription: Norm.Delegate.delegate(&SquareUp.Schema.subscription/0)
+    })
+    |> selection([])
   end
 
   @type catalog_discount :: %{
@@ -5103,30 +4323,24 @@ defmodule SquareUp.Schema do
           pin_required: boolean()
         }
 
-  def catalog_discount(data) do
-    valid?(
-      data,
-      schema(%{
-        amount_money: spec(SquareUp.Schema.money()),
-        discount_type: spec(is_binary()),
-        label_color: spec(is_binary()),
-        modify_tax_basis: spec(is_binary()),
-        name: spec(is_binary()),
-        percentage: spec(is_binary()),
-        pin_required: spec(is_boolean())
-      })
-      |> selection([])
-    )
+  def catalog_discount do
+    schema(%{
+      amount_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      discount_type: spec(is_binary()),
+      label_color: spec(is_binary()),
+      modify_tax_basis: spec(is_binary()),
+      name: spec(is_binary()),
+      percentage: spec(is_binary()),
+      pin_required: spec(is_boolean())
+    })
+    |> selection([])
   end
 
   @type v1_apply_modifier_list_request :: %{}
 
-  def v1_apply_modifier_list_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def v1_apply_modifier_list_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type retrieve_inventory_changes_response :: %{
@@ -5135,16 +4349,13 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def retrieve_inventory_changes_response(data) do
-    valid?(
-      data,
-      schema(%{
-        changes: spec(coll_of(spec(SquareUp.Schema.inventory_change()))),
-        cursor: spec(is_binary()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def retrieve_inventory_changes_response do
+    schema(%{
+      changes: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.inventory_change/0))),
+      cursor: spec(is_binary()),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type subscription :: %{
@@ -5165,28 +4376,25 @@ defmodule SquareUp.Schema do
           version: integer()
         }
 
-  def subscription(data) do
-    valid?(
-      data,
-      schema(%{
-        canceled_date: spec(is_binary()),
-        card_id: spec(is_binary()),
-        created_at: spec(is_binary()),
-        customer_id: spec(is_binary()),
-        id: spec(is_binary()),
-        invoice_ids: spec(coll_of(spec(is_binary()))),
-        location_id: spec(is_binary()),
-        paid_until_date: spec(is_binary()),
-        plan_id: spec(is_binary()),
-        price_override_money: spec(SquareUp.Schema.money()),
-        start_date: spec(is_binary()),
-        status: spec(is_binary()),
-        tax_percentage: spec(is_binary()),
-        timezone: spec(is_binary()),
-        version: spec(is_integer())
-      })
-      |> selection([])
-    )
+  def subscription do
+    schema(%{
+      canceled_date: spec(is_binary()),
+      card_id: spec(is_binary()),
+      created_at: spec(is_binary()),
+      customer_id: spec(is_binary()),
+      id: spec(is_binary()),
+      invoice_ids: spec(coll_of(spec(is_binary()))),
+      location_id: spec(is_binary()),
+      paid_until_date: spec(is_binary()),
+      plan_id: spec(is_binary()),
+      price_override_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      start_date: spec(is_binary()),
+      status: spec(is_binary()),
+      tax_percentage: spec(is_binary()),
+      timezone: spec(is_binary()),
+      version: spec(is_integer())
+    })
+    |> selection([])
   end
 
   @type get_invoice_response :: %{
@@ -5194,25 +4402,19 @@ defmodule SquareUp.Schema do
           invoice: SquareUp.Schema.invoice()
         }
 
-  def get_invoice_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        invoice: spec(SquareUp.Schema.invoice())
-      })
-      |> selection([])
-    )
+  def get_invoice_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      invoice: Norm.Delegate.delegate(&SquareUp.Schema.invoice/0)
+    })
+    |> selection([])
   end
 
   @type loyalty_event_other :: %{loyalty_program_id: binary(), points: integer()}
 
-  def loyalty_event_other(data) do
-    valid?(
-      data,
-      schema(%{loyalty_program_id: spec(is_binary()), points: spec(is_integer())})
-      |> selection([:loyalty_program_id, :points])
-    )
+  def loyalty_event_other do
+    schema(%{loyalty_program_id: spec(is_binary()), points: spec(is_integer())})
+    |> selection([:loyalty_program_id, :points])
   end
 
   @type inventory_count :: %{
@@ -5224,19 +4426,16 @@ defmodule SquareUp.Schema do
           state: binary()
         }
 
-  def inventory_count(data) do
-    valid?(
-      data,
-      schema(%{
-        calculated_at: spec(is_binary()),
-        catalog_object_id: spec(is_binary()),
-        catalog_object_type: spec(is_binary()),
-        location_id: spec(is_binary()),
-        quantity: spec(is_binary()),
-        state: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def inventory_count do
+    schema(%{
+      calculated_at: spec(is_binary()),
+      catalog_object_id: spec(is_binary()),
+      catalog_object_type: spec(is_binary()),
+      location_id: spec(is_binary()),
+      quantity: spec(is_binary()),
+      state: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type pay_order_request :: %{
@@ -5245,26 +4444,20 @@ defmodule SquareUp.Schema do
           payment_ids: [binary()]
         }
 
-  def pay_order_request(data) do
-    valid?(
-      data,
-      schema(%{
-        idempotency_key: spec(is_binary()),
-        order_version: spec(is_integer()),
-        payment_ids: spec(coll_of(spec(is_binary())))
-      })
-      |> selection([:idempotency_key])
-    )
+  def pay_order_request do
+    schema(%{
+      idempotency_key: spec(is_binary()),
+      order_version: spec(is_integer()),
+      payment_ids: spec(coll_of(spec(is_binary())))
+    })
+    |> selection([:idempotency_key])
   end
 
   @type retrieve_loyalty_account_request :: %{}
 
-  def retrieve_loyalty_account_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def retrieve_loyalty_account_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type catalog_product_set :: %{
@@ -5277,20 +4470,17 @@ defmodule SquareUp.Schema do
           quantity_min: integer()
         }
 
-  def catalog_product_set(data) do
-    valid?(
-      data,
-      schema(%{
-        all_products: spec(is_boolean()),
-        name: spec(is_binary()),
-        product_ids_all: spec(coll_of(spec(is_binary()))),
-        product_ids_any: spec(coll_of(spec(is_binary()))),
-        quantity_exact: spec(is_integer()),
-        quantity_max: spec(is_integer()),
-        quantity_min: spec(is_integer())
-      })
-      |> selection([])
-    )
+  def catalog_product_set do
+    schema(%{
+      all_products: spec(is_boolean()),
+      name: spec(is_binary()),
+      product_ids_all: spec(coll_of(spec(is_binary()))),
+      product_ids_any: spec(coll_of(spec(is_binary()))),
+      quantity_exact: spec(is_integer()),
+      quantity_max: spec(is_integer()),
+      quantity_min: spec(is_integer())
+    })
+    |> selection([])
   end
 
   @type list_device_codes_request :: %{
@@ -5299,16 +4489,13 @@ defmodule SquareUp.Schema do
           product_type: binary()
         }
 
-  def list_device_codes_request(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        location_id: spec(is_binary()),
-        product_type: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def list_device_codes_request do
+    schema(%{
+      cursor: spec(is_binary()),
+      location_id: spec(is_binary()),
+      product_type: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type shift_filter :: %{
@@ -5321,30 +4508,24 @@ defmodule SquareUp.Schema do
           workday: SquareUp.Schema.shift_workday()
         }
 
-  def shift_filter(data) do
-    valid?(
-      data,
-      schema(%{
-        employee_ids: spec(coll_of(spec(is_binary()))),
-        end: spec(SquareUp.Schema.time_range()),
-        location_ids: spec(coll_of(spec(is_binary()))),
-        start: spec(SquareUp.Schema.time_range()),
-        status: spec(is_binary()),
-        team_member_ids: spec(coll_of(spec(is_binary()))),
-        workday: spec(SquareUp.Schema.shift_workday())
-      })
-      |> selection([:location_ids, :team_member_ids])
-    )
+  def shift_filter do
+    schema(%{
+      employee_ids: spec(coll_of(spec(is_binary()))),
+      end: Norm.Delegate.delegate(&SquareUp.Schema.time_range/0),
+      location_ids: spec(coll_of(spec(is_binary()))),
+      start: Norm.Delegate.delegate(&SquareUp.Schema.time_range/0),
+      status: spec(is_binary()),
+      team_member_ids: spec(coll_of(spec(is_binary()))),
+      workday: Norm.Delegate.delegate(&SquareUp.Schema.shift_workday/0)
+    })
+    |> selection([:location_ids, :team_member_ids])
   end
 
   @type v1_create_item_request :: %{body: SquareUp.Schema.v1_item()}
 
-  def v1_create_item_request(data) do
-    valid?(
-      data,
-      schema(%{body: spec(SquareUp.Schema.v1_item())})
-      |> selection([])
-    )
+  def v1_create_item_request do
+    schema(%{body: Norm.Delegate.delegate(&SquareUp.Schema.v1_item/0)})
+    |> selection([])
   end
 
   @type list_cash_drawer_shift_events_request :: %{
@@ -5353,31 +4534,21 @@ defmodule SquareUp.Schema do
           location_id: binary()
         }
 
-  def list_cash_drawer_shift_events_request(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        limit: spec(is_integer()),
-        location_id: spec(is_binary())
-      })
-      |> selection([:location_id])
-    )
+  def list_cash_drawer_shift_events_request do
+    schema(%{cursor: spec(is_binary()), limit: spec(is_integer()), location_id: spec(is_binary())})
+    |> selection([:location_id])
   end
 
   @type inventory_state :: binary()
-  def inventory_state(data) do
-    valid?(data, spec(is_binary()))
+  def inventory_state do
+    spec(is_binary())
   end
 
   @type update_wage_setting_request :: %{wage_setting: SquareUp.Schema.wage_setting()}
 
-  def update_wage_setting_request(data) do
-    valid?(
-      data,
-      schema(%{wage_setting: spec(SquareUp.Schema.wage_setting())})
-      |> selection([:wage_setting])
-    )
+  def update_wage_setting_request do
+    schema(%{wage_setting: Norm.Delegate.delegate(&SquareUp.Schema.wage_setting/0)})
+    |> selection([:wage_setting])
   end
 
   @type order_fulfillment_pickup_details_curbside_pickup_details :: %{
@@ -5385,22 +4556,18 @@ defmodule SquareUp.Schema do
           curbside_details: binary()
         }
 
-  def order_fulfillment_pickup_details_curbside_pickup_details(data) do
-    valid?(
-      data,
-      schema(%{buyer_arrived_at: spec(is_binary()), curbside_details: spec(is_binary())})
-      |> selection([])
-    )
+  def order_fulfillment_pickup_details_curbside_pickup_details do
+    schema(%{buyer_arrived_at: spec(is_binary()), curbside_details: spec(is_binary())})
+    |> selection([])
   end
 
   @type v1_list_cash_drawer_shifts_response :: %{items: [SquareUp.Schema.v1_cash_drawer_shift()]}
 
-  def v1_list_cash_drawer_shifts_response(data) do
-    valid?(
-      data,
-      schema(%{items: spec(coll_of(spec(SquareUp.Schema.v1_cash_drawer_shift())))})
-      |> selection([])
-    )
+  def v1_list_cash_drawer_shifts_response do
+    schema(%{
+      items: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_cash_drawer_shift/0)))
+    })
+    |> selection([])
   end
 
   @type batch_upsert_catalog_objects_response :: %{
@@ -5410,17 +4577,14 @@ defmodule SquareUp.Schema do
           updated_at: binary()
         }
 
-  def batch_upsert_catalog_objects_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        id_mappings: spec(coll_of(spec(SquareUp.Schema.catalog_id_mapping()))),
-        objects: spec(coll_of(spec(SquareUp.Schema.catalog_object()))),
-        updated_at: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def batch_upsert_catalog_objects_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      id_mappings: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.catalog_id_mapping/0))),
+      objects: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.catalog_object/0))),
+      updated_at: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type create_terminal_checkout_request :: %{
@@ -5428,70 +4592,55 @@ defmodule SquareUp.Schema do
           idempotency_key: binary()
         }
 
-  def create_terminal_checkout_request(data) do
-    valid?(
-      data,
-      schema(%{
-        checkout: spec(SquareUp.Schema.terminal_checkout()),
-        idempotency_key: spec(is_binary())
-      })
-      |> selection([:idempotency_key, :checkout])
-    )
+  def create_terminal_checkout_request do
+    schema(%{
+      checkout: Norm.Delegate.delegate(&SquareUp.Schema.terminal_checkout/0),
+      idempotency_key: spec(is_binary())
+    })
+    |> selection([:idempotency_key, :checkout])
   end
 
   @type v1_list_refunds_response :: %{items: [SquareUp.Schema.v1_refund()]}
 
-  def v1_list_refunds_response(data) do
-    valid?(
-      data,
-      schema(%{items: spec(coll_of(spec(SquareUp.Schema.v1_refund())))})
-      |> selection([])
-    )
+  def v1_list_refunds_response do
+    schema(%{items: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_refund/0)))})
+    |> selection([])
   end
 
   @type tax_calculation_phase :: binary()
-  def tax_calculation_phase(data) do
-    valid?(data, spec(is_binary()))
+  def tax_calculation_phase do
+    spec(is_binary())
   end
 
   @type v1_list_locations_request :: %{}
 
-  def v1_list_locations_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def v1_list_locations_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type shift_workday_matcher :: binary()
-  def shift_workday_matcher(data) do
-    valid?(data, spec(is_binary()))
+  def shift_workday_matcher do
+    spec(is_binary())
   end
 
   @type order_updated_object :: %{order_updated: SquareUp.Schema.order_updated()}
 
-  def order_updated_object(data) do
-    valid?(
-      data,
-      schema(%{order_updated: spec(SquareUp.Schema.order_updated())})
-      |> selection([])
-    )
+  def order_updated_object do
+    schema(%{order_updated: Norm.Delegate.delegate(&SquareUp.Schema.order_updated/0)})
+    |> selection([])
   end
 
   @type v1_discount_color :: binary()
-  def v1_discount_color(data) do
-    valid?(data, spec(is_binary()))
+  def v1_discount_color do
+    spec(is_binary())
   end
 
   @type device_details :: %{device_id: binary(), device_name: binary()}
 
-  def device_details(data) do
-    valid?(
-      data,
-      schema(%{device_id: spec(is_binary()), device_name: spec(is_binary())})
-      |> selection([])
-    )
+  def device_details do
+    schema(%{device_id: spec(is_binary()), device_name: spec(is_binary())})
+    |> selection([])
   end
 
   @type loyalty_account_mapping :: %{
@@ -5501,17 +4650,14 @@ defmodule SquareUp.Schema do
           value: binary()
         }
 
-  def loyalty_account_mapping(data) do
-    valid?(
-      data,
-      schema(%{
-        created_at: spec(is_binary()),
-        id: spec(is_binary()),
-        type: spec(is_binary()),
-        value: spec(is_binary())
-      })
-      |> selection([:type, :value])
-    )
+  def loyalty_account_mapping do
+    schema(%{
+      created_at: spec(is_binary()),
+      id: spec(is_binary()),
+      type: spec(is_binary()),
+      value: spec(is_binary())
+    })
+    |> selection([:type, :value])
   end
 
   @type list_merchants_response :: %{
@@ -5520,26 +4666,23 @@ defmodule SquareUp.Schema do
           merchant: [SquareUp.Schema.merchant()]
         }
 
-  def list_merchants_response(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_integer()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        merchant: spec(coll_of(spec(SquareUp.Schema.merchant())))
-      })
-      |> selection([])
-    )
+  def list_merchants_response do
+    schema(%{
+      cursor: spec(is_integer()),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      merchant: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.merchant/0)))
+    })
+    |> selection([])
   end
 
   @type device_code_status :: binary()
-  def device_code_status(data) do
-    valid?(data, spec(is_binary()))
+  def device_code_status do
+    spec(is_binary())
   end
 
   @type order_fulfillment_type :: binary()
-  def order_fulfillment_type(data) do
-    valid?(data, spec(is_binary()))
+  def order_fulfillment_type do
+    spec(is_binary())
   end
 
   @type create_break_type_request :: %{
@@ -5547,12 +4690,12 @@ defmodule SquareUp.Schema do
           idempotency_key: binary()
         }
 
-  def create_break_type_request(data) do
-    valid?(
-      data,
-      schema(%{break_type: spec(SquareUp.Schema.break_type()), idempotency_key: spec(is_binary())})
-      |> selection([:break_type])
-    )
+  def create_break_type_request do
+    schema(%{
+      break_type: Norm.Delegate.delegate(&SquareUp.Schema.break_type/0),
+      idempotency_key: spec(is_binary())
+    })
+    |> selection([:break_type])
   end
 
   @type update_break_type_response :: %{
@@ -5560,15 +4703,12 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def update_break_type_response(data) do
-    valid?(
-      data,
-      schema(%{
-        break_type: spec(SquareUp.Schema.break_type()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def update_break_type_response do
+    schema(%{
+      break_type: Norm.Delegate.delegate(&SquareUp.Schema.break_type/0),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type order_fulfillment_recipient :: %{
@@ -5579,33 +4719,27 @@ defmodule SquareUp.Schema do
           phone_number: binary()
         }
 
-  def order_fulfillment_recipient(data) do
-    valid?(
-      data,
-      schema(%{
-        address: spec(SquareUp.Schema.address()),
-        customer_id: spec(is_binary()),
-        display_name: spec(is_binary()),
-        email_address: spec(is_binary()),
-        phone_number: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def order_fulfillment_recipient do
+    schema(%{
+      address: Norm.Delegate.delegate(&SquareUp.Schema.address/0),
+      customer_id: spec(is_binary()),
+      display_name: spec(is_binary()),
+      email_address: spec(is_binary()),
+      phone_number: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type refund_status :: binary()
-  def refund_status(data) do
-    valid?(data, spec(is_binary()))
+  def refund_status do
+    spec(is_binary())
   end
 
   @type delete_loyalty_reward_response :: %{errors: [SquareUp.Schema.error()]}
 
-  def delete_loyalty_reward_response(data) do
-    valid?(
-      data,
-      schema(%{errors: spec(coll_of(spec(SquareUp.Schema.error())))})
-      |> selection([])
-    )
+  def delete_loyalty_reward_response do
+    schema(%{errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))})
+    |> selection([])
   end
 
   @type loyalty_program_reward_tier :: %{
@@ -5616,23 +4750,20 @@ defmodule SquareUp.Schema do
           points: integer()
         }
 
-  def loyalty_program_reward_tier(data) do
-    valid?(
-      data,
-      schema(%{
-        created_at: spec(is_binary()),
-        definition: spec(SquareUp.Schema.loyalty_program_reward_definition()),
-        id: spec(is_binary()),
-        name: spec(is_binary()),
-        points: spec(is_integer())
-      })
-      |> selection([:id, :points, :name, :definition, :created_at])
-    )
+  def loyalty_program_reward_tier do
+    schema(%{
+      created_at: spec(is_binary()),
+      definition: Norm.Delegate.delegate(&SquareUp.Schema.loyalty_program_reward_definition/0),
+      id: spec(is_binary()),
+      name: spec(is_binary()),
+      points: spec(is_integer())
+    })
+    |> selection([:id, :points, :name, :definition, :created_at])
   end
 
   @type order_line_item_tax_type :: binary()
-  def order_line_item_tax_type(data) do
-    valid?(data, spec(is_binary()))
+  def order_line_item_tax_type do
+    spec(is_binary())
   end
 
   @type order_fulfillment_updated :: %{
@@ -5645,36 +4776,30 @@ defmodule SquareUp.Schema do
           version: integer()
         }
 
-  def order_fulfillment_updated(data) do
-    valid?(
-      data,
-      schema(%{
-        created_at: spec(is_binary()),
-        fulfillment_update:
-          spec(coll_of(spec(SquareUp.Schema.order_fulfillment_updated_update()))),
-        location_id: spec(is_binary()),
-        order_id: spec(is_binary()),
-        state: spec(is_binary()),
-        updated_at: spec(is_binary()),
-        version: spec(is_integer())
-      })
-      |> selection([])
-    )
+  def order_fulfillment_updated do
+    schema(%{
+      created_at: spec(is_binary()),
+      fulfillment_update:
+        spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.order_fulfillment_updated_update/0))),
+      location_id: spec(is_binary()),
+      order_id: spec(is_binary()),
+      state: spec(is_binary()),
+      updated_at: spec(is_binary()),
+      version: spec(is_integer())
+    })
+    |> selection([])
   end
 
   @type balance_payment_details :: %{account_id: binary(), status: binary()}
 
-  def balance_payment_details(data) do
-    valid?(
-      data,
-      schema(%{account_id: spec(is_binary()), status: spec(is_binary())})
-      |> selection([])
-    )
+  def balance_payment_details do
+    schema(%{account_id: spec(is_binary()), status: spec(is_binary())})
+    |> selection([])
   end
 
   @type v1_employee_status :: binary()
-  def v1_employee_status(data) do
-    valid?(data, spec(is_binary()))
+  def v1_employee_status do
+    spec(is_binary())
   end
 
   @type create_customer_group_request :: %{
@@ -5682,12 +4807,12 @@ defmodule SquareUp.Schema do
           idempotency_key: binary()
         }
 
-  def create_customer_group_request(data) do
-    valid?(
-      data,
-      schema(%{group: spec(SquareUp.Schema.customer_group()), idempotency_key: spec(is_binary())})
-      |> selection([:group])
-    )
+  def create_customer_group_request do
+    schema(%{
+      group: Norm.Delegate.delegate(&SquareUp.Schema.customer_group/0),
+      idempotency_key: spec(is_binary())
+    })
+    |> selection([:group])
   end
 
   @type catalog_query :: %{
@@ -5703,25 +4828,25 @@ defmodule SquareUp.Schema do
           text_query: SquareUp.Schema.catalog_query_text()
         }
 
-  def catalog_query(data) do
-    valid?(
-      data,
-      schema(%{
-        exact_query: spec(SquareUp.Schema.catalog_query_exact()),
-        item_variations_for_item_option_values_query:
-          spec(SquareUp.Schema.catalog_query_item_variations_for_item_option_values()),
-        items_for_item_options_query:
-          spec(SquareUp.Schema.catalog_query_items_for_item_options()),
-        items_for_modifier_list_query:
-          spec(SquareUp.Schema.catalog_query_items_for_modifier_list()),
-        items_for_tax_query: spec(SquareUp.Schema.catalog_query_items_for_tax()),
-        prefix_query: spec(SquareUp.Schema.catalog_query_prefix()),
-        range_query: spec(SquareUp.Schema.catalog_query_range()),
-        sorted_attribute_query: spec(SquareUp.Schema.catalog_query_sorted_attribute()),
-        text_query: spec(SquareUp.Schema.catalog_query_text())
-      })
-      |> selection([])
-    )
+  def catalog_query do
+    schema(%{
+      exact_query: Norm.Delegate.delegate(&SquareUp.Schema.catalog_query_exact/0),
+      item_variations_for_item_option_values_query:
+        Norm.Delegate.delegate(
+          &SquareUp.Schema.catalog_query_item_variations_for_item_option_values/0
+        ),
+      items_for_item_options_query:
+        Norm.Delegate.delegate(&SquareUp.Schema.catalog_query_items_for_item_options/0),
+      items_for_modifier_list_query:
+        Norm.Delegate.delegate(&SquareUp.Schema.catalog_query_items_for_modifier_list/0),
+      items_for_tax_query: Norm.Delegate.delegate(&SquareUp.Schema.catalog_query_items_for_tax/0),
+      prefix_query: Norm.Delegate.delegate(&SquareUp.Schema.catalog_query_prefix/0),
+      range_query: Norm.Delegate.delegate(&SquareUp.Schema.catalog_query_range/0),
+      sorted_attribute_query:
+        Norm.Delegate.delegate(&SquareUp.Schema.catalog_query_sorted_attribute/0),
+      text_query: Norm.Delegate.delegate(&SquareUp.Schema.catalog_query_text/0)
+    })
+    |> selection([])
   end
 
   @type v1_payment_modifier :: %{
@@ -5730,36 +4855,27 @@ defmodule SquareUp.Schema do
           name: binary()
         }
 
-  def v1_payment_modifier(data) do
-    valid?(
-      data,
-      schema(%{
-        applied_money: spec(SquareUp.Schema.v1_money()),
-        modifier_option_id: spec(is_binary()),
-        name: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def v1_payment_modifier do
+    schema(%{
+      applied_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      modifier_option_id: spec(is_binary()),
+      name: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type payment_options :: %{autocomplete: boolean()}
 
-  def payment_options(data) do
-    valid?(
-      data,
-      schema(%{autocomplete: spec(is_boolean())})
-      |> selection([])
-    )
+  def payment_options do
+    schema(%{autocomplete: spec(is_boolean())})
+    |> selection([])
   end
 
   @type v1_update_fee_request :: %{body: SquareUp.Schema.v1_fee()}
 
-  def v1_update_fee_request(data) do
-    valid?(
-      data,
-      schema(%{body: spec(SquareUp.Schema.v1_fee())})
-      |> selection([:body])
-    )
+  def v1_update_fee_request do
+    schema(%{body: Norm.Delegate.delegate(&SquareUp.Schema.v1_fee/0)})
+    |> selection([:body])
   end
 
   @type catalog_pricing_rule :: %{
@@ -5776,24 +4892,21 @@ defmodule SquareUp.Schema do
           valid_until_local_time: binary()
         }
 
-  def catalog_pricing_rule(data) do
-    valid?(
-      data,
-      schema(%{
-        apply_products_id: spec(is_binary()),
-        discount_id: spec(is_binary()),
-        exclude_products_id: spec(is_binary()),
-        exclude_strategy: spec(is_binary()),
-        match_products_id: spec(is_binary()),
-        name: spec(is_binary()),
-        time_period_ids: spec(coll_of(spec(is_binary()))),
-        valid_from_date: spec(is_binary()),
-        valid_from_local_time: spec(is_binary()),
-        valid_until_date: spec(is_binary()),
-        valid_until_local_time: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def catalog_pricing_rule do
+    schema(%{
+      apply_products_id: spec(is_binary()),
+      discount_id: spec(is_binary()),
+      exclude_products_id: spec(is_binary()),
+      exclude_strategy: spec(is_binary()),
+      match_products_id: spec(is_binary()),
+      name: spec(is_binary()),
+      time_period_ids: spec(coll_of(spec(is_binary()))),
+      valid_from_date: spec(is_binary()),
+      valid_from_local_time: spec(is_binary()),
+      valid_until_date: spec(is_binary()),
+      valid_until_local_time: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type search_catalog_objects_response :: %{
@@ -5804,18 +4917,15 @@ defmodule SquareUp.Schema do
           related_objects: [SquareUp.Schema.catalog_object()]
         }
 
-  def search_catalog_objects_response(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        latest_time: spec(is_binary()),
-        objects: spec(coll_of(spec(SquareUp.Schema.catalog_object()))),
-        related_objects: spec(coll_of(spec(SquareUp.Schema.catalog_object())))
-      })
-      |> selection([])
-    )
+  def search_catalog_objects_response do
+    schema(%{
+      cursor: spec(is_binary()),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      latest_time: spec(is_binary()),
+      objects: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.catalog_object/0))),
+      related_objects: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.catalog_object/0)))
+    })
+    |> selection([])
   end
 
   @type search_loyalty_accounts_request :: %{
@@ -5824,16 +4934,16 @@ defmodule SquareUp.Schema do
           query: SquareUp.Schema.search_loyalty_accounts_request_loyalty_account_query()
         }
 
-  def search_loyalty_accounts_request(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        limit: spec(is_integer()),
-        query: spec(SquareUp.Schema.search_loyalty_accounts_request_loyalty_account_query())
-      })
-      |> selection([])
-    )
+  def search_loyalty_accounts_request do
+    schema(%{
+      cursor: spec(is_binary()),
+      limit: spec(is_integer()),
+      query:
+        Norm.Delegate.delegate(
+          &SquareUp.Schema.search_loyalty_accounts_request_loyalty_account_query/0
+        )
+    })
+    |> selection([])
   end
 
   @type batch_change_inventory_response :: %{
@@ -5841,15 +4951,12 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def batch_change_inventory_response(data) do
-    valid?(
-      data,
-      schema(%{
-        counts: spec(coll_of(spec(SquareUp.Schema.inventory_count()))),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def batch_change_inventory_response do
+    schema(%{
+      counts: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.inventory_count/0))),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type search_orders_request :: %{
@@ -5860,68 +4967,56 @@ defmodule SquareUp.Schema do
           return_entries: boolean()
         }
 
-  def search_orders_request(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        limit: spec(is_integer()),
-        location_ids: spec(coll_of(spec(is_binary()))),
-        query: spec(SquareUp.Schema.search_orders_query()),
-        return_entries: spec(is_boolean())
-      })
-      |> selection([])
-    )
+  def search_orders_request do
+    schema(%{
+      cursor: spec(is_binary()),
+      limit: spec(is_integer()),
+      location_ids: spec(coll_of(spec(is_binary()))),
+      query: Norm.Delegate.delegate(&SquareUp.Schema.search_orders_query/0),
+      return_entries: spec(is_boolean())
+    })
+    |> selection([])
   end
 
   @type get_team_member_wage_request :: %{}
 
-  def get_team_member_wage_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def get_team_member_wage_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type product :: binary()
-  def product(data) do
-    valid?(data, spec(is_binary()))
+  def product do
+    spec(is_binary())
   end
 
   @type retrieve_dispute_evidence_request :: %{}
 
-  def retrieve_dispute_evidence_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def retrieve_dispute_evidence_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type search_subscriptions_query :: %{filter: SquareUp.Schema.search_subscriptions_filter()}
 
-  def search_subscriptions_query(data) do
-    valid?(
-      data,
-      schema(%{filter: spec(SquareUp.Schema.search_subscriptions_filter())})
-      |> selection([])
-    )
+  def search_subscriptions_query do
+    schema(%{filter: Norm.Delegate.delegate(&SquareUp.Schema.search_subscriptions_filter/0)})
+    |> selection([])
   end
 
   @type merchant_status :: binary()
-  def merchant_status(data) do
-    valid?(data, spec(is_binary()))
+  def merchant_status do
+    spec(is_binary())
   end
 
   @type country :: binary()
-  def country(data) do
-    valid?(data, spec(is_binary()))
+  def country do
+    spec(is_binary())
   end
 
   @type team_member_status :: binary()
-  def team_member_status(data) do
-    valid?(data, spec(is_binary()))
+  def team_member_status do
+    spec(is_binary())
   end
 
   @type create_refund_request :: %{
@@ -5931,17 +5026,14 @@ defmodule SquareUp.Schema do
           tender_id: binary()
         }
 
-  def create_refund_request(data) do
-    valid?(
-      data,
-      schema(%{
-        amount_money: spec(SquareUp.Schema.money()),
-        idempotency_key: spec(is_binary()),
-        reason: spec(is_binary()),
-        tender_id: spec(is_binary())
-      })
-      |> selection([:idempotency_key, :tender_id, :amount_money])
-    )
+  def create_refund_request do
+    schema(%{
+      amount_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      idempotency_key: spec(is_binary()),
+      reason: spec(is_binary()),
+      tender_id: spec(is_binary())
+    })
+    |> selection([:idempotency_key, :tender_id, :amount_money])
   end
 
   @type search_terminal_checkouts_request :: %{
@@ -5950,31 +5042,25 @@ defmodule SquareUp.Schema do
           query: SquareUp.Schema.terminal_checkout_query()
         }
 
-  def search_terminal_checkouts_request(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        limit: spec(is_integer()),
-        query: spec(SquareUp.Schema.terminal_checkout_query())
-      })
-      |> selection([])
-    )
+  def search_terminal_checkouts_request do
+    schema(%{
+      cursor: spec(is_binary()),
+      limit: spec(is_integer()),
+      query: Norm.Delegate.delegate(&SquareUp.Schema.terminal_checkout_query/0)
+    })
+    |> selection([])
   end
 
   @type inventory_change_type :: binary()
-  def inventory_change_type(data) do
-    valid?(data, spec(is_binary()))
+  def inventory_change_type do
+    spec(is_binary())
   end
 
   @type date_range :: %{end_date: binary(), start_date: binary()}
 
-  def date_range(data) do
-    valid?(
-      data,
-      schema(%{end_date: spec(is_binary()), start_date: spec(is_binary())})
-      |> selection([])
-    )
+  def date_range do
+    schema(%{end_date: spec(is_binary()), start_date: spec(is_binary())})
+    |> selection([])
   end
 
   @type list_invoices_response :: %{
@@ -5983,16 +5069,13 @@ defmodule SquareUp.Schema do
           invoices: [SquareUp.Schema.invoice()]
         }
 
-  def list_invoices_response(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        invoices: spec(coll_of(spec(SquareUp.Schema.invoice())))
-      })
-      |> selection([])
-    )
+  def list_invoices_response do
+    schema(%{
+      cursor: spec(is_binary()),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      invoices: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.invoice/0)))
+    })
+    |> selection([])
   end
 
   @type create_loyalty_reward_response :: %{
@@ -6000,15 +5083,12 @@ defmodule SquareUp.Schema do
           reward: SquareUp.Schema.loyalty_reward()
         }
 
-  def create_loyalty_reward_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        reward: spec(SquareUp.Schema.loyalty_reward())
-      })
-      |> selection([])
-    )
+  def create_loyalty_reward_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      reward: Norm.Delegate.delegate(&SquareUp.Schema.loyalty_reward/0)
+    })
+    |> selection([])
   end
 
   @type create_catalog_image_request :: %{
@@ -6017,16 +5097,13 @@ defmodule SquareUp.Schema do
           object_id: binary()
         }
 
-  def create_catalog_image_request(data) do
-    valid?(
-      data,
-      schema(%{
-        idempotency_key: spec(is_binary()),
-        image: spec(SquareUp.Schema.catalog_object()),
-        object_id: spec(is_binary())
-      })
-      |> selection([:idempotency_key])
-    )
+  def create_catalog_image_request do
+    schema(%{
+      idempotency_key: spec(is_binary()),
+      image: Norm.Delegate.delegate(&SquareUp.Schema.catalog_object/0),
+      object_id: spec(is_binary())
+    })
+    |> selection([:idempotency_key])
   end
 
   @type v1_list_payments_request :: %{
@@ -6038,29 +5115,23 @@ defmodule SquareUp.Schema do
           order: binary()
         }
 
-  def v1_list_payments_request(data) do
-    valid?(
-      data,
-      schema(%{
-        batch_token: spec(is_binary()),
-        begin_time: spec(is_binary()),
-        end_time: spec(is_binary()),
-        include_partial: spec(is_boolean()),
-        limit: spec(is_integer()),
-        order: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def v1_list_payments_request do
+    schema(%{
+      batch_token: spec(is_binary()),
+      begin_time: spec(is_binary()),
+      end_time: spec(is_binary()),
+      include_partial: spec(is_boolean()),
+      limit: spec(is_integer()),
+      order: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type create_mobile_authorization_code_request :: %{location_id: binary()}
 
-  def create_mobile_authorization_code_request(data) do
-    valid?(
-      data,
-      schema(%{location_id: spec(is_binary())})
-      |> selection([])
-    )
+  def create_mobile_authorization_code_request do
+    schema(%{location_id: spec(is_binary())})
+    |> selection([])
   end
 
   @type catalog_modifier :: %{
@@ -6070,17 +5141,14 @@ defmodule SquareUp.Schema do
           price_money: SquareUp.Schema.money()
         }
 
-  def catalog_modifier(data) do
-    valid?(
-      data,
-      schema(%{
-        modifier_list_id: spec(is_binary()),
-        name: spec(is_binary()),
-        ordinal: spec(is_integer()),
-        price_money: spec(SquareUp.Schema.money())
-      })
-      |> selection([])
-    )
+  def catalog_modifier do
+    schema(%{
+      modifier_list_id: spec(is_binary()),
+      name: spec(is_binary()),
+      ordinal: spec(is_integer()),
+      price_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0)
+    })
+    |> selection([])
   end
 
   @type order_return_discount :: %{
@@ -6095,52 +5163,40 @@ defmodule SquareUp.Schema do
           uid: binary()
         }
 
-  def order_return_discount(data) do
-    valid?(
-      data,
-      schema(%{
-        amount_money: spec(SquareUp.Schema.money()),
-        applied_money: spec(SquareUp.Schema.money()),
-        catalog_object_id: spec(is_binary()),
-        name: spec(is_binary()),
-        percentage: spec(is_binary()),
-        scope: spec(is_binary()),
-        source_discount_uid: spec(is_binary()),
-        type: spec(is_binary()),
-        uid: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def order_return_discount do
+    schema(%{
+      amount_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      applied_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      catalog_object_id: spec(is_binary()),
+      name: spec(is_binary()),
+      percentage: spec(is_binary()),
+      scope: spec(is_binary()),
+      source_discount_uid: spec(is_binary()),
+      type: spec(is_binary()),
+      uid: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type retrieve_dispute_request :: %{}
 
-  def retrieve_dispute_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def retrieve_dispute_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type list_customer_groups_request :: %{cursor: binary()}
 
-  def list_customer_groups_request(data) do
-    valid?(
-      data,
-      schema(%{cursor: spec(is_binary())})
-      |> selection([])
-    )
+  def list_customer_groups_request do
+    schema(%{cursor: spec(is_binary())})
+    |> selection([])
   end
 
   @type v1_order_history_entry :: %{action: binary(), created_at: binary()}
 
-  def v1_order_history_entry(data) do
-    valid?(
-      data,
-      schema(%{action: spec(is_binary()), created_at: spec(is_binary())})
-      |> selection([])
-    )
+  def v1_order_history_entry do
+    schema(%{action: spec(is_binary()), created_at: spec(is_binary())})
+    |> selection([])
   end
 
   @type search_orders_query :: %{
@@ -6148,30 +5204,24 @@ defmodule SquareUp.Schema do
           sort: SquareUp.Schema.search_orders_sort()
         }
 
-  def search_orders_query(data) do
-    valid?(
-      data,
-      schema(%{
-        filter: spec(SquareUp.Schema.search_orders_filter()),
-        sort: spec(SquareUp.Schema.search_orders_sort())
-      })
-      |> selection([])
-    )
+  def search_orders_query do
+    schema(%{
+      filter: Norm.Delegate.delegate(&SquareUp.Schema.search_orders_filter/0),
+      sort: Norm.Delegate.delegate(&SquareUp.Schema.search_orders_sort/0)
+    })
+    |> selection([])
   end
 
   @type void_transaction_request :: %{}
 
-  def void_transaction_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def void_transaction_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type bank_account_type :: binary()
-  def bank_account_type(data) do
-    valid?(data, spec(is_binary()))
+  def bank_account_type do
+    spec(is_binary())
   end
 
   @type order_money_amounts :: %{
@@ -6182,18 +5232,15 @@ defmodule SquareUp.Schema do
           total_money: SquareUp.Schema.money()
         }
 
-  def order_money_amounts(data) do
-    valid?(
-      data,
-      schema(%{
-        discount_money: spec(SquareUp.Schema.money()),
-        service_charge_money: spec(SquareUp.Schema.money()),
-        tax_money: spec(SquareUp.Schema.money()),
-        tip_money: spec(SquareUp.Schema.money()),
-        total_money: spec(SquareUp.Schema.money())
-      })
-      |> selection([])
-    )
+  def order_money_amounts do
+    schema(%{
+      discount_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      service_charge_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      tax_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      tip_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      total_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0)
+    })
+    |> selection([])
   end
 
   @type list_customer_segments_response :: %{
@@ -6202,46 +5249,37 @@ defmodule SquareUp.Schema do
           segments: [SquareUp.Schema.customer_segment()]
         }
 
-  def list_customer_segments_response(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        segments: spec(coll_of(spec(SquareUp.Schema.customer_segment())))
-      })
-      |> selection([])
-    )
+  def list_customer_segments_response do
+    schema(%{
+      cursor: spec(is_binary()),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      segments: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.customer_segment/0)))
+    })
+    |> selection([])
   end
 
   @type bank_account_status :: binary()
-  def bank_account_status(data) do
-    valid?(data, spec(is_binary()))
+  def bank_account_status do
+    spec(is_binary())
   end
 
   @type measurement_unit_weight :: binary()
-  def measurement_unit_weight(data) do
-    valid?(data, spec(is_binary()))
+  def measurement_unit_weight do
+    spec(is_binary())
   end
 
   @type retrieve_team_member_request :: %{}
 
-  def retrieve_team_member_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def retrieve_team_member_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type retrieve_loyalty_reward_request :: %{}
 
-  def retrieve_loyalty_reward_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def retrieve_loyalty_reward_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type catalog_subscription_plan :: %{
@@ -6249,15 +5287,12 @@ defmodule SquareUp.Schema do
           phases: [SquareUp.Schema.subscription_phase()]
         }
 
-  def catalog_subscription_plan(data) do
-    valid?(
-      data,
-      schema(%{
-        name: spec(is_binary()),
-        phases: spec(coll_of(spec(SquareUp.Schema.subscription_phase())))
-      })
-      |> selection([])
-    )
+  def catalog_subscription_plan do
+    schema(%{
+      name: spec(is_binary()),
+      phases: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.subscription_phase/0)))
+    })
+    |> selection([])
   end
 
   @type loyalty_program_accrual_rule :: %{
@@ -6268,18 +5303,15 @@ defmodule SquareUp.Schema do
           visit_minimum_amount_money: SquareUp.Schema.money()
         }
 
-  def loyalty_program_accrual_rule(data) do
-    valid?(
-      data,
-      schema(%{
-        accrual_type: spec(is_binary()),
-        catalog_object_id: spec(is_binary()),
-        points: spec(is_integer()),
-        spend_amount_money: spec(SquareUp.Schema.money()),
-        visit_minimum_amount_money: spec(SquareUp.Schema.money())
-      })
-      |> selection([:accrual_type])
-    )
+  def loyalty_program_accrual_rule do
+    schema(%{
+      accrual_type: spec(is_binary()),
+      catalog_object_id: spec(is_binary()),
+      points: spec(is_integer()),
+      spend_amount_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      visit_minimum_amount_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0)
+    })
+    |> selection([:accrual_type])
   end
 
   @type v1_order :: %{
@@ -6310,58 +5342,50 @@ defmodule SquareUp.Schema do
           updated_at: binary()
         }
 
-  def v1_order(data) do
-    valid?(
-      data,
-      schema(%{
-        btc_price_satoshi: spec(is_number()),
-        btc_receive_address: spec(is_binary()),
-        buyer_email: spec(is_binary()),
-        buyer_note: spec(is_binary()),
-        canceled_note: spec(is_binary()),
-        completed_note: spec(is_binary()),
-        created_at: spec(is_binary()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        expires_at: spec(is_binary()),
-        id: spec(is_binary()),
-        order_history: spec(coll_of(spec(SquareUp.Schema.v1_order_history_entry()))),
-        payment_id: spec(is_binary()),
-        promo_code: spec(is_binary()),
-        recipient_name: spec(is_binary()),
-        recipient_phone_number: spec(is_binary()),
-        refunded_note: spec(is_binary()),
-        shipping_address: spec(SquareUp.Schema.address()),
-        state: spec(is_binary()),
-        subtotal_money: spec(SquareUp.Schema.v1_money()),
-        tender: spec(SquareUp.Schema.v1_tender()),
-        total_discount_money: spec(SquareUp.Schema.v1_money()),
-        total_price_money: spec(SquareUp.Schema.v1_money()),
-        total_shipping_money: spec(SquareUp.Schema.v1_money()),
-        total_tax_money: spec(SquareUp.Schema.v1_money()),
-        updated_at: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def v1_order do
+    schema(%{
+      btc_price_satoshi: spec(is_number()),
+      btc_receive_address: spec(is_binary()),
+      buyer_email: spec(is_binary()),
+      buyer_note: spec(is_binary()),
+      canceled_note: spec(is_binary()),
+      completed_note: spec(is_binary()),
+      created_at: spec(is_binary()),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      expires_at: spec(is_binary()),
+      id: spec(is_binary()),
+      order_history:
+        spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_order_history_entry/0))),
+      payment_id: spec(is_binary()),
+      promo_code: spec(is_binary()),
+      recipient_name: spec(is_binary()),
+      recipient_phone_number: spec(is_binary()),
+      refunded_note: spec(is_binary()),
+      shipping_address: Norm.Delegate.delegate(&SquareUp.Schema.address/0),
+      state: spec(is_binary()),
+      subtotal_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      tender: Norm.Delegate.delegate(&SquareUp.Schema.v1_tender/0),
+      total_discount_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      total_price_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      total_shipping_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      total_tax_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      updated_at: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type loyalty_event_loyalty_account_filter :: %{loyalty_account_id: binary()}
 
-  def loyalty_event_loyalty_account_filter(data) do
-    valid?(
-      data,
-      schema(%{loyalty_account_id: spec(is_binary())})
-      |> selection([:loyalty_account_id])
-    )
+  def loyalty_event_loyalty_account_filter do
+    schema(%{loyalty_account_id: spec(is_binary())})
+    |> selection([:loyalty_account_id])
   end
 
   @type v1_delete_page_request :: %{}
 
-  def v1_delete_page_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def v1_delete_page_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type v1_page_cell :: %{
@@ -6373,19 +5397,16 @@ defmodule SquareUp.Schema do
           row: integer()
         }
 
-  def v1_page_cell(data) do
-    valid?(
-      data,
-      schema(%{
-        column: spec(is_integer()),
-        object_id: spec(is_binary()),
-        object_type: spec(is_binary()),
-        page_id: spec(is_binary()),
-        placeholder_type: spec(is_binary()),
-        row: spec(is_integer())
-      })
-      |> selection([])
-    )
+  def v1_page_cell do
+    schema(%{
+      column: spec(is_integer()),
+      object_id: spec(is_binary()),
+      object_type: spec(is_binary()),
+      page_id: spec(is_binary()),
+      placeholder_type: spec(is_binary()),
+      row: spec(is_integer())
+    })
+    |> selection([])
   end
 
   @type catalog_item_option_value_for_item_variation :: %{
@@ -6393,12 +5414,9 @@ defmodule SquareUp.Schema do
           item_option_value_id: binary()
         }
 
-  def catalog_item_option_value_for_item_variation(data) do
-    valid?(
-      data,
-      schema(%{item_option_id: spec(is_binary()), item_option_value_id: spec(is_binary())})
-      |> selection([])
-    )
+  def catalog_item_option_value_for_item_variation do
+    schema(%{item_option_id: spec(is_binary()), item_option_value_id: spec(is_binary())})
+    |> selection([])
   end
 
   @type v1_modifier_option :: %{
@@ -6411,20 +5429,17 @@ defmodule SquareUp.Schema do
           v2_id: binary()
         }
 
-  def v1_modifier_option(data) do
-    valid?(
-      data,
-      schema(%{
-        id: spec(is_binary()),
-        modifier_list_id: spec(is_binary()),
-        name: spec(is_binary()),
-        on_by_default: spec(is_boolean()),
-        ordinal: spec(is_integer()),
-        price_money: spec(SquareUp.Schema.v1_money()),
-        v2_id: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def v1_modifier_option do
+    schema(%{
+      id: spec(is_binary()),
+      modifier_list_id: spec(is_binary()),
+      name: spec(is_binary()),
+      on_by_default: spec(is_boolean()),
+      ordinal: spec(is_integer()),
+      price_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      v2_id: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type search_loyalty_events_request :: %{
@@ -6433,26 +5448,20 @@ defmodule SquareUp.Schema do
           query: SquareUp.Schema.loyalty_event_query()
         }
 
-  def search_loyalty_events_request(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        limit: spec(is_integer()),
-        query: spec(SquareUp.Schema.loyalty_event_query())
-      })
-      |> selection([])
-    )
+  def search_loyalty_events_request do
+    schema(%{
+      cursor: spec(is_binary()),
+      limit: spec(is_integer()),
+      query: Norm.Delegate.delegate(&SquareUp.Schema.loyalty_event_query/0)
+    })
+    |> selection([])
   end
 
   @type v1_list_pages_request :: %{}
 
-  def v1_list_pages_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def v1_list_pages_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type catalog_item_option_value :: %{
@@ -6464,29 +5473,23 @@ defmodule SquareUp.Schema do
           ordinal: integer()
         }
 
-  def catalog_item_option_value(data) do
-    valid?(
-      data,
-      schema(%{
-        color: spec(is_binary()),
-        description: spec(is_binary()),
-        item_option_id: spec(is_binary()),
-        item_variation_count: spec(is_integer()),
-        name: spec(is_binary()),
-        ordinal: spec(is_integer())
-      })
-      |> selection([])
-    )
+  def catalog_item_option_value do
+    schema(%{
+      color: spec(is_binary()),
+      description: spec(is_binary()),
+      item_option_id: spec(is_binary()),
+      item_variation_count: spec(is_integer()),
+      name: spec(is_binary()),
+      ordinal: spec(is_integer())
+    })
+    |> selection([])
   end
 
   @type v1_list_inventory_response :: %{items: [SquareUp.Schema.v1_inventory_entry()]}
 
-  def v1_list_inventory_response(data) do
-    valid?(
-      data,
-      schema(%{items: spec(coll_of(spec(SquareUp.Schema.v1_inventory_entry())))})
-      |> selection([])
-    )
+  def v1_list_inventory_response do
+    schema(%{items: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_inventory_entry/0)))})
+    |> selection([])
   end
 
   @type create_subscription_request :: %{
@@ -6502,48 +5505,39 @@ defmodule SquareUp.Schema do
           timezone: binary()
         }
 
-  def create_subscription_request(data) do
-    valid?(
-      data,
-      schema(%{
-        canceled_date: spec(is_binary()),
-        card_id: spec(is_binary()),
-        customer_id: spec(is_binary()),
-        idempotency_key: spec(is_binary()),
-        location_id: spec(is_binary()),
-        plan_id: spec(is_binary()),
-        price_override_money: spec(SquareUp.Schema.money()),
-        start_date: spec(is_binary()),
-        tax_percentage: spec(is_binary()),
-        timezone: spec(is_binary())
-      })
-      |> selection([:idempotency_key, :location_id, :plan_id, :customer_id])
-    )
+  def create_subscription_request do
+    schema(%{
+      canceled_date: spec(is_binary()),
+      card_id: spec(is_binary()),
+      customer_id: spec(is_binary()),
+      idempotency_key: spec(is_binary()),
+      location_id: spec(is_binary()),
+      plan_id: spec(is_binary()),
+      price_override_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      start_date: spec(is_binary()),
+      tax_percentage: spec(is_binary()),
+      timezone: spec(is_binary())
+    })
+    |> selection([:idempotency_key, :location_id, :plan_id, :customer_id])
   end
 
   @type catalog_modifier_list_selection_type :: binary()
-  def catalog_modifier_list_selection_type(data) do
-    valid?(data, spec(is_binary()))
+  def catalog_modifier_list_selection_type do
+    spec(is_binary())
   end
 
   @type delete_loyalty_reward_request :: %{}
 
-  def delete_loyalty_reward_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def delete_loyalty_reward_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type delete_customer_group_response :: %{errors: [SquareUp.Schema.error()]}
 
-  def delete_customer_group_response(data) do
-    valid?(
-      data,
-      schema(%{errors: spec(coll_of(spec(SquareUp.Schema.error())))})
-      |> selection([])
-    )
+  def delete_customer_group_response do
+    schema(%{errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))})
+    |> selection([])
   end
 
   @type create_dispute_evidence_file_request :: %{
@@ -6552,16 +5546,13 @@ defmodule SquareUp.Schema do
           idempotency_key: binary()
         }
 
-  def create_dispute_evidence_file_request(data) do
-    valid?(
-      data,
-      schema(%{
-        content_type: spec(is_binary()),
-        evidence_type: spec(is_binary()),
-        idempotency_key: spec(is_binary())
-      })
-      |> selection([:idempotency_key])
-    )
+  def create_dispute_evidence_file_request do
+    schema(%{
+      content_type: spec(is_binary()),
+      evidence_type: spec(is_binary()),
+      idempotency_key: spec(is_binary())
+    })
+    |> selection([:idempotency_key])
   end
 
   @type obtain_token_request :: %{
@@ -6574,25 +5565,22 @@ defmodule SquareUp.Schema do
           refresh_token: binary()
         }
 
-  def obtain_token_request(data) do
-    valid?(
-      data,
-      schema(%{
-        client_id: spec(is_binary()),
-        client_secret: spec(is_binary()),
-        code: spec(is_binary()),
-        grant_type: spec(is_binary()),
-        migration_token: spec(is_binary()),
-        redirect_uri: spec(is_binary()),
-        refresh_token: spec(is_binary())
-      })
-      |> selection([:client_id, :client_secret, :grant_type])
-    )
+  def obtain_token_request do
+    schema(%{
+      client_id: spec(is_binary()),
+      client_secret: spec(is_binary()),
+      code: spec(is_binary()),
+      grant_type: spec(is_binary()),
+      migration_token: spec(is_binary()),
+      redirect_uri: spec(is_binary()),
+      refresh_token: spec(is_binary())
+    })
+    |> selection([:client_id, :client_secret, :grant_type])
   end
 
   @type customer_sort_field :: binary()
-  def customer_sort_field(data) do
-    valid?(data, spec(is_binary()))
+  def customer_sort_field do
+    spec(is_binary())
   end
 
   @type loyalty_event_delete_reward :: %{
@@ -6601,26 +5589,20 @@ defmodule SquareUp.Schema do
           reward_id: binary()
         }
 
-  def loyalty_event_delete_reward(data) do
-    valid?(
-      data,
-      schema(%{
-        loyalty_program_id: spec(is_binary()),
-        points: spec(is_integer()),
-        reward_id: spec(is_binary())
-      })
-      |> selection([:loyalty_program_id, :points])
-    )
+  def loyalty_event_delete_reward do
+    schema(%{
+      loyalty_program_id: spec(is_binary()),
+      points: spec(is_integer()),
+      reward_id: spec(is_binary())
+    })
+    |> selection([:loyalty_program_id, :points])
   end
 
   @type submit_evidence_request :: %{}
 
-  def submit_evidence_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def submit_evidence_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type shift_workday :: %{
@@ -6629,16 +5611,13 @@ defmodule SquareUp.Schema do
           match_shifts_by: binary()
         }
 
-  def shift_workday(data) do
-    valid?(
-      data,
-      schema(%{
-        date_range: spec(SquareUp.Schema.date_range()),
-        default_timezone: spec(is_binary()),
-        match_shifts_by: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def shift_workday do
+    schema(%{
+      date_range: Norm.Delegate.delegate(&SquareUp.Schema.date_range/0),
+      default_timezone: spec(is_binary()),
+      match_shifts_by: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type shift :: %{
@@ -6657,31 +5636,28 @@ defmodule SquareUp.Schema do
           wage: SquareUp.Schema.shift_wage()
         }
 
-  def shift(data) do
-    valid?(
-      data,
-      schema(%{
-        breaks: spec(coll_of(spec(SquareUp.Schema.break()))),
-        created_at: spec(is_binary()),
-        employee_id: spec(is_binary()),
-        end_at: spec(is_binary()),
-        id: spec(is_binary()),
-        location_id: spec(is_binary()),
-        start_at: spec(is_binary()),
-        status: spec(is_binary()),
-        team_member_id: spec(is_binary()),
-        timezone: spec(is_binary()),
-        updated_at: spec(is_binary()),
-        version: spec(is_integer()),
-        wage: spec(SquareUp.Schema.shift_wage())
-      })
-      |> selection([:start_at])
-    )
+  def shift do
+    schema(%{
+      breaks: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.break/0))),
+      created_at: spec(is_binary()),
+      employee_id: spec(is_binary()),
+      end_at: spec(is_binary()),
+      id: spec(is_binary()),
+      location_id: spec(is_binary()),
+      start_at: spec(is_binary()),
+      status: spec(is_binary()),
+      team_member_id: spec(is_binary()),
+      timezone: spec(is_binary()),
+      updated_at: spec(is_binary()),
+      version: spec(is_integer()),
+      wage: Norm.Delegate.delegate(&SquareUp.Schema.shift_wage/0)
+    })
+    |> selection([:start_at])
   end
 
   @type card_prepaid_type :: binary()
-  def card_prepaid_type(data) do
-    valid?(data, spec(is_binary()))
+  def card_prepaid_type do
+    spec(is_binary())
   end
 
   @type list_cash_drawer_shifts_response :: %{
@@ -6690,41 +5666,32 @@ defmodule SquareUp.Schema do
           items: [SquareUp.Schema.cash_drawer_shift_summary()]
         }
 
-  def list_cash_drawer_shifts_response(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        items: spec(coll_of(spec(SquareUp.Schema.cash_drawer_shift_summary())))
-      })
-      |> selection([])
-    )
+  def list_cash_drawer_shifts_response do
+    schema(%{
+      cursor: spec(is_binary()),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      items: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.cash_drawer_shift_summary/0)))
+    })
+    |> selection([])
   end
 
   @type v1_fee_adjustment_type :: binary()
-  def v1_fee_adjustment_type(data) do
-    valid?(data, spec(is_binary()))
+  def v1_fee_adjustment_type do
+    spec(is_binary())
   end
 
   @type v1_list_modifier_lists_response :: %{items: [SquareUp.Schema.v1_modifier_list()]}
 
-  def v1_list_modifier_lists_response(data) do
-    valid?(
-      data,
-      schema(%{items: spec(coll_of(spec(SquareUp.Schema.v1_modifier_list())))})
-      |> selection([])
-    )
+  def v1_list_modifier_lists_response do
+    schema(%{items: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_modifier_list/0)))})
+    |> selection([])
   end
 
   @type retrieve_wage_setting_request :: %{}
 
-  def retrieve_wage_setting_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def retrieve_wage_setting_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type cancel_terminal_checkout_response :: %{
@@ -6732,15 +5699,12 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def cancel_terminal_checkout_response(data) do
-    valid?(
-      data,
-      schema(%{
-        checkout: spec(SquareUp.Schema.terminal_checkout()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def cancel_terminal_checkout_response do
+    schema(%{
+      checkout: Norm.Delegate.delegate(&SquareUp.Schema.terminal_checkout/0),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type list_refunds_request :: %{
@@ -6750,32 +5714,26 @@ defmodule SquareUp.Schema do
           sort_order: binary()
         }
 
-  def list_refunds_request(data) do
-    valid?(
-      data,
-      schema(%{
-        begin_time: spec(is_binary()),
-        cursor: spec(is_binary()),
-        end_time: spec(is_binary()),
-        sort_order: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def list_refunds_request do
+    schema(%{
+      begin_time: spec(is_binary()),
+      cursor: spec(is_binary()),
+      end_time: spec(is_binary()),
+      sort_order: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type order_pricing_options :: %{auto_apply_discounts: boolean()}
 
-  def order_pricing_options(data) do
-    valid?(
-      data,
-      schema(%{auto_apply_discounts: spec(is_boolean())})
-      |> selection([])
-    )
+  def order_pricing_options do
+    schema(%{auto_apply_discounts: spec(is_boolean())})
+    |> selection([])
   end
 
   @type v1_refund_type :: binary()
-  def v1_refund_type(data) do
-    valid?(data, spec(is_binary()))
+  def v1_refund_type do
+    spec(is_binary())
   end
 
   @type tender_card_details :: %{
@@ -6784,16 +5742,13 @@ defmodule SquareUp.Schema do
           status: binary()
         }
 
-  def tender_card_details(data) do
-    valid?(
-      data,
-      schema(%{
-        card: spec(SquareUp.Schema.card()),
-        entry_method: spec(is_binary()),
-        status: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def tender_card_details do
+    schema(%{
+      card: Norm.Delegate.delegate(&SquareUp.Schema.card/0),
+      entry_method: spec(is_binary()),
+      status: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type get_employee_wage_response :: %{
@@ -6801,45 +5756,33 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def get_employee_wage_response(data) do
-    valid?(
-      data,
-      schema(%{
-        employee_wage: spec(SquareUp.Schema.employee_wage()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def get_employee_wage_response do
+    schema(%{
+      employee_wage: Norm.Delegate.delegate(&SquareUp.Schema.employee_wage/0),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type catalog_modifier_override :: %{modifier_id: binary(), on_by_default: boolean()}
 
-  def catalog_modifier_override(data) do
-    valid?(
-      data,
-      schema(%{modifier_id: spec(is_binary()), on_by_default: spec(is_boolean())})
-      |> selection([:modifier_id])
-    )
+  def catalog_modifier_override do
+    schema(%{modifier_id: spec(is_binary()), on_by_default: spec(is_boolean())})
+    |> selection([:modifier_id])
   end
 
   @type v1_update_employee_role_request :: %{body: SquareUp.Schema.v1_employee_role()}
 
-  def v1_update_employee_role_request(data) do
-    valid?(
-      data,
-      schema(%{body: spec(SquareUp.Schema.v1_employee_role())})
-      |> selection([:body])
-    )
+  def v1_update_employee_role_request do
+    schema(%{body: Norm.Delegate.delegate(&SquareUp.Schema.v1_employee_role/0)})
+    |> selection([:body])
   end
 
   @type delete_customer_card_response :: %{errors: [SquareUp.Schema.error()]}
 
-  def delete_customer_card_response(data) do
-    valid?(
-      data,
-      schema(%{errors: spec(coll_of(spec(SquareUp.Schema.error())))})
-      |> selection([])
-    )
+  def delete_customer_card_response do
+    schema(%{errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))})
+    |> selection([])
   end
 
   @type address :: %{
@@ -6860,38 +5803,32 @@ defmodule SquareUp.Schema do
           sublocality_3: binary()
         }
 
-  def address(data) do
-    valid?(
-      data,
-      schema(%{
-        address_line_1: spec(is_binary()),
-        address_line_2: spec(is_binary()),
-        address_line_3: spec(is_binary()),
-        administrative_district_level_1: spec(is_binary()),
-        administrative_district_level_2: spec(is_binary()),
-        administrative_district_level_3: spec(is_binary()),
-        country: spec(is_binary()),
-        first_name: spec(is_binary()),
-        last_name: spec(is_binary()),
-        locality: spec(is_binary()),
-        organization: spec(is_binary()),
-        postal_code: spec(is_binary()),
-        sublocality: spec(is_binary()),
-        sublocality_2: spec(is_binary()),
-        sublocality_3: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def address do
+    schema(%{
+      address_line_1: spec(is_binary()),
+      address_line_2: spec(is_binary()),
+      address_line_3: spec(is_binary()),
+      administrative_district_level_1: spec(is_binary()),
+      administrative_district_level_2: spec(is_binary()),
+      administrative_district_level_3: spec(is_binary()),
+      country: spec(is_binary()),
+      first_name: spec(is_binary()),
+      last_name: spec(is_binary()),
+      locality: spec(is_binary()),
+      organization: spec(is_binary()),
+      postal_code: spec(is_binary()),
+      sublocality: spec(is_binary()),
+      sublocality_2: spec(is_binary()),
+      sublocality_3: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type loyalty_event_order_filter :: %{order_id: binary()}
 
-  def loyalty_event_order_filter(data) do
-    valid?(
-      data,
-      schema(%{order_id: spec(is_binary())})
-      |> selection([:order_id])
-    )
+  def loyalty_event_order_filter do
+    schema(%{order_id: spec(is_binary())})
+    |> selection([:order_id])
   end
 
   @type order_service_charge :: %{
@@ -6909,25 +5846,23 @@ defmodule SquareUp.Schema do
           uid: binary()
         }
 
-  def order_service_charge(data) do
-    valid?(
-      data,
-      schema(%{
-        amount_money: spec(SquareUp.Schema.money()),
-        applied_money: spec(SquareUp.Schema.money()),
-        applied_taxes: spec(coll_of(spec(SquareUp.Schema.order_line_item_applied_tax()))),
-        calculation_phase: spec(is_binary()),
-        catalog_object_id: spec(is_binary()),
-        metadata: schema(%{}),
-        name: spec(is_binary()),
-        percentage: spec(is_binary()),
-        taxable: spec(is_boolean()),
-        total_money: spec(SquareUp.Schema.money()),
-        total_tax_money: spec(SquareUp.Schema.money()),
-        uid: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def order_service_charge do
+    schema(%{
+      amount_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      applied_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      applied_taxes:
+        spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.order_line_item_applied_tax/0))),
+      calculation_phase: spec(is_binary()),
+      catalog_object_id: spec(is_binary()),
+      metadata: schema(%{}),
+      name: spec(is_binary()),
+      percentage: spec(is_binary()),
+      taxable: spec(is_boolean()),
+      total_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      total_tax_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      uid: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type get_break_type_response :: %{
@@ -6935,27 +5870,23 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def get_break_type_response(data) do
-    valid?(
-      data,
-      schema(%{
-        break_type: spec(SquareUp.Schema.break_type()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def get_break_type_response do
+    schema(%{
+      break_type: Norm.Delegate.delegate(&SquareUp.Schema.break_type/0),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type search_loyalty_accounts_request_loyalty_account_query :: %{
           mappings: [SquareUp.Schema.loyalty_account_mapping()]
         }
 
-  def search_loyalty_accounts_request_loyalty_account_query(data) do
-    valid?(
-      data,
-      schema(%{mappings: spec(coll_of(spec(SquareUp.Schema.loyalty_account_mapping())))})
-      |> selection([])
-    )
+  def search_loyalty_accounts_request_loyalty_account_query do
+    schema(%{
+      mappings: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.loyalty_account_mapping/0)))
+    })
+    |> selection([])
   end
 
   @type create_invoice_response :: %{
@@ -6963,25 +5894,22 @@ defmodule SquareUp.Schema do
           invoice: SquareUp.Schema.invoice()
         }
 
-  def create_invoice_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        invoice: spec(SquareUp.Schema.invoice())
-      })
-      |> selection([])
-    )
+  def create_invoice_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      invoice: Norm.Delegate.delegate(&SquareUp.Schema.invoice/0)
+    })
+    |> selection([])
   end
 
   @type subscription_cadence :: binary()
-  def subscription_cadence(data) do
-    valid?(data, spec(is_binary()))
+  def subscription_cadence do
+    spec(is_binary())
   end
 
   @type v1_cash_drawer_event_event_type :: binary()
-  def v1_cash_drawer_event_event_type(data) do
-    valid?(data, spec(is_binary()))
+  def v1_cash_drawer_event_event_type do
+    spec(is_binary())
   end
 
   @type create_dispute_evidence_text_response :: %{
@@ -6989,15 +5917,12 @@ defmodule SquareUp.Schema do
           evidence: SquareUp.Schema.dispute_evidence()
         }
 
-  def create_dispute_evidence_text_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        evidence: spec(SquareUp.Schema.dispute_evidence())
-      })
-      |> selection([])
-    )
+  def create_dispute_evidence_text_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      evidence: Norm.Delegate.delegate(&SquareUp.Schema.dispute_evidence/0)
+    })
+    |> selection([])
   end
 
   @type cash_drawer_shift :: %{
@@ -7021,51 +5946,45 @@ defmodule SquareUp.Schema do
           state: binary()
         }
 
-  def cash_drawer_shift(data) do
-    valid?(
-      data,
-      schema(%{
-        cash_paid_in_money: spec(SquareUp.Schema.money()),
-        cash_paid_out_money: spec(SquareUp.Schema.money()),
-        cash_payment_money: spec(SquareUp.Schema.money()),
-        cash_refunds_money: spec(SquareUp.Schema.money()),
-        closed_at: spec(is_binary()),
-        closed_cash_money: spec(SquareUp.Schema.money()),
-        closing_employee_id: spec(is_binary()),
-        description: spec(is_binary()),
-        device: spec(SquareUp.Schema.cash_drawer_device()),
-        employee_ids: spec(coll_of(spec(is_binary()))),
-        ended_at: spec(is_binary()),
-        ending_employee_id: spec(is_binary()),
-        expected_cash_money: spec(SquareUp.Schema.money()),
-        id: spec(is_binary()),
-        opened_at: spec(is_binary()),
-        opened_cash_money: spec(SquareUp.Schema.money()),
-        opening_employee_id: spec(is_binary()),
-        state: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def cash_drawer_shift do
+    schema(%{
+      cash_paid_in_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      cash_paid_out_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      cash_payment_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      cash_refunds_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      closed_at: spec(is_binary()),
+      closed_cash_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      closing_employee_id: spec(is_binary()),
+      description: spec(is_binary()),
+      device: Norm.Delegate.delegate(&SquareUp.Schema.cash_drawer_device/0),
+      employee_ids: spec(coll_of(spec(is_binary()))),
+      ended_at: spec(is_binary()),
+      ending_employee_id: spec(is_binary()),
+      expected_cash_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      id: spec(is_binary()),
+      opened_at: spec(is_binary()),
+      opened_cash_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      opening_employee_id: spec(is_binary()),
+      state: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type error_code :: binary()
-  def error_code(data) do
-    valid?(data, spec(is_binary()))
+  def error_code do
+    spec(is_binary())
   end
 
   @type retrieve_transaction_request :: %{}
 
-  def retrieve_transaction_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def retrieve_transaction_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type v1_fee_calculation_phase :: binary()
-  def v1_fee_calculation_phase(data) do
-    valid?(data, spec(is_binary()))
+  def v1_fee_calculation_phase do
+    spec(is_binary())
   end
 
   @type search_terminal_checkouts_response :: %{
@@ -7074,16 +5993,13 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def search_terminal_checkouts_response(data) do
-    valid?(
-      data,
-      schema(%{
-        checkouts: spec(coll_of(spec(SquareUp.Schema.terminal_checkout()))),
-        cursor: spec(is_binary()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def search_terminal_checkouts_response do
+    schema(%{
+      checkouts: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.terminal_checkout/0))),
+      cursor: spec(is_binary()),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type card_payment_details :: %{
@@ -7104,48 +6020,42 @@ defmodule SquareUp.Schema do
           verification_results: binary()
         }
 
-  def card_payment_details(data) do
-    valid?(
-      data,
-      schema(%{
-        application_cryptogram: spec(is_binary()),
-        application_identifier: spec(is_binary()),
-        application_name: spec(is_binary()),
-        auth_result_code: spec(is_binary()),
-        avs_status: spec(is_binary()),
-        card: spec(SquareUp.Schema.card()),
-        cvv_status: spec(is_binary()),
-        device_details: spec(SquareUp.Schema.device_details()),
-        entry_method: spec(is_binary()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        refund_requires_card_presence: spec(is_boolean()),
-        statement_description: spec(is_binary()),
-        status: spec(is_binary()),
-        verification_method: spec(is_binary()),
-        verification_results: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def card_payment_details do
+    schema(%{
+      application_cryptogram: spec(is_binary()),
+      application_identifier: spec(is_binary()),
+      application_name: spec(is_binary()),
+      auth_result_code: spec(is_binary()),
+      avs_status: spec(is_binary()),
+      card: Norm.Delegate.delegate(&SquareUp.Schema.card/0),
+      cvv_status: spec(is_binary()),
+      device_details: Norm.Delegate.delegate(&SquareUp.Schema.device_details/0),
+      entry_method: spec(is_binary()),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      refund_requires_card_presence: spec(is_boolean()),
+      statement_description: spec(is_binary()),
+      status: spec(is_binary()),
+      verification_method: spec(is_binary()),
+      verification_results: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type measurement_unit_time :: binary()
-  def measurement_unit_time(data) do
-    valid?(data, spec(is_binary()))
+  def measurement_unit_time do
+    spec(is_binary())
   end
 
   @type get_terminal_checkout_request :: %{}
 
-  def get_terminal_checkout_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def get_terminal_checkout_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type v1_tender_card_brand :: binary()
-  def v1_tender_card_brand(data) do
-    valid?(data, spec(is_binary()))
+  def v1_tender_card_brand do
+    spec(is_binary())
   end
 
   @type catalog_object :: %{
@@ -7179,42 +6089,42 @@ defmodule SquareUp.Schema do
           version: integer()
         }
 
-  def catalog_object(data) do
-    valid?(
-      data,
-      schema(%{
-        absent_at_location_ids: spec(coll_of(spec(is_binary()))),
-        catalog_v1_ids: spec(coll_of(spec(SquareUp.Schema.catalog_v1_id()))),
-        category_data: spec(SquareUp.Schema.catalog_category()),
-        custom_attribute_definition_data:
-          spec(SquareUp.Schema.catalog_custom_attribute_definition()),
-        custom_attribute_values: schema(%{}),
-        discount_data: spec(SquareUp.Schema.catalog_discount()),
-        id: spec(is_binary()),
-        image_data: spec(SquareUp.Schema.catalog_image()),
-        image_id: spec(is_binary()),
-        is_deleted: spec(is_boolean()),
-        item_data: spec(SquareUp.Schema.catalog_item()),
-        item_option_data: spec(SquareUp.Schema.catalog_item_option()),
-        item_option_value_data: spec(SquareUp.Schema.catalog_item_option_value()),
-        item_variation_data: spec(SquareUp.Schema.catalog_item_variation()),
-        measurement_unit_data: spec(SquareUp.Schema.catalog_measurement_unit()),
-        modifier_data: spec(SquareUp.Schema.catalog_modifier()),
-        modifier_list_data: spec(SquareUp.Schema.catalog_modifier_list()),
-        present_at_all_locations: spec(is_boolean()),
-        present_at_location_ids: spec(coll_of(spec(is_binary()))),
-        pricing_rule_data: spec(SquareUp.Schema.catalog_pricing_rule()),
-        product_set_data: spec(SquareUp.Schema.catalog_product_set()),
-        quick_amounts_settings_data: spec(SquareUp.Schema.catalog_quick_amounts_settings()),
-        subscription_plan_data: spec(SquareUp.Schema.catalog_subscription_plan()),
-        tax_data: spec(SquareUp.Schema.catalog_tax()),
-        time_period_data: spec(SquareUp.Schema.catalog_time_period()),
-        type: spec(is_binary()),
-        updated_at: spec(is_binary()),
-        version: spec(is_integer())
-      })
-      |> selection([:type, :id])
-    )
+  def catalog_object do
+    schema(%{
+      absent_at_location_ids: spec(coll_of(spec(is_binary()))),
+      catalog_v1_ids: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.catalog_v1_id/0))),
+      category_data: Norm.Delegate.delegate(&SquareUp.Schema.catalog_category/0),
+      custom_attribute_definition_data:
+        Norm.Delegate.delegate(&SquareUp.Schema.catalog_custom_attribute_definition/0),
+      custom_attribute_values: schema(%{}),
+      discount_data: Norm.Delegate.delegate(&SquareUp.Schema.catalog_discount/0),
+      id: spec(is_binary()),
+      image_data: Norm.Delegate.delegate(&SquareUp.Schema.catalog_image/0),
+      image_id: spec(is_binary()),
+      is_deleted: spec(is_boolean()),
+      item_data: Norm.Delegate.delegate(&SquareUp.Schema.catalog_item/0),
+      item_option_data: Norm.Delegate.delegate(&SquareUp.Schema.catalog_item_option/0),
+      item_option_value_data:
+        Norm.Delegate.delegate(&SquareUp.Schema.catalog_item_option_value/0),
+      item_variation_data: Norm.Delegate.delegate(&SquareUp.Schema.catalog_item_variation/0),
+      measurement_unit_data: Norm.Delegate.delegate(&SquareUp.Schema.catalog_measurement_unit/0),
+      modifier_data: Norm.Delegate.delegate(&SquareUp.Schema.catalog_modifier/0),
+      modifier_list_data: Norm.Delegate.delegate(&SquareUp.Schema.catalog_modifier_list/0),
+      present_at_all_locations: spec(is_boolean()),
+      present_at_location_ids: spec(coll_of(spec(is_binary()))),
+      pricing_rule_data: Norm.Delegate.delegate(&SquareUp.Schema.catalog_pricing_rule/0),
+      product_set_data: Norm.Delegate.delegate(&SquareUp.Schema.catalog_product_set/0),
+      quick_amounts_settings_data:
+        Norm.Delegate.delegate(&SquareUp.Schema.catalog_quick_amounts_settings/0),
+      subscription_plan_data:
+        Norm.Delegate.delegate(&SquareUp.Schema.catalog_subscription_plan/0),
+      tax_data: Norm.Delegate.delegate(&SquareUp.Schema.catalog_tax/0),
+      time_period_data: Norm.Delegate.delegate(&SquareUp.Schema.catalog_time_period/0),
+      type: spec(is_binary()),
+      updated_at: spec(is_binary()),
+      version: spec(is_integer())
+    })
+    |> selection([:type, :id])
   end
 
   @type list_cash_drawer_shift_events_response :: %{
@@ -7223,16 +6133,13 @@ defmodule SquareUp.Schema do
           events: [SquareUp.Schema.cash_drawer_shift_event()]
         }
 
-  def list_cash_drawer_shift_events_response(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        events: spec(coll_of(spec(SquareUp.Schema.cash_drawer_shift_event())))
-      })
-      |> selection([])
-    )
+  def list_cash_drawer_shift_events_response do
+    schema(%{
+      cursor: spec(is_binary()),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      events: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.cash_drawer_shift_event/0)))
+    })
+    |> selection([])
   end
 
   @type subscription_phase :: %{
@@ -7243,18 +6150,15 @@ defmodule SquareUp.Schema do
           uid: binary()
         }
 
-  def subscription_phase(data) do
-    valid?(
-      data,
-      schema(%{
-        cadence: spec(is_binary()),
-        ordinal: spec(is_integer()),
-        periods: spec(is_integer()),
-        recurring_price_money: spec(SquareUp.Schema.money()),
-        uid: spec(is_binary())
-      })
-      |> selection([:cadence, :recurring_price_money])
-    )
+  def subscription_phase do
+    schema(%{
+      cadence: spec(is_binary()),
+      ordinal: spec(is_integer()),
+      periods: spec(is_integer()),
+      recurring_price_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      uid: spec(is_binary())
+    })
+    |> selection([:cadence, :recurring_price_money])
   end
 
   @type create_loyalty_account_response :: %{
@@ -7262,35 +6166,29 @@ defmodule SquareUp.Schema do
           loyalty_account: SquareUp.Schema.loyalty_account()
         }
 
-  def create_loyalty_account_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        loyalty_account: spec(SquareUp.Schema.loyalty_account())
-      })
-      |> selection([])
-    )
+  def create_loyalty_account_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      loyalty_account: Norm.Delegate.delegate(&SquareUp.Schema.loyalty_account/0)
+    })
+    |> selection([])
   end
 
   @type create_invoice_request :: %{idempotency_key: binary(), invoice: SquareUp.Schema.invoice()}
 
-  def create_invoice_request(data) do
-    valid?(
-      data,
-      schema(%{idempotency_key: spec(is_binary()), invoice: spec(SquareUp.Schema.invoice())})
-      |> selection([:invoice])
-    )
+  def create_invoice_request do
+    schema(%{
+      idempotency_key: spec(is_binary()),
+      invoice: Norm.Delegate.delegate(&SquareUp.Schema.invoice/0)
+    })
+    |> selection([:invoice])
   end
 
   @type v1_retrieve_business_request :: %{}
 
-  def v1_retrieve_business_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def v1_retrieve_business_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type v1_cash_drawer_shift :: %{
@@ -7315,42 +6213,36 @@ defmodule SquareUp.Schema do
           starting_cash_money: SquareUp.Schema.v1_money()
         }
 
-  def v1_cash_drawer_shift(data) do
-    valid?(
-      data,
-      schema(%{
-        cash_paid_in_money: spec(SquareUp.Schema.v1_money()),
-        cash_paid_out_money: spec(SquareUp.Schema.v1_money()),
-        cash_payment_money: spec(SquareUp.Schema.v1_money()),
-        cash_refunds_money: spec(SquareUp.Schema.v1_money()),
-        closed_at: spec(is_binary()),
-        closed_cash_money: spec(SquareUp.Schema.v1_money()),
-        closing_employee_id: spec(is_binary()),
-        description: spec(is_binary()),
-        device: spec(SquareUp.Schema.device()),
-        employee_ids: spec(coll_of(spec(is_binary()))),
-        ended_at: spec(is_binary()),
-        ending_employee_id: spec(is_binary()),
-        event_type: spec(is_binary()),
-        events: spec(coll_of(spec(SquareUp.Schema.v1_cash_drawer_event()))),
-        expected_cash_money: spec(SquareUp.Schema.v1_money()),
-        id: spec(is_binary()),
-        opened_at: spec(is_binary()),
-        opening_employee_id: spec(is_binary()),
-        starting_cash_money: spec(SquareUp.Schema.v1_money())
-      })
-      |> selection([])
-    )
+  def v1_cash_drawer_shift do
+    schema(%{
+      cash_paid_in_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      cash_paid_out_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      cash_payment_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      cash_refunds_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      closed_at: spec(is_binary()),
+      closed_cash_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      closing_employee_id: spec(is_binary()),
+      description: spec(is_binary()),
+      device: Norm.Delegate.delegate(&SquareUp.Schema.device/0),
+      employee_ids: spec(coll_of(spec(is_binary()))),
+      ended_at: spec(is_binary()),
+      ending_employee_id: spec(is_binary()),
+      event_type: spec(is_binary()),
+      events: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_cash_drawer_event/0))),
+      expected_cash_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      id: spec(is_binary()),
+      opened_at: spec(is_binary()),
+      opening_employee_id: spec(is_binary()),
+      starting_cash_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0)
+    })
+    |> selection([])
   end
 
   @type retrieve_inventory_changes_request :: %{cursor: binary(), location_ids: binary()}
 
-  def retrieve_inventory_changes_request(data) do
-    valid?(
-      data,
-      schema(%{cursor: spec(is_binary()), location_ids: spec(is_binary())})
-      |> selection([])
-    )
+  def retrieve_inventory_changes_request do
+    schema(%{cursor: spec(is_binary()), location_ids: spec(is_binary())})
+    |> selection([])
   end
 
   @type invoice_payment_reminder :: %{
@@ -7361,23 +6253,20 @@ defmodule SquareUp.Schema do
           uid: binary()
         }
 
-  def invoice_payment_reminder(data) do
-    valid?(
-      data,
-      schema(%{
-        message: spec(is_binary()),
-        relative_scheduled_days: spec(is_integer()),
-        sent_at: spec(is_binary()),
-        status: spec(is_binary()),
-        uid: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def invoice_payment_reminder do
+    schema(%{
+      message: spec(is_binary()),
+      relative_scheduled_days: spec(is_integer()),
+      sent_at: spec(is_binary()),
+      status: spec(is_binary()),
+      uid: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type invoice_payment_reminder_status :: binary()
-  def invoice_payment_reminder_status(data) do
-    valid?(data, spec(is_binary()))
+  def invoice_payment_reminder_status do
+    spec(is_binary())
   end
 
   @type search_subscriptions_request :: %{
@@ -7386,16 +6275,13 @@ defmodule SquareUp.Schema do
           query: SquareUp.Schema.search_subscriptions_query()
         }
 
-  def search_subscriptions_request(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        limit: spec(is_integer()),
-        query: spec(SquareUp.Schema.search_subscriptions_query())
-      })
-      |> selection([])
-    )
+  def search_subscriptions_request do
+    schema(%{
+      cursor: spec(is_binary()),
+      limit: spec(is_integer()),
+      query: Norm.Delegate.delegate(&SquareUp.Schema.search_subscriptions_query/0)
+    })
+    |> selection([])
   end
 
   @type create_shift_response :: %{
@@ -7403,15 +6289,12 @@ defmodule SquareUp.Schema do
           shift: SquareUp.Schema.shift()
         }
 
-  def create_shift_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        shift: spec(SquareUp.Schema.shift())
-      })
-      |> selection([])
-    )
+  def create_shift_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      shift: Norm.Delegate.delegate(&SquareUp.Schema.shift/0)
+    })
+    |> selection([])
   end
 
   @type invoice :: %{
@@ -7433,29 +6316,27 @@ defmodule SquareUp.Schema do
           version: integer()
         }
 
-  def invoice(data) do
-    valid?(
-      data,
-      schema(%{
-        created_at: spec(is_binary()),
-        description: spec(is_binary()),
-        id: spec(is_binary()),
-        invoice_number: spec(is_binary()),
-        location_id: spec(is_binary()),
-        next_payment_amount_money: spec(SquareUp.Schema.money()),
-        order_id: spec(is_binary()),
-        payment_requests: spec(coll_of(spec(SquareUp.Schema.invoice_payment_request()))),
-        primary_recipient: spec(SquareUp.Schema.invoice_recipient()),
-        public_url: spec(is_binary()),
-        scheduled_at: spec(is_binary()),
-        status: spec(is_binary()),
-        timezone: spec(is_binary()),
-        title: spec(is_binary()),
-        updated_at: spec(is_binary()),
-        version: spec(is_integer())
-      })
-      |> selection([])
-    )
+  def invoice do
+    schema(%{
+      created_at: spec(is_binary()),
+      description: spec(is_binary()),
+      id: spec(is_binary()),
+      invoice_number: spec(is_binary()),
+      location_id: spec(is_binary()),
+      next_payment_amount_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      order_id: spec(is_binary()),
+      payment_requests:
+        spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.invoice_payment_request/0))),
+      primary_recipient: Norm.Delegate.delegate(&SquareUp.Schema.invoice_recipient/0),
+      public_url: spec(is_binary()),
+      scheduled_at: spec(is_binary()),
+      status: spec(is_binary()),
+      timezone: spec(is_binary()),
+      title: spec(is_binary()),
+      updated_at: spec(is_binary()),
+      version: spec(is_integer())
+    })
+    |> selection([])
   end
 
   @type list_subscription_events_response :: %{
@@ -7464,43 +6345,38 @@ defmodule SquareUp.Schema do
           subscription_events: [SquareUp.Schema.subscription_event()]
         }
 
-  def list_subscription_events_response(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        subscription_events: spec(coll_of(spec(SquareUp.Schema.subscription_event())))
-      })
-      |> selection([])
-    )
+  def list_subscription_events_response do
+    schema(%{
+      cursor: spec(is_binary()),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      subscription_events:
+        spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.subscription_event/0)))
+    })
+    |> selection([])
   end
 
   @type catalog_query_items_for_tax :: %{tax_ids: [binary()]}
 
-  def catalog_query_items_for_tax(data) do
-    valid?(
-      data,
-      schema(%{tax_ids: spec(coll_of(spec(is_binary())))})
-      |> selection([:tax_ids])
-    )
+  def catalog_query_items_for_tax do
+    schema(%{tax_ids: spec(coll_of(spec(is_binary())))})
+    |> selection([:tax_ids])
   end
 
   @type order_fulfillment_updated_object :: %{
           order_fulfillment_updated: SquareUp.Schema.order_fulfillment_updated()
         }
 
-  def order_fulfillment_updated_object(data) do
-    valid?(
-      data,
-      schema(%{order_fulfillment_updated: spec(SquareUp.Schema.order_fulfillment_updated())})
-      |> selection([])
-    )
+  def order_fulfillment_updated_object do
+    schema(%{
+      order_fulfillment_updated:
+        Norm.Delegate.delegate(&SquareUp.Schema.order_fulfillment_updated/0)
+    })
+    |> selection([])
   end
 
   @type loyalty_program_accrual_rule_type :: binary()
-  def loyalty_program_accrual_rule_type(data) do
-    valid?(data, spec(is_binary()))
+  def loyalty_program_accrual_rule_type do
+    spec(is_binary())
   end
 
   @type v1_refund :: %{
@@ -7524,31 +6400,31 @@ defmodule SquareUp.Schema do
           type: binary()
         }
 
-  def v1_refund(data) do
-    valid?(
-      data,
-      schema(%{
-        created_at: spec(is_binary()),
-        is_exchange: spec(is_boolean()),
-        merchant_id: spec(is_binary()),
-        payment_id: spec(is_binary()),
-        processed_at: spec(is_binary()),
-        reason: spec(is_binary()),
-        refunded_additive_tax: spec(coll_of(spec(SquareUp.Schema.v1_payment_tax()))),
-        refunded_additive_tax_money: spec(SquareUp.Schema.v1_money()),
-        refunded_discount_money: spec(SquareUp.Schema.v1_money()),
-        refunded_inclusive_tax: spec(coll_of(spec(SquareUp.Schema.v1_payment_tax()))),
-        refunded_inclusive_tax_money: spec(SquareUp.Schema.v1_money()),
-        refunded_money: spec(SquareUp.Schema.v1_money()),
-        refunded_processing_fee_money: spec(SquareUp.Schema.v1_money()),
-        refunded_surcharge_money: spec(SquareUp.Schema.v1_money()),
-        refunded_surcharges: spec(coll_of(spec(SquareUp.Schema.v1_payment_surcharge()))),
-        refunded_tax_money: spec(SquareUp.Schema.v1_money()),
-        refunded_tip_money: spec(SquareUp.Schema.v1_money()),
-        type: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def v1_refund do
+    schema(%{
+      created_at: spec(is_binary()),
+      is_exchange: spec(is_boolean()),
+      merchant_id: spec(is_binary()),
+      payment_id: spec(is_binary()),
+      processed_at: spec(is_binary()),
+      reason: spec(is_binary()),
+      refunded_additive_tax:
+        spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_payment_tax/0))),
+      refunded_additive_tax_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      refunded_discount_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      refunded_inclusive_tax:
+        spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_payment_tax/0))),
+      refunded_inclusive_tax_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      refunded_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      refunded_processing_fee_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      refunded_surcharge_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      refunded_surcharges:
+        spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_payment_surcharge/0))),
+      refunded_tax_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      refunded_tip_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      type: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type search_loyalty_rewards_request :: %{
@@ -7557,30 +6433,27 @@ defmodule SquareUp.Schema do
           query: SquareUp.Schema.search_loyalty_rewards_request_loyalty_reward_query()
         }
 
-  def search_loyalty_rewards_request(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        limit: spec(is_integer()),
-        query: spec(SquareUp.Schema.search_loyalty_rewards_request_loyalty_reward_query())
-      })
-      |> selection([])
-    )
+  def search_loyalty_rewards_request do
+    schema(%{
+      cursor: spec(is_binary()),
+      limit: spec(is_integer()),
+      query:
+        Norm.Delegate.delegate(
+          &SquareUp.Schema.search_loyalty_rewards_request_loyalty_reward_query/0
+        )
+    })
+    |> selection([])
   end
 
   @type order_entry :: %{location_id: binary(), order_id: binary(), version: integer()}
 
-  def order_entry(data) do
-    valid?(
-      data,
-      schema(%{
-        location_id: spec(is_binary()),
-        order_id: spec(is_binary()),
-        version: spec(is_integer())
-      })
-      |> selection([])
-    )
+  def order_entry do
+    schema(%{
+      location_id: spec(is_binary()),
+      order_id: spec(is_binary()),
+      version: spec(is_integer())
+    })
+    |> selection([])
   end
 
   @type v1_merchant :: %{
@@ -7601,28 +6474,25 @@ defmodule SquareUp.Schema do
           shipping_address: SquareUp.Schema.address()
         }
 
-  def v1_merchant(data) do
-    valid?(
-      data,
-      schema(%{
-        account_capabilities: spec(coll_of(spec(is_binary()))),
-        account_type: spec(is_binary()),
-        business_address: spec(SquareUp.Schema.address()),
-        business_name: spec(is_binary()),
-        business_phone: spec(SquareUp.Schema.v1_phone_number()),
-        business_type: spec(is_binary()),
-        country_code: spec(is_binary()),
-        currency_code: spec(is_binary()),
-        email: spec(is_binary()),
-        id: spec(is_binary()),
-        language_code: spec(is_binary()),
-        location_details: spec(SquareUp.Schema.v1_merchant_location_details()),
-        market_url: spec(is_binary()),
-        name: spec(is_binary()),
-        shipping_address: spec(SquareUp.Schema.address())
-      })
-      |> selection([])
-    )
+  def v1_merchant do
+    schema(%{
+      account_capabilities: spec(coll_of(spec(is_binary()))),
+      account_type: spec(is_binary()),
+      business_address: Norm.Delegate.delegate(&SquareUp.Schema.address/0),
+      business_name: spec(is_binary()),
+      business_phone: Norm.Delegate.delegate(&SquareUp.Schema.v1_phone_number/0),
+      business_type: spec(is_binary()),
+      country_code: spec(is_binary()),
+      currency_code: spec(is_binary()),
+      email: spec(is_binary()),
+      id: spec(is_binary()),
+      language_code: spec(is_binary()),
+      location_details: Norm.Delegate.delegate(&SquareUp.Schema.v1_merchant_location_details/0),
+      market_url: spec(is_binary()),
+      name: spec(is_binary()),
+      shipping_address: Norm.Delegate.delegate(&SquareUp.Schema.address/0)
+    })
+    |> selection([])
   end
 
   @type update_invoice_response :: %{
@@ -7630,15 +6500,12 @@ defmodule SquareUp.Schema do
           invoice: SquareUp.Schema.invoice()
         }
 
-  def update_invoice_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        invoice: spec(SquareUp.Schema.invoice())
-      })
-      |> selection([])
-    )
+  def update_invoice_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      invoice: Norm.Delegate.delegate(&SquareUp.Schema.invoice/0)
+    })
+    |> selection([])
   end
 
   @type list_employees_request :: %{
@@ -7648,42 +6515,33 @@ defmodule SquareUp.Schema do
           status: binary()
         }
 
-  def list_employees_request(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        limit: spec(is_integer()),
-        location_id: spec(is_binary()),
-        status: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def list_employees_request do
+    schema(%{
+      cursor: spec(is_binary()),
+      limit: spec(is_integer()),
+      location_id: spec(is_binary()),
+      status: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type measurement_unit_unit_type :: binary()
-  def measurement_unit_unit_type(data) do
-    valid?(data, spec(is_binary()))
+  def measurement_unit_unit_type do
+    spec(is_binary())
   end
 
   @type v1_delete_timecard_response :: %{}
 
-  def v1_delete_timecard_response(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def v1_delete_timecard_response do
+    schema(%{})
+    |> selection([])
   end
 
   @type list_workweek_configs_request :: %{cursor: binary(), limit: integer()}
 
-  def list_workweek_configs_request(data) do
-    valid?(
-      data,
-      schema(%{cursor: spec(is_binary()), limit: spec(is_integer())})
-      |> selection([])
-    )
+  def list_workweek_configs_request do
+    schema(%{cursor: spec(is_binary()), limit: spec(is_integer())})
+    |> selection([])
   end
 
   @type v1_payment_discount :: %{
@@ -7692,26 +6550,20 @@ defmodule SquareUp.Schema do
           name: binary()
         }
 
-  def v1_payment_discount(data) do
-    valid?(
-      data,
-      schema(%{
-        applied_money: spec(SquareUp.Schema.v1_money()),
-        discount_id: spec(is_binary()),
-        name: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def v1_payment_discount do
+    schema(%{
+      applied_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      discount_id: spec(is_binary()),
+      name: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type v1_update_timecard_request :: %{body: SquareUp.Schema.v1_timecard()}
 
-  def v1_update_timecard_request(data) do
-    valid?(
-      data,
-      schema(%{body: spec(SquareUp.Schema.v1_timecard())})
-      |> selection([:body])
-    )
+  def v1_update_timecard_request do
+    schema(%{body: Norm.Delegate.delegate(&SquareUp.Schema.v1_timecard/0)})
+    |> selection([:body])
   end
 
   @type list_payments_request :: %{
@@ -7725,26 +6577,23 @@ defmodule SquareUp.Schema do
           total: integer()
         }
 
-  def list_payments_request(data) do
-    valid?(
-      data,
-      schema(%{
-        begin_time: spec(is_binary()),
-        card_brand: spec(is_binary()),
-        cursor: spec(is_binary()),
-        end_time: spec(is_binary()),
-        last_4: spec(is_binary()),
-        location_id: spec(is_binary()),
-        sort_order: spec(is_binary()),
-        total: spec(is_integer())
-      })
-      |> selection([])
-    )
+  def list_payments_request do
+    schema(%{
+      begin_time: spec(is_binary()),
+      card_brand: spec(is_binary()),
+      cursor: spec(is_binary()),
+      end_time: spec(is_binary()),
+      last_4: spec(is_binary()),
+      location_id: spec(is_binary()),
+      sort_order: spec(is_binary()),
+      total: spec(is_integer())
+    })
+    |> selection([])
   end
 
   @type order_fulfillment_state :: binary()
-  def order_fulfillment_state(data) do
-    valid?(data, spec(is_binary()))
+  def order_fulfillment_state do
+    spec(is_binary())
   end
 
   @type order_fulfillment :: %{
@@ -7756,19 +6605,17 @@ defmodule SquareUp.Schema do
           uid: binary()
         }
 
-  def order_fulfillment(data) do
-    valid?(
-      data,
-      schema(%{
-        metadata: schema(%{}),
-        pickup_details: spec(SquareUp.Schema.order_fulfillment_pickup_details()),
-        shipment_details: spec(SquareUp.Schema.order_fulfillment_shipment_details()),
-        state: spec(is_binary()),
-        type: spec(is_binary()),
-        uid: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def order_fulfillment do
+    schema(%{
+      metadata: schema(%{}),
+      pickup_details: Norm.Delegate.delegate(&SquareUp.Schema.order_fulfillment_pickup_details/0),
+      shipment_details:
+        Norm.Delegate.delegate(&SquareUp.Schema.order_fulfillment_shipment_details/0),
+      state: spec(is_binary()),
+      type: spec(is_binary()),
+      uid: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type update_team_member_response :: %{
@@ -7776,25 +6623,19 @@ defmodule SquareUp.Schema do
           team_member: SquareUp.Schema.team_member()
         }
 
-  def update_team_member_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        team_member: spec(SquareUp.Schema.team_member())
-      })
-      |> selection([])
-    )
+  def update_team_member_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      team_member: Norm.Delegate.delegate(&SquareUp.Schema.team_member/0)
+    })
+    |> selection([])
   end
 
   @type v1_list_employees_response :: %{items: [SquareUp.Schema.v1_employee()]}
 
-  def v1_list_employees_response(data) do
-    valid?(
-      data,
-      schema(%{items: spec(coll_of(spec(SquareUp.Schema.v1_employee())))})
-      |> selection([])
-    )
+  def v1_list_employees_response do
+    schema(%{items: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_employee/0)))})
+    |> selection([])
   end
 
   @type create_customer_request :: %{
@@ -7811,24 +6652,21 @@ defmodule SquareUp.Schema do
           reference_id: binary()
         }
 
-  def create_customer_request(data) do
-    valid?(
-      data,
-      schema(%{
-        address: spec(SquareUp.Schema.address()),
-        birthday: spec(is_binary()),
-        company_name: spec(is_binary()),
-        email_address: spec(is_binary()),
-        family_name: spec(is_binary()),
-        given_name: spec(is_binary()),
-        idempotency_key: spec(is_binary()),
-        nickname: spec(is_binary()),
-        note: spec(is_binary()),
-        phone_number: spec(is_binary()),
-        reference_id: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def create_customer_request do
+    schema(%{
+      address: Norm.Delegate.delegate(&SquareUp.Schema.address/0),
+      birthday: spec(is_binary()),
+      company_name: spec(is_binary()),
+      email_address: spec(is_binary()),
+      family_name: spec(is_binary()),
+      given_name: spec(is_binary()),
+      idempotency_key: spec(is_binary()),
+      nickname: spec(is_binary()),
+      note: spec(is_binary()),
+      phone_number: spec(is_binary()),
+      reference_id: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type list_employee_wages_request :: %{
@@ -7837,41 +6675,28 @@ defmodule SquareUp.Schema do
           limit: integer()
         }
 
-  def list_employee_wages_request(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        employee_id: spec(is_binary()),
-        limit: spec(is_integer())
-      })
-      |> selection([])
-    )
+  def list_employee_wages_request do
+    schema(%{cursor: spec(is_binary()), employee_id: spec(is_binary()), limit: spec(is_integer())})
+    |> selection([])
   end
 
   @type order_line_item_tax_scope :: binary()
-  def order_line_item_tax_scope(data) do
-    valid?(data, spec(is_binary()))
+  def order_line_item_tax_scope do
+    spec(is_binary())
   end
 
   @type update_workweek_config_request :: %{workweek_config: SquareUp.Schema.workweek_config()}
 
-  def update_workweek_config_request(data) do
-    valid?(
-      data,
-      schema(%{workweek_config: spec(SquareUp.Schema.workweek_config())})
-      |> selection([:workweek_config])
-    )
+  def update_workweek_config_request do
+    schema(%{workweek_config: Norm.Delegate.delegate(&SquareUp.Schema.workweek_config/0)})
+    |> selection([:workweek_config])
   end
 
   @type cancel_payment_by_idempotency_key_response :: %{errors: [SquareUp.Schema.error()]}
 
-  def cancel_payment_by_idempotency_key_response(data) do
-    valid?(
-      data,
-      schema(%{errors: spec(coll_of(spec(SquareUp.Schema.error())))})
-      |> selection([])
-    )
+  def cancel_payment_by_idempotency_key_response do
+    schema(%{errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))})
+    |> selection([])
   end
 
   @type update_wage_setting_response :: %{
@@ -7879,30 +6704,24 @@ defmodule SquareUp.Schema do
           wage_setting: SquareUp.Schema.wage_setting()
         }
 
-  def update_wage_setting_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        wage_setting: spec(SquareUp.Schema.wage_setting())
-      })
-      |> selection([])
-    )
+  def update_wage_setting_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      wage_setting: Norm.Delegate.delegate(&SquareUp.Schema.wage_setting/0)
+    })
+    |> selection([])
   end
 
   @type v1_money :: %{amount: integer(), currency_code: binary()}
 
-  def v1_money(data) do
-    valid?(
-      data,
-      schema(%{amount: spec(is_integer()), currency_code: spec(is_binary())})
-      |> selection([])
-    )
+  def v1_money do
+    schema(%{amount: spec(is_integer()), currency_code: spec(is_binary())})
+    |> selection([])
   end
 
   @type catalog_discount_type :: binary()
-  def catalog_discount_type(data) do
-    valid?(data, spec(is_binary()))
+  def catalog_discount_type do
+    spec(is_binary())
   end
 
   @type v1_employee :: %{
@@ -7918,33 +6737,27 @@ defmodule SquareUp.Schema do
           updated_at: binary()
         }
 
-  def v1_employee(data) do
-    valid?(
-      data,
-      schema(%{
-        authorized_location_ids: spec(coll_of(spec(is_binary()))),
-        created_at: spec(is_binary()),
-        email: spec(is_binary()),
-        external_id: spec(is_binary()),
-        first_name: spec(is_binary()),
-        id: spec(is_binary()),
-        last_name: spec(is_binary()),
-        role_ids: spec(coll_of(spec(is_binary()))),
-        status: spec(is_binary()),
-        updated_at: spec(is_binary())
-      })
-      |> selection([:first_name, :last_name])
-    )
+  def v1_employee do
+    schema(%{
+      authorized_location_ids: spec(coll_of(spec(is_binary()))),
+      created_at: spec(is_binary()),
+      email: spec(is_binary()),
+      external_id: spec(is_binary()),
+      first_name: spec(is_binary()),
+      id: spec(is_binary()),
+      last_name: spec(is_binary()),
+      role_ids: spec(coll_of(spec(is_binary()))),
+      status: spec(is_binary()),
+      updated_at: spec(is_binary())
+    })
+    |> selection([:first_name, :last_name])
   end
 
   @type catalog_time_period :: %{event: binary()}
 
-  def catalog_time_period(data) do
-    valid?(
-      data,
-      schema(%{event: spec(is_binary())})
-      |> selection([])
-    )
+  def catalog_time_period do
+    schema(%{event: spec(is_binary())})
+    |> selection([])
   end
 
   @type v1_list_employee_roles_request :: %{
@@ -7953,16 +6766,9 @@ defmodule SquareUp.Schema do
           order: binary()
         }
 
-  def v1_list_employee_roles_request(data) do
-    valid?(
-      data,
-      schema(%{
-        batch_token: spec(is_binary()),
-        limit: spec(is_integer()),
-        order: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def v1_list_employee_roles_request do
+    schema(%{batch_token: spec(is_binary()), limit: spec(is_integer()), order: spec(is_binary())})
+    |> selection([])
   end
 
   @type search_loyalty_accounts_response :: %{
@@ -7971,16 +6777,13 @@ defmodule SquareUp.Schema do
           loyalty_accounts: [SquareUp.Schema.loyalty_account()]
         }
 
-  def search_loyalty_accounts_response(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        loyalty_accounts: spec(coll_of(spec(SquareUp.Schema.loyalty_account())))
-      })
-      |> selection([])
-    )
+  def search_loyalty_accounts_response do
+    schema(%{
+      cursor: spec(is_binary()),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      loyalty_accounts: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.loyalty_account/0)))
+    })
+    |> selection([])
   end
 
   @type create_team_member_response :: %{
@@ -7988,35 +6791,26 @@ defmodule SquareUp.Schema do
           team_member: SquareUp.Schema.team_member()
         }
 
-  def create_team_member_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        team_member: spec(SquareUp.Schema.team_member())
-      })
-      |> selection([])
-    )
+  def create_team_member_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      team_member: Norm.Delegate.delegate(&SquareUp.Schema.team_member/0)
+    })
+    |> selection([])
   end
 
   @type list_locations_request :: %{}
 
-  def list_locations_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def list_locations_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type v1_update_discount_request :: %{body: SquareUp.Schema.v1_discount()}
 
-  def v1_update_discount_request(data) do
-    valid?(
-      data,
-      schema(%{body: spec(SquareUp.Schema.v1_discount())})
-      |> selection([:body])
-    )
+  def v1_update_discount_request do
+    schema(%{body: Norm.Delegate.delegate(&SquareUp.Schema.v1_discount/0)})
+    |> selection([:body])
   end
 
   @type v1_cash_drawer_event :: %{
@@ -8028,19 +6822,16 @@ defmodule SquareUp.Schema do
           id: binary()
         }
 
-  def v1_cash_drawer_event(data) do
-    valid?(
-      data,
-      schema(%{
-        created_at: spec(is_binary()),
-        description: spec(is_binary()),
-        employee_id: spec(is_binary()),
-        event_money: spec(SquareUp.Schema.v1_money()),
-        event_type: spec(is_binary()),
-        id: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def v1_cash_drawer_event do
+    schema(%{
+      created_at: spec(is_binary()),
+      description: spec(is_binary()),
+      employee_id: spec(is_binary()),
+      event_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      event_type: spec(is_binary()),
+      id: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type list_refunds_response :: %{
@@ -8049,26 +6840,20 @@ defmodule SquareUp.Schema do
           refunds: [SquareUp.Schema.refund()]
         }
 
-  def list_refunds_response(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        refunds: spec(coll_of(spec(SquareUp.Schema.refund())))
-      })
-      |> selection([])
-    )
+  def list_refunds_response do
+    schema(%{
+      cursor: spec(is_binary()),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      refunds: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.refund/0)))
+    })
+    |> selection([])
   end
 
   @type v1_list_bank_accounts_request :: %{}
 
-  def v1_list_bank_accounts_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def v1_list_bank_accounts_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type retrieve_transaction_response :: %{
@@ -8076,40 +6861,31 @@ defmodule SquareUp.Schema do
           transaction: SquareUp.Schema.transaction()
         }
 
-  def retrieve_transaction_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        transaction: spec(SquareUp.Schema.transaction())
-      })
-      |> selection([])
-    )
+  def retrieve_transaction_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      transaction: Norm.Delegate.delegate(&SquareUp.Schema.transaction/0)
+    })
+    |> selection([])
   end
 
   @type search_orders_sort :: %{sort_field: binary(), sort_order: binary()}
 
-  def search_orders_sort(data) do
-    valid?(
-      data,
-      schema(%{sort_field: spec(is_binary()), sort_order: spec(is_binary())})
-      |> selection([:sort_field])
-    )
+  def search_orders_sort do
+    schema(%{sort_field: spec(is_binary()), sort_order: spec(is_binary())})
+    |> selection([:sort_field])
   end
 
   @type v1_timecard_event_event_type :: binary()
-  def v1_timecard_event_event_type(data) do
-    valid?(data, spec(is_binary()))
+  def v1_timecard_event_event_type do
+    spec(is_binary())
   end
 
   @type search_team_members_filter :: %{location_ids: [binary()], status: binary()}
 
-  def search_team_members_filter(data) do
-    valid?(
-      data,
-      schema(%{location_ids: spec(coll_of(spec(is_binary()))), status: spec(is_binary())})
-      |> selection([])
-    )
+  def search_team_members_filter do
+    schema(%{location_ids: spec(coll_of(spec(is_binary()))), status: spec(is_binary())})
+    |> selection([])
   end
 
   @type catalog_custom_attribute_definition_selection_config_custom_attribute_selection :: %{
@@ -8117,12 +6893,9 @@ defmodule SquareUp.Schema do
           uid: binary()
         }
 
-  def catalog_custom_attribute_definition_selection_config_custom_attribute_selection(data) do
-    valid?(
-      data,
-      schema(%{name: spec(is_binary()), uid: spec(is_binary())})
-      |> selection([:name])
-    )
+  def catalog_custom_attribute_definition_selection_config_custom_attribute_selection do
+    schema(%{name: spec(is_binary()), uid: spec(is_binary())})
+    |> selection([:name])
   end
 
   @type v1_payment_tax :: %{
@@ -8134,19 +6907,16 @@ defmodule SquareUp.Schema do
           rate: binary()
         }
 
-  def v1_payment_tax(data) do
-    valid?(
-      data,
-      schema(%{
-        applied_money: spec(SquareUp.Schema.v1_money()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        fee_id: spec(is_binary()),
-        inclusion_type: spec(is_binary()),
-        name: spec(is_binary()),
-        rate: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def v1_payment_tax do
+    schema(%{
+      applied_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      fee_id: spec(is_binary()),
+      inclusion_type: spec(is_binary()),
+      name: spec(is_binary()),
+      rate: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type get_payment_response :: %{
@@ -8154,40 +6924,31 @@ defmodule SquareUp.Schema do
           payment: SquareUp.Schema.payment()
         }
 
-  def get_payment_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        payment: spec(SquareUp.Schema.payment())
-      })
-      |> selection([])
-    )
+  def get_payment_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      payment: Norm.Delegate.delegate(&SquareUp.Schema.payment/0)
+    })
+    |> selection([])
   end
 
   @type v1_retrieve_payment_request :: %{}
 
-  def v1_retrieve_payment_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def v1_retrieve_payment_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type employee_status :: binary()
-  def employee_status(data) do
-    valid?(data, spec(is_binary()))
+  def employee_status do
+    spec(is_binary())
   end
 
   @type get_invoice_request :: %{}
 
-  def get_invoice_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def get_invoice_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type batch_retrieve_catalog_objects_request :: %{
@@ -8195,15 +6956,12 @@ defmodule SquareUp.Schema do
           object_ids: [binary()]
         }
 
-  def batch_retrieve_catalog_objects_request(data) do
-    valid?(
-      data,
-      schema(%{
-        include_related_objects: spec(is_boolean()),
-        object_ids: spec(coll_of(spec(is_binary())))
-      })
-      |> selection([:object_ids])
-    )
+  def batch_retrieve_catalog_objects_request do
+    schema(%{
+      include_related_objects: spec(is_boolean()),
+      object_ids: spec(coll_of(spec(is_binary())))
+    })
+    |> selection([:object_ids])
   end
 
   @type batch_retrieve_inventory_changes_response :: %{
@@ -8212,36 +6970,27 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def batch_retrieve_inventory_changes_response(data) do
-    valid?(
-      data,
-      schema(%{
-        changes: spec(coll_of(spec(SquareUp.Schema.inventory_change()))),
-        cursor: spec(is_binary()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def batch_retrieve_inventory_changes_response do
+    schema(%{
+      changes: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.inventory_change/0))),
+      cursor: spec(is_binary()),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type retrieve_catalog_object_request :: %{include_related_objects: boolean()}
 
-  def retrieve_catalog_object_request(data) do
-    valid?(
-      data,
-      schema(%{include_related_objects: spec(is_boolean())})
-      |> selection([])
-    )
+  def retrieve_catalog_object_request do
+    schema(%{include_related_objects: spec(is_boolean())})
+    |> selection([])
   end
 
   @type v1_create_modifier_list_request :: %{body: SquareUp.Schema.v1_modifier_list()}
 
-  def v1_create_modifier_list_request(data) do
-    valid?(
-      data,
-      schema(%{body: spec(SquareUp.Schema.v1_modifier_list())})
-      |> selection([])
-    )
+  def v1_create_modifier_list_request do
+    schema(%{body: Norm.Delegate.delegate(&SquareUp.Schema.v1_modifier_list/0)})
+    |> selection([])
   end
 
   @type v1_employee_role :: %{
@@ -8253,19 +7002,16 @@ defmodule SquareUp.Schema do
           updated_at: binary()
         }
 
-  def v1_employee_role(data) do
-    valid?(
-      data,
-      schema(%{
-        created_at: spec(is_binary()),
-        id: spec(is_binary()),
-        is_owner: spec(is_boolean()),
-        name: spec(is_binary()),
-        permissions: spec(coll_of(spec(is_binary()))),
-        updated_at: spec(is_binary())
-      })
-      |> selection([:name, :permissions])
-    )
+  def v1_employee_role do
+    schema(%{
+      created_at: spec(is_binary()),
+      id: spec(is_binary()),
+      is_owner: spec(is_boolean()),
+      name: spec(is_binary()),
+      permissions: spec(coll_of(spec(is_binary()))),
+      updated_at: spec(is_binary())
+    })
+    |> selection([:name, :permissions])
   end
 
   @type cash_drawer_shift_event :: %{
@@ -8277,24 +7023,21 @@ defmodule SquareUp.Schema do
           id: binary()
         }
 
-  def cash_drawer_shift_event(data) do
-    valid?(
-      data,
-      schema(%{
-        created_at: spec(is_binary()),
-        description: spec(is_binary()),
-        employee_id: spec(is_binary()),
-        event_money: spec(SquareUp.Schema.money()),
-        event_type: spec(is_binary()),
-        id: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def cash_drawer_shift_event do
+    schema(%{
+      created_at: spec(is_binary()),
+      description: spec(is_binary()),
+      employee_id: spec(is_binary()),
+      event_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      event_type: spec(is_binary()),
+      id: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type cash_drawer_shift_state :: binary()
-  def cash_drawer_shift_state(data) do
-    valid?(data, spec(is_binary()))
+  def cash_drawer_shift_state do
+    spec(is_binary())
   end
 
   @type obtain_token_response :: %{
@@ -8308,39 +7051,33 @@ defmodule SquareUp.Schema do
           token_type: binary()
         }
 
-  def obtain_token_response(data) do
-    valid?(
-      data,
-      schema(%{
-        access_token: spec(is_binary()),
-        expires_at: spec(is_binary()),
-        id_token: spec(is_binary()),
-        merchant_id: spec(is_binary()),
-        plan_id: spec(is_binary()),
-        refresh_token: spec(is_binary()),
-        subscription_id: spec(is_binary()),
-        token_type: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def obtain_token_response do
+    schema(%{
+      access_token: spec(is_binary()),
+      expires_at: spec(is_binary()),
+      id_token: spec(is_binary()),
+      merchant_id: spec(is_binary()),
+      plan_id: spec(is_binary()),
+      refresh_token: spec(is_binary()),
+      subscription_id: spec(is_binary()),
+      token_type: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type search_subscriptions_filter :: %{customer_ids: [binary()], location_ids: [binary()]}
 
-  def search_subscriptions_filter(data) do
-    valid?(
-      data,
-      schema(%{
-        customer_ids: spec(coll_of(spec(is_binary()))),
-        location_ids: spec(coll_of(spec(is_binary())))
-      })
-      |> selection([])
-    )
+  def search_subscriptions_filter do
+    schema(%{
+      customer_ids: spec(coll_of(spec(is_binary()))),
+      location_ids: spec(coll_of(spec(is_binary())))
+    })
+    |> selection([])
   end
 
   @type catalog_custom_attribute_definition_seller_visibility :: binary()
-  def catalog_custom_attribute_definition_seller_visibility(data) do
-    valid?(data, spec(is_binary()))
+  def catalog_custom_attribute_definition_seller_visibility do
+    spec(is_binary())
   end
 
   @type invoice_payment_request :: %{
@@ -8358,79 +7095,61 @@ defmodule SquareUp.Schema do
           uid: binary()
         }
 
-  def invoice_payment_request(data) do
-    valid?(
-      data,
-      schema(%{
-        card_id: spec(is_binary()),
-        computed_amount_money: spec(SquareUp.Schema.money()),
-        due_date: spec(is_binary()),
-        fixed_amount_requested_money: spec(SquareUp.Schema.money()),
-        percentage_requested: spec(is_binary()),
-        reminders: spec(coll_of(spec(SquareUp.Schema.invoice_payment_reminder()))),
-        request_method: spec(is_binary()),
-        request_type: spec(is_binary()),
-        rounding_adjustment_included_money: spec(SquareUp.Schema.money()),
-        tipping_enabled: spec(is_boolean()),
-        total_completed_amount_money: spec(SquareUp.Schema.money()),
-        uid: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def invoice_payment_request do
+    schema(%{
+      card_id: spec(is_binary()),
+      computed_amount_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      due_date: spec(is_binary()),
+      fixed_amount_requested_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      percentage_requested: spec(is_binary()),
+      reminders:
+        spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.invoice_payment_reminder/0))),
+      request_method: spec(is_binary()),
+      request_type: spec(is_binary()),
+      rounding_adjustment_included_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      tipping_enabled: spec(is_boolean()),
+      total_completed_amount_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      uid: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type update_location_request :: %{location: SquareUp.Schema.location()}
 
-  def update_location_request(data) do
-    valid?(
-      data,
-      schema(%{location: spec(SquareUp.Schema.location())})
-      |> selection([])
-    )
+  def update_location_request do
+    schema(%{location: Norm.Delegate.delegate(&SquareUp.Schema.location/0)})
+    |> selection([])
   end
 
   @type v1_order_state :: binary()
-  def v1_order_state(data) do
-    valid?(data, spec(is_binary()))
+  def v1_order_state do
+    spec(is_binary())
   end
 
   @type list_bank_accounts_request :: %{cursor: binary(), limit: integer(), location_id: binary()}
 
-  def list_bank_accounts_request(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        limit: spec(is_integer()),
-        location_id: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def list_bank_accounts_request do
+    schema(%{cursor: spec(is_binary()), limit: spec(is_integer()), location_id: spec(is_binary())})
+    |> selection([])
   end
 
   @type customer_group_info :: %{id: binary(), name: binary()}
 
-  def customer_group_info(data) do
-    valid?(
-      data,
-      schema(%{id: spec(is_binary()), name: spec(is_binary())})
-      |> selection([:id, :name])
-    )
+  def customer_group_info do
+    schema(%{id: spec(is_binary()), name: spec(is_binary())})
+    |> selection([:id, :name])
   end
 
   @type catalog_object_type :: binary()
-  def catalog_object_type(data) do
-    valid?(data, spec(is_binary()))
+  def catalog_object_type do
+    spec(is_binary())
   end
 
   @type v1_list_discounts_request :: %{}
 
-  def v1_list_discounts_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def v1_list_discounts_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type list_customer_groups_response :: %{
@@ -8439,16 +7158,13 @@ defmodule SquareUp.Schema do
           groups: [SquareUp.Schema.customer_group()]
         }
 
-  def list_customer_groups_response(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        groups: spec(coll_of(spec(SquareUp.Schema.customer_group())))
-      })
-      |> selection([])
-    )
+  def list_customer_groups_response do
+    schema(%{
+      cursor: spec(is_binary()),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      groups: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.customer_group/0)))
+    })
+    |> selection([])
   end
 
   @type payment_refund :: %{
@@ -8465,24 +7181,21 @@ defmodule SquareUp.Schema do
           updated_at: binary()
         }
 
-  def payment_refund(data) do
-    valid?(
-      data,
-      schema(%{
-        amount_money: spec(SquareUp.Schema.money()),
-        app_fee_money: spec(SquareUp.Schema.money()),
-        created_at: spec(is_binary()),
-        id: spec(is_binary()),
-        location_id: spec(is_binary()),
-        order_id: spec(is_binary()),
-        payment_id: spec(is_binary()),
-        processing_fee: spec(coll_of(spec(SquareUp.Schema.processing_fee()))),
-        reason: spec(is_binary()),
-        status: spec(is_binary()),
-        updated_at: spec(is_binary())
-      })
-      |> selection([:id, :amount_money])
-    )
+  def payment_refund do
+    schema(%{
+      amount_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      app_fee_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      created_at: spec(is_binary()),
+      id: spec(is_binary()),
+      location_id: spec(is_binary()),
+      order_id: spec(is_binary()),
+      payment_id: spec(is_binary()),
+      processing_fee: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.processing_fee/0))),
+      reason: spec(is_binary()),
+      status: spec(is_binary()),
+      updated_at: spec(is_binary())
+    })
+    |> selection([:id, :amount_money])
   end
 
   @type search_customers_response :: %{
@@ -8491,26 +7204,20 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def search_customers_response(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        customers: spec(coll_of(spec(SquareUp.Schema.customer()))),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def search_customers_response do
+    schema(%{
+      cursor: spec(is_binary()),
+      customers: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.customer/0))),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type v1_list_timecards_response :: %{items: [SquareUp.Schema.v1_timecard()]}
 
-  def v1_list_timecards_response(data) do
-    valid?(
-      data,
-      schema(%{items: spec(coll_of(spec(SquareUp.Schema.v1_timecard())))})
-      |> selection([])
-    )
+  def v1_list_timecards_response do
+    schema(%{items: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_timecard/0)))})
+    |> selection([])
   end
 
   @type v1_payment :: %{
@@ -8543,40 +7250,38 @@ defmodule SquareUp.Schema do
           total_collected_money: SquareUp.Schema.v1_money()
         }
 
-  def v1_payment(data) do
-    valid?(
-      data,
-      schema(%{
-        additive_tax: spec(coll_of(spec(SquareUp.Schema.v1_payment_tax()))),
-        additive_tax_money: spec(SquareUp.Schema.v1_money()),
-        created_at: spec(is_binary()),
-        creator_id: spec(is_binary()),
-        device: spec(SquareUp.Schema.device()),
-        discount_money: spec(SquareUp.Schema.v1_money()),
-        gross_sales_money: spec(SquareUp.Schema.v1_money()),
-        id: spec(is_binary()),
-        inclusive_tax: spec(coll_of(spec(SquareUp.Schema.v1_payment_tax()))),
-        inclusive_tax_money: spec(SquareUp.Schema.v1_money()),
-        is_partial: spec(is_boolean()),
-        itemizations: spec(coll_of(spec(SquareUp.Schema.v1_payment_itemization()))),
-        merchant_id: spec(is_binary()),
-        net_sales_money: spec(SquareUp.Schema.v1_money()),
-        net_total_money: spec(SquareUp.Schema.v1_money()),
-        payment_url: spec(is_binary()),
-        processing_fee_money: spec(SquareUp.Schema.v1_money()),
-        receipt_url: spec(is_binary()),
-        refunded_money: spec(SquareUp.Schema.v1_money()),
-        refunds: spec(coll_of(spec(SquareUp.Schema.v1_refund()))),
-        surcharge_money: spec(SquareUp.Schema.v1_money()),
-        surcharges: spec(coll_of(spec(SquareUp.Schema.v1_payment_surcharge()))),
-        swedish_rounding_money: spec(SquareUp.Schema.v1_money()),
-        tax_money: spec(SquareUp.Schema.v1_money()),
-        tender: spec(coll_of(spec(SquareUp.Schema.v1_tender()))),
-        tip_money: spec(SquareUp.Schema.v1_money()),
-        total_collected_money: spec(SquareUp.Schema.v1_money())
-      })
-      |> selection([])
-    )
+  def v1_payment do
+    schema(%{
+      additive_tax: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_payment_tax/0))),
+      additive_tax_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      created_at: spec(is_binary()),
+      creator_id: spec(is_binary()),
+      device: Norm.Delegate.delegate(&SquareUp.Schema.device/0),
+      discount_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      gross_sales_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      id: spec(is_binary()),
+      inclusive_tax: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_payment_tax/0))),
+      inclusive_tax_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      is_partial: spec(is_boolean()),
+      itemizations:
+        spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_payment_itemization/0))),
+      merchant_id: spec(is_binary()),
+      net_sales_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      net_total_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      payment_url: spec(is_binary()),
+      processing_fee_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      receipt_url: spec(is_binary()),
+      refunded_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      refunds: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_refund/0))),
+      surcharge_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      surcharges: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_payment_surcharge/0))),
+      swedish_rounding_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      tax_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      tender: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_tender/0))),
+      tip_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      total_collected_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0)
+    })
+    |> selection([])
   end
 
   @type card :: %{
@@ -8593,24 +7298,21 @@ defmodule SquareUp.Schema do
           prepaid_type: binary()
         }
 
-  def card(data) do
-    valid?(
-      data,
-      schema(%{
-        billing_address: spec(SquareUp.Schema.address()),
-        bin: spec(is_binary()),
-        card_brand: spec(is_binary()),
-        card_type: spec(is_binary()),
-        cardholder_name: spec(is_binary()),
-        exp_month: spec(is_integer()),
-        exp_year: spec(is_integer()),
-        fingerprint: spec(is_binary()),
-        id: spec(is_binary()),
-        last_4: spec(is_binary()),
-        prepaid_type: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def card do
+    schema(%{
+      billing_address: Norm.Delegate.delegate(&SquareUp.Schema.address/0),
+      bin: spec(is_binary()),
+      card_brand: spec(is_binary()),
+      card_type: spec(is_binary()),
+      cardholder_name: spec(is_binary()),
+      exp_month: spec(is_integer()),
+      exp_year: spec(is_integer()),
+      fingerprint: spec(is_binary()),
+      id: spec(is_binary()),
+      last_4: spec(is_binary()),
+      prepaid_type: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type retrieve_subscription_response :: %{
@@ -8618,55 +7320,40 @@ defmodule SquareUp.Schema do
           subscription: SquareUp.Schema.subscription()
         }
 
-  def retrieve_subscription_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        subscription: spec(SquareUp.Schema.subscription())
-      })
-      |> selection([])
-    )
+  def retrieve_subscription_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      subscription: Norm.Delegate.delegate(&SquareUp.Schema.subscription/0)
+    })
+    |> selection([])
   end
 
   @type delete_break_type_request :: %{}
 
-  def delete_break_type_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def delete_break_type_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type retrieve_inventory_physical_count_request :: %{}
 
-  def retrieve_inventory_physical_count_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def retrieve_inventory_physical_count_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type batch_delete_catalog_objects_request :: %{object_ids: [binary()]}
 
-  def batch_delete_catalog_objects_request(data) do
-    valid?(
-      data,
-      schema(%{object_ids: spec(coll_of(spec(is_binary())))})
-      |> selection([])
-    )
+  def batch_delete_catalog_objects_request do
+    schema(%{object_ids: spec(coll_of(spec(is_binary())))})
+    |> selection([])
   end
 
   @type order_reward :: %{id: binary(), reward_tier_id: binary()}
 
-  def order_reward(data) do
-    valid?(
-      data,
-      schema(%{id: spec(is_binary()), reward_tier_id: spec(is_binary())})
-      |> selection([:id, :reward_tier_id])
-    )
+  def order_reward do
+    schema(%{id: spec(is_binary()), reward_tier_id: spec(is_binary())})
+    |> selection([:id, :reward_tier_id])
   end
 
   @type update_item_modifier_lists_request :: %{
@@ -8675,36 +7362,27 @@ defmodule SquareUp.Schema do
           modifier_lists_to_enable: [binary()]
         }
 
-  def update_item_modifier_lists_request(data) do
-    valid?(
-      data,
-      schema(%{
-        item_ids: spec(coll_of(spec(is_binary()))),
-        modifier_lists_to_disable: spec(coll_of(spec(is_binary()))),
-        modifier_lists_to_enable: spec(coll_of(spec(is_binary())))
-      })
-      |> selection([:item_ids])
-    )
+  def update_item_modifier_lists_request do
+    schema(%{
+      item_ids: spec(coll_of(spec(is_binary()))),
+      modifier_lists_to_disable: spec(coll_of(spec(is_binary()))),
+      modifier_lists_to_enable: spec(coll_of(spec(is_binary())))
+    })
+    |> selection([:item_ids])
   end
 
   @type v1_item_image :: %{id: binary(), url: binary()}
 
-  def v1_item_image(data) do
-    valid?(
-      data,
-      schema(%{id: spec(is_binary()), url: spec(is_binary())})
-      |> selection([])
-    )
+  def v1_item_image do
+    schema(%{id: spec(is_binary()), url: spec(is_binary())})
+    |> selection([])
   end
 
   @type v1_merchant_location_details :: %{nickname: binary()}
 
-  def v1_merchant_location_details(data) do
-    valid?(
-      data,
-      schema(%{nickname: spec(is_binary())})
-      |> selection([])
-    )
+  def v1_merchant_location_details do
+    schema(%{nickname: spec(is_binary())})
+    |> selection([])
   end
 
   @type device_code :: %{
@@ -8721,39 +7399,33 @@ defmodule SquareUp.Schema do
           status_changed_at: binary()
         }
 
-  def device_code(data) do
-    valid?(
-      data,
-      schema(%{
-        code: spec(is_binary()),
-        created_at: spec(is_binary()),
-        device_id: spec(is_binary()),
-        id: spec(is_binary()),
-        location_id: spec(is_binary()),
-        name: spec(is_binary()),
-        pair_by: spec(is_binary()),
-        paired_at: spec(is_binary()),
-        product_type: spec(is_binary()),
-        status: spec(is_binary()),
-        status_changed_at: spec(is_binary())
-      })
-      |> selection([:product_type])
-    )
+  def device_code do
+    schema(%{
+      code: spec(is_binary()),
+      created_at: spec(is_binary()),
+      device_id: spec(is_binary()),
+      id: spec(is_binary()),
+      location_id: spec(is_binary()),
+      name: spec(is_binary()),
+      pair_by: spec(is_binary()),
+      paired_at: spec(is_binary()),
+      product_type: spec(is_binary()),
+      status: spec(is_binary()),
+      status_changed_at: spec(is_binary())
+    })
+    |> selection([:product_type])
   end
 
   @type v1_update_modifier_list_request :: %{name: binary(), selection_type: binary()}
 
-  def v1_update_modifier_list_request(data) do
-    valid?(
-      data,
-      schema(%{name: spec(is_binary()), selection_type: spec(is_binary())})
-      |> selection([])
-    )
+  def v1_update_modifier_list_request do
+    schema(%{name: spec(is_binary()), selection_type: spec(is_binary())})
+    |> selection([])
   end
 
   @type invoice_status :: binary()
-  def invoice_status(data) do
-    valid?(data, spec(is_binary()))
+  def invoice_status do
+    spec(is_binary())
   end
 
   @type v1_page :: %{
@@ -8763,17 +7435,14 @@ defmodule SquareUp.Schema do
           page_index: integer()
         }
 
-  def v1_page(data) do
-    valid?(
-      data,
-      schema(%{
-        cells: spec(coll_of(spec(SquareUp.Schema.v1_page_cell()))),
-        id: spec(is_binary()),
-        name: spec(is_binary()),
-        page_index: spec(is_integer())
-      })
-      |> selection([])
-    )
+  def v1_page do
+    schema(%{
+      cells: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_page_cell/0))),
+      id: spec(is_binary()),
+      name: spec(is_binary()),
+      page_index: spec(is_integer())
+    })
+    |> selection([])
   end
 
   @type customer :: %{
@@ -8798,32 +7467,29 @@ defmodule SquareUp.Schema do
           updated_at: binary()
         }
 
-  def customer(data) do
-    valid?(
-      data,
-      schema(%{
-        address: spec(SquareUp.Schema.address()),
-        birthday: spec(is_binary()),
-        cards: spec(coll_of(spec(SquareUp.Schema.card()))),
-        company_name: spec(is_binary()),
-        created_at: spec(is_binary()),
-        creation_source: spec(is_binary()),
-        email_address: spec(is_binary()),
-        family_name: spec(is_binary()),
-        given_name: spec(is_binary()),
-        group_ids: spec(coll_of(spec(is_binary()))),
-        groups: spec(coll_of(spec(SquareUp.Schema.customer_group_info()))),
-        id: spec(is_binary()),
-        nickname: spec(is_binary()),
-        note: spec(is_binary()),
-        phone_number: spec(is_binary()),
-        preferences: spec(SquareUp.Schema.customer_preferences()),
-        reference_id: spec(is_binary()),
-        segment_ids: spec(coll_of(spec(is_binary()))),
-        updated_at: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def customer do
+    schema(%{
+      address: Norm.Delegate.delegate(&SquareUp.Schema.address/0),
+      birthday: spec(is_binary()),
+      cards: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.card/0))),
+      company_name: spec(is_binary()),
+      created_at: spec(is_binary()),
+      creation_source: spec(is_binary()),
+      email_address: spec(is_binary()),
+      family_name: spec(is_binary()),
+      given_name: spec(is_binary()),
+      group_ids: spec(coll_of(spec(is_binary()))),
+      groups: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.customer_group_info/0))),
+      id: spec(is_binary()),
+      nickname: spec(is_binary()),
+      note: spec(is_binary()),
+      phone_number: spec(is_binary()),
+      preferences: Norm.Delegate.delegate(&SquareUp.Schema.customer_preferences/0),
+      reference_id: spec(is_binary()),
+      segment_ids: spec(coll_of(spec(is_binary()))),
+      updated_at: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type list_team_member_wages_response :: %{
@@ -8832,16 +7498,14 @@ defmodule SquareUp.Schema do
           team_member_wages: [SquareUp.Schema.team_member_wage()]
         }
 
-  def list_team_member_wages_response(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        team_member_wages: spec(coll_of(spec(SquareUp.Schema.team_member_wage())))
-      })
-      |> selection([])
-    )
+  def list_team_member_wages_response do
+    schema(%{
+      cursor: spec(is_binary()),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      team_member_wages:
+        spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.team_member_wage/0)))
+    })
+    |> selection([])
   end
 
   @type transaction :: %{
@@ -8857,23 +7521,20 @@ defmodule SquareUp.Schema do
           tenders: [SquareUp.Schema.tender()]
         }
 
-  def transaction(data) do
-    valid?(
-      data,
-      schema(%{
-        client_id: spec(is_binary()),
-        created_at: spec(is_binary()),
-        id: spec(is_binary()),
-        location_id: spec(is_binary()),
-        order_id: spec(is_binary()),
-        product: spec(is_binary()),
-        reference_id: spec(is_binary()),
-        refunds: spec(coll_of(spec(SquareUp.Schema.refund()))),
-        shipping_address: spec(SquareUp.Schema.address()),
-        tenders: spec(coll_of(spec(SquareUp.Schema.tender())))
-      })
-      |> selection([])
-    )
+  def transaction do
+    schema(%{
+      client_id: spec(is_binary()),
+      created_at: spec(is_binary()),
+      id: spec(is_binary()),
+      location_id: spec(is_binary()),
+      order_id: spec(is_binary()),
+      product: spec(is_binary()),
+      reference_id: spec(is_binary()),
+      refunds: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.refund/0))),
+      shipping_address: Norm.Delegate.delegate(&SquareUp.Schema.address/0),
+      tenders: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.tender/0)))
+    })
+    |> selection([])
   end
 
   @type catalog_custom_attribute_definition :: %{
@@ -8892,46 +7553,45 @@ defmodule SquareUp.Schema do
           type: binary()
         }
 
-  def catalog_custom_attribute_definition(data) do
-    valid?(
-      data,
-      schema(%{
-        allowed_object_types: spec(coll_of(spec(is_binary()))),
-        app_visibility: spec(is_binary()),
-        custom_attribute_usage_count: spec(is_integer()),
-        description: spec(is_binary()),
-        key: spec(is_binary()),
-        name: spec(is_binary()),
-        number_config: spec(SquareUp.Schema.catalog_custom_attribute_definition_number_config()),
-        selection_config:
-          spec(SquareUp.Schema.catalog_custom_attribute_definition_selection_config()),
-        seller_visibility: spec(is_binary()),
-        source_application: spec(SquareUp.Schema.source_application()),
-        string_config: spec(SquareUp.Schema.catalog_custom_attribute_definition_string_config()),
-        type: spec(is_binary())
-      })
-      |> selection([:type, :name, :allowed_object_types])
-    )
+  def catalog_custom_attribute_definition do
+    schema(%{
+      allowed_object_types: spec(coll_of(spec(is_binary()))),
+      app_visibility: spec(is_binary()),
+      custom_attribute_usage_count: spec(is_integer()),
+      description: spec(is_binary()),
+      key: spec(is_binary()),
+      name: spec(is_binary()),
+      number_config:
+        Norm.Delegate.delegate(
+          &SquareUp.Schema.catalog_custom_attribute_definition_number_config/0
+        ),
+      selection_config:
+        Norm.Delegate.delegate(
+          &SquareUp.Schema.catalog_custom_attribute_definition_selection_config/0
+        ),
+      seller_visibility: spec(is_binary()),
+      source_application: Norm.Delegate.delegate(&SquareUp.Schema.source_application/0),
+      string_config:
+        Norm.Delegate.delegate(
+          &SquareUp.Schema.catalog_custom_attribute_definition_string_config/0
+        ),
+      type: spec(is_binary())
+    })
+    |> selection([:type, :name, :allowed_object_types])
   end
 
   @type v1_list_pages_response :: %{items: [SquareUp.Schema.v1_page()]}
 
-  def v1_list_pages_response(data) do
-    valid?(
-      data,
-      schema(%{items: spec(coll_of(spec(SquareUp.Schema.v1_page())))})
-      |> selection([])
-    )
+  def v1_list_pages_response do
+    schema(%{items: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_page/0)))})
+    |> selection([])
   end
 
   @type retrieve_inventory_count_request :: %{cursor: binary(), location_ids: binary()}
 
-  def retrieve_inventory_count_request(data) do
-    valid?(
-      data,
-      schema(%{cursor: spec(is_binary()), location_ids: spec(is_binary())})
-      |> selection([])
-    )
+  def retrieve_inventory_count_request do
+    schema(%{cursor: spec(is_binary()), location_ids: spec(is_binary())})
+    |> selection([])
   end
 
   @type renew_token_response :: %{
@@ -8943,19 +7603,16 @@ defmodule SquareUp.Schema do
           token_type: binary()
         }
 
-  def renew_token_response(data) do
-    valid?(
-      data,
-      schema(%{
-        access_token: spec(is_binary()),
-        expires_at: spec(is_binary()),
-        merchant_id: spec(is_binary()),
-        plan_id: spec(is_binary()),
-        subscription_id: spec(is_binary()),
-        token_type: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def renew_token_response do
+    schema(%{
+      access_token: spec(is_binary()),
+      expires_at: spec(is_binary()),
+      merchant_id: spec(is_binary()),
+      plan_id: spec(is_binary()),
+      subscription_id: spec(is_binary()),
+      token_type: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type standard_unit_description_group :: %{
@@ -8963,21 +7620,18 @@ defmodule SquareUp.Schema do
           standard_unit_descriptions: [SquareUp.Schema.standard_unit_description()]
         }
 
-  def standard_unit_description_group(data) do
-    valid?(
-      data,
-      schema(%{
-        language_code: spec(is_binary()),
-        standard_unit_descriptions:
-          spec(coll_of(spec(SquareUp.Schema.standard_unit_description())))
-      })
-      |> selection([])
-    )
+  def standard_unit_description_group do
+    schema(%{
+      language_code: spec(is_binary()),
+      standard_unit_descriptions:
+        spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.standard_unit_description/0)))
+    })
+    |> selection([])
   end
 
   @type v1_fee_type :: binary()
-  def v1_fee_type(data) do
-    valid?(data, spec(is_binary()))
+  def v1_fee_type do
+    spec(is_binary())
   end
 
   @type dispute_evidence :: %{
@@ -8987,17 +7641,14 @@ defmodule SquareUp.Schema do
           uploaded_at: binary()
         }
 
-  def dispute_evidence(data) do
-    valid?(
-      data,
-      schema(%{
-        dispute_id: spec(is_binary()),
-        evidence_id: spec(is_binary()),
-        evidence_type: spec(is_binary()),
-        uploaded_at: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def dispute_evidence do
+    schema(%{
+      dispute_id: spec(is_binary()),
+      evidence_id: spec(is_binary()),
+      evidence_type: spec(is_binary()),
+      uploaded_at: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type terminal_checkout_query_filter :: %{
@@ -9006,31 +7657,25 @@ defmodule SquareUp.Schema do
           status: binary()
         }
 
-  def terminal_checkout_query_filter(data) do
-    valid?(
-      data,
-      schema(%{
-        created_at: spec(SquareUp.Schema.time_range()),
-        device_id: spec(is_binary()),
-        status: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def terminal_checkout_query_filter do
+    schema(%{
+      created_at: Norm.Delegate.delegate(&SquareUp.Schema.time_range/0),
+      device_id: spec(is_binary()),
+      status: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type get_payment_request :: %{}
 
-  def get_payment_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def get_payment_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type order_line_item_discount_type :: binary()
-  def order_line_item_discount_type(data) do
-    valid?(data, spec(is_binary()))
+  def order_line_item_discount_type do
+    spec(is_binary())
   end
 
   @type list_bank_accounts_response :: %{
@@ -9039,21 +7684,18 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def list_bank_accounts_response(data) do
-    valid?(
-      data,
-      schema(%{
-        bank_accounts: spec(coll_of(spec(SquareUp.Schema.bank_account()))),
-        cursor: spec(is_binary()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def list_bank_accounts_response do
+    schema(%{
+      bank_accounts: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.bank_account/0))),
+      cursor: spec(is_binary()),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type search_orders_sort_field :: binary()
-  def search_orders_sort_field(data) do
-    valid?(data, spec(is_binary()))
+  def search_orders_sort_field do
+    spec(is_binary())
   end
 
   @type search_orders_fulfillment_filter :: %{
@@ -9061,15 +7703,12 @@ defmodule SquareUp.Schema do
           fulfillment_types: [binary()]
         }
 
-  def search_orders_fulfillment_filter(data) do
-    valid?(
-      data,
-      schema(%{
-        fulfillment_states: spec(coll_of(spec(is_binary()))),
-        fulfillment_types: spec(coll_of(spec(is_binary())))
-      })
-      |> selection([])
-    )
+  def search_orders_fulfillment_filter do
+    schema(%{
+      fulfillment_states: spec(coll_of(spec(is_binary()))),
+      fulfillment_types: spec(coll_of(spec(is_binary())))
+    })
+    |> selection([])
   end
 
   @type order_return_service_charge :: %{
@@ -9087,35 +7726,30 @@ defmodule SquareUp.Schema do
           uid: binary()
         }
 
-  def order_return_service_charge(data) do
-    valid?(
-      data,
-      schema(%{
-        amount_money: spec(SquareUp.Schema.money()),
-        applied_money: spec(SquareUp.Schema.money()),
-        applied_taxes: spec(coll_of(spec(SquareUp.Schema.order_line_item_applied_tax()))),
-        calculation_phase: spec(is_binary()),
-        catalog_object_id: spec(is_binary()),
-        name: spec(is_binary()),
-        percentage: spec(is_binary()),
-        source_service_charge_uid: spec(is_binary()),
-        taxable: spec(is_boolean()),
-        total_money: spec(SquareUp.Schema.money()),
-        total_tax_money: spec(SquareUp.Schema.money()),
-        uid: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def order_return_service_charge do
+    schema(%{
+      amount_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      applied_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      applied_taxes:
+        spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.order_line_item_applied_tax/0))),
+      calculation_phase: spec(is_binary()),
+      catalog_object_id: spec(is_binary()),
+      name: spec(is_binary()),
+      percentage: spec(is_binary()),
+      source_service_charge_uid: spec(is_binary()),
+      taxable: spec(is_boolean()),
+      total_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      total_tax_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      uid: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type get_employee_wage_request :: %{}
 
-  def get_employee_wage_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def get_employee_wage_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type create_payment_request :: %{
@@ -9139,31 +7773,28 @@ defmodule SquareUp.Schema do
           verification_token: binary()
         }
 
-  def create_payment_request(data) do
-    valid?(
-      data,
-      schema(%{
-        accept_partial_authorization: spec(is_boolean()),
-        amount_money: spec(SquareUp.Schema.money()),
-        app_fee_money: spec(SquareUp.Schema.money()),
-        autocomplete: spec(is_boolean()),
-        billing_address: spec(SquareUp.Schema.address()),
-        buyer_email_address: spec(is_binary()),
-        customer_id: spec(is_binary()),
-        delay_duration: spec(is_binary()),
-        idempotency_key: spec(is_binary()),
-        location_id: spec(is_binary()),
-        note: spec(is_binary()),
-        order_id: spec(is_binary()),
-        reference_id: spec(is_binary()),
-        shipping_address: spec(SquareUp.Schema.address()),
-        source_id: spec(is_binary()),
-        statement_description_identifier: spec(is_binary()),
-        tip_money: spec(SquareUp.Schema.money()),
-        verification_token: spec(is_binary())
-      })
-      |> selection([:source_id, :idempotency_key, :amount_money])
-    )
+  def create_payment_request do
+    schema(%{
+      accept_partial_authorization: spec(is_boolean()),
+      amount_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      app_fee_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      autocomplete: spec(is_boolean()),
+      billing_address: Norm.Delegate.delegate(&SquareUp.Schema.address/0),
+      buyer_email_address: spec(is_binary()),
+      customer_id: spec(is_binary()),
+      delay_duration: spec(is_binary()),
+      idempotency_key: spec(is_binary()),
+      location_id: spec(is_binary()),
+      note: spec(is_binary()),
+      order_id: spec(is_binary()),
+      reference_id: spec(is_binary()),
+      shipping_address: Norm.Delegate.delegate(&SquareUp.Schema.address/0),
+      source_id: spec(is_binary()),
+      statement_description_identifier: spec(is_binary()),
+      tip_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      verification_token: spec(is_binary())
+    })
+    |> selection([:source_id, :idempotency_key, :amount_money])
   end
 
   @type create_loyalty_account_request :: %{
@@ -9171,20 +7802,17 @@ defmodule SquareUp.Schema do
           loyalty_account: SquareUp.Schema.loyalty_account()
         }
 
-  def create_loyalty_account_request(data) do
-    valid?(
-      data,
-      schema(%{
-        idempotency_key: spec(is_binary()),
-        loyalty_account: spec(SquareUp.Schema.loyalty_account())
-      })
-      |> selection([:loyalty_account, :idempotency_key])
-    )
+  def create_loyalty_account_request do
+    schema(%{
+      idempotency_key: spec(is_binary()),
+      loyalty_account: Norm.Delegate.delegate(&SquareUp.Schema.loyalty_account/0)
+    })
+    |> selection([:loyalty_account, :idempotency_key])
   end
 
   @type v1_item_color :: binary()
-  def v1_item_color(data) do
-    valid?(data, spec(is_binary()))
+  def v1_item_color do
+    spec(is_binary())
   end
 
   @type retrieve_inventory_adjustment_response :: %{
@@ -9192,55 +7820,40 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def retrieve_inventory_adjustment_response(data) do
-    valid?(
-      data,
-      schema(%{
-        adjustment: spec(SquareUp.Schema.inventory_adjustment()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def retrieve_inventory_adjustment_response do
+    schema(%{
+      adjustment: Norm.Delegate.delegate(&SquareUp.Schema.inventory_adjustment/0),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type accept_dispute_request :: %{}
 
-  def accept_dispute_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def accept_dispute_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type team_member_assigned_locations :: %{assignment_type: binary(), location_ids: [binary()]}
 
-  def team_member_assigned_locations(data) do
-    valid?(
-      data,
-      schema(%{assignment_type: spec(is_binary()), location_ids: spec(coll_of(spec(is_binary())))})
-      |> selection([])
-    )
+  def team_member_assigned_locations do
+    schema(%{assignment_type: spec(is_binary()), location_ids: spec(coll_of(spec(is_binary())))})
+    |> selection([])
   end
 
   @type catalog_info_request :: %{}
 
-  def catalog_info_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def catalog_info_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type v1_retrieve_bank_account_request :: %{}
 
-  def v1_retrieve_bank_account_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def v1_retrieve_bank_account_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type create_location_response :: %{
@@ -9248,20 +7861,17 @@ defmodule SquareUp.Schema do
           location: SquareUp.Schema.location()
         }
 
-  def create_location_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        location: spec(SquareUp.Schema.location())
-      })
-      |> selection([])
-    )
+  def create_location_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      location: Norm.Delegate.delegate(&SquareUp.Schema.location/0)
+    })
+    |> selection([])
   end
 
   @type catalog_quick_amounts_settings_option :: binary()
-  def catalog_quick_amounts_settings_option(data) do
-    valid?(data, spec(is_binary()))
+  def catalog_quick_amounts_settings_option do
+    spec(is_binary())
   end
 
   @type team_member :: %{
@@ -9278,29 +7888,27 @@ defmodule SquareUp.Schema do
           updated_at: binary()
         }
 
-  def team_member(data) do
-    valid?(
-      data,
-      schema(%{
-        assigned_locations: spec(SquareUp.Schema.team_member_assigned_locations()),
-        created_at: spec(is_binary()),
-        email_address: spec(is_binary()),
-        family_name: spec(is_binary()),
-        given_name: spec(is_binary()),
-        id: spec(is_binary()),
-        is_owner: spec(is_boolean()),
-        phone_number: spec(is_binary()),
-        reference_id: spec(is_binary()),
-        status: spec(is_binary()),
-        updated_at: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def team_member do
+    schema(%{
+      assigned_locations:
+        Norm.Delegate.delegate(&SquareUp.Schema.team_member_assigned_locations/0),
+      created_at: spec(is_binary()),
+      email_address: spec(is_binary()),
+      family_name: spec(is_binary()),
+      given_name: spec(is_binary()),
+      id: spec(is_binary()),
+      is_owner: spec(is_boolean()),
+      phone_number: spec(is_binary()),
+      reference_id: spec(is_binary()),
+      status: spec(is_binary()),
+      updated_at: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type sort_order :: binary()
-  def sort_order(data) do
-    valid?(data, spec(is_binary()))
+  def sort_order do
+    spec(is_binary())
   end
 
   @type order_rounding_adjustment :: %{
@@ -9309,46 +7917,34 @@ defmodule SquareUp.Schema do
           uid: binary()
         }
 
-  def order_rounding_adjustment(data) do
-    valid?(
-      data,
-      schema(%{
-        amount_money: spec(SquareUp.Schema.money()),
-        name: spec(is_binary()),
-        uid: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def order_rounding_adjustment do
+    schema(%{
+      amount_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      name: spec(is_binary()),
+      uid: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type v1_list_discounts_response :: %{items: [SquareUp.Schema.v1_discount()]}
 
-  def v1_list_discounts_response(data) do
-    valid?(
-      data,
-      schema(%{items: spec(coll_of(spec(SquareUp.Schema.v1_discount())))})
-      |> selection([])
-    )
+  def v1_list_discounts_response do
+    schema(%{items: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_discount/0)))})
+    |> selection([])
   end
 
   @type customer_preferences :: %{email_unsubscribed: boolean()}
 
-  def customer_preferences(data) do
-    valid?(
-      data,
-      schema(%{email_unsubscribed: spec(is_boolean())})
-      |> selection([])
-    )
+  def customer_preferences do
+    schema(%{email_unsubscribed: spec(is_boolean())})
+    |> selection([])
   end
 
   @type retrieve_customer_segment_request :: %{}
 
-  def retrieve_customer_segment_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def retrieve_customer_segment_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type create_break_type_response :: %{
@@ -9356,20 +7952,17 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def create_break_type_response(data) do
-    valid?(
-      data,
-      schema(%{
-        break_type: spec(SquareUp.Schema.break_type()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def create_break_type_response do
+    schema(%{
+      break_type: Norm.Delegate.delegate(&SquareUp.Schema.break_type/0),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type day_of_week :: binary()
-  def day_of_week(data) do
-    valid?(data, spec(is_binary()))
+  def day_of_week do
+    spec(is_binary())
   end
 
   @type terminal_checkout_query :: %{
@@ -9377,15 +7970,12 @@ defmodule SquareUp.Schema do
           sort: SquareUp.Schema.terminal_checkout_query_sort()
         }
 
-  def terminal_checkout_query(data) do
-    valid?(
-      data,
-      schema(%{
-        filter: spec(SquareUp.Schema.terminal_checkout_query_filter()),
-        sort: spec(SquareUp.Schema.terminal_checkout_query_sort())
-      })
-      |> selection([])
-    )
+  def terminal_checkout_query do
+    schema(%{
+      filter: Norm.Delegate.delegate(&SquareUp.Schema.terminal_checkout_query_filter/0),
+      sort: Norm.Delegate.delegate(&SquareUp.Schema.terminal_checkout_query_sort/0)
+    })
+    |> selection([])
   end
 
   @type refund_payment_request :: %{
@@ -9396,18 +7986,15 @@ defmodule SquareUp.Schema do
           reason: binary()
         }
 
-  def refund_payment_request(data) do
-    valid?(
-      data,
-      schema(%{
-        amount_money: spec(SquareUp.Schema.money()),
-        app_fee_money: spec(SquareUp.Schema.money()),
-        idempotency_key: spec(is_binary()),
-        payment_id: spec(is_binary()),
-        reason: spec(is_binary())
-      })
-      |> selection([:idempotency_key, :amount_money, :payment_id])
-    )
+  def refund_payment_request do
+    schema(%{
+      amount_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      app_fee_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      idempotency_key: spec(is_binary()),
+      payment_id: spec(is_binary()),
+      reason: spec(is_binary())
+    })
+    |> selection([:idempotency_key, :amount_money, :payment_id])
   end
 
   @type redeem_loyalty_reward_response :: %{
@@ -9415,30 +8002,24 @@ defmodule SquareUp.Schema do
           event: SquareUp.Schema.loyalty_event()
         }
 
-  def redeem_loyalty_reward_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        event: spec(SquareUp.Schema.loyalty_event())
-      })
-      |> selection([])
-    )
+  def redeem_loyalty_reward_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      event: Norm.Delegate.delegate(&SquareUp.Schema.loyalty_event/0)
+    })
+    |> selection([])
   end
 
   @type v1_list_modifier_lists_request :: %{}
 
-  def v1_list_modifier_lists_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def v1_list_modifier_lists_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type card_square_product :: binary()
-  def card_square_product(data) do
-    valid?(data, spec(is_binary()))
+  def card_square_product do
+    spec(is_binary())
   end
 
   @type catalog_query_sorted_attribute :: %{
@@ -9447,16 +8028,13 @@ defmodule SquareUp.Schema do
           sort_order: binary()
         }
 
-  def catalog_query_sorted_attribute(data) do
-    valid?(
-      data,
-      schema(%{
-        attribute_name: spec(is_binary()),
-        initial_attribute_value: spec(is_binary()),
-        sort_order: spec(is_binary())
-      })
-      |> selection([:attribute_name])
-    )
+  def catalog_query_sorted_attribute do
+    schema(%{
+      attribute_name: spec(is_binary()),
+      initial_attribute_value: spec(is_binary()),
+      sort_order: spec(is_binary())
+    })
+    |> selection([:attribute_name])
   end
 
   @type loyalty_event_accumulate_points :: %{
@@ -9465,16 +8043,13 @@ defmodule SquareUp.Schema do
           points: integer()
         }
 
-  def loyalty_event_accumulate_points(data) do
-    valid?(
-      data,
-      schema(%{
-        loyalty_program_id: spec(is_binary()),
-        order_id: spec(is_binary()),
-        points: spec(is_integer())
-      })
-      |> selection([])
-    )
+  def loyalty_event_accumulate_points do
+    schema(%{
+      loyalty_program_id: spec(is_binary()),
+      order_id: spec(is_binary()),
+      points: spec(is_integer())
+    })
+    |> selection([])
   end
 
   @type update_item_taxes_request :: %{
@@ -9483,16 +8058,13 @@ defmodule SquareUp.Schema do
           taxes_to_enable: [binary()]
         }
 
-  def update_item_taxes_request(data) do
-    valid?(
-      data,
-      schema(%{
-        item_ids: spec(coll_of(spec(is_binary()))),
-        taxes_to_disable: spec(coll_of(spec(is_binary()))),
-        taxes_to_enable: spec(coll_of(spec(is_binary())))
-      })
-      |> selection([:item_ids])
-    )
+  def update_item_taxes_request do
+    schema(%{
+      item_ids: spec(coll_of(spec(is_binary()))),
+      taxes_to_disable: spec(coll_of(spec(is_binary()))),
+      taxes_to_enable: spec(coll_of(spec(is_binary())))
+    })
+    |> selection([:item_ids])
   end
 
   @type create_checkout_request :: %{
@@ -9507,23 +8079,22 @@ defmodule SquareUp.Schema do
           redirect_url: binary()
         }
 
-  def create_checkout_request(data) do
-    valid?(
-      data,
-      schema(%{
-        additional_recipients:
-          spec(coll_of(spec(SquareUp.Schema.charge_request_additional_recipient()))),
-        ask_for_shipping_address: spec(is_boolean()),
-        idempotency_key: spec(is_binary()),
-        merchant_support_email: spec(is_binary()),
-        note: spec(is_binary()),
-        order: spec(SquareUp.Schema.create_order_request()),
-        pre_populate_buyer_email: spec(is_binary()),
-        pre_populate_shipping_address: spec(SquareUp.Schema.address()),
-        redirect_url: spec(is_binary())
-      })
-      |> selection([:idempotency_key, :order])
-    )
+  def create_checkout_request do
+    schema(%{
+      additional_recipients:
+        spec(
+          coll_of(Norm.Delegate.delegate(&SquareUp.Schema.charge_request_additional_recipient/0))
+        ),
+      ask_for_shipping_address: spec(is_boolean()),
+      idempotency_key: spec(is_binary()),
+      merchant_support_email: spec(is_binary()),
+      note: spec(is_binary()),
+      order: Norm.Delegate.delegate(&SquareUp.Schema.create_order_request/0),
+      pre_populate_buyer_email: spec(is_binary()),
+      pre_populate_shipping_address: Norm.Delegate.delegate(&SquareUp.Schema.address/0),
+      redirect_url: spec(is_binary())
+    })
+    |> selection([:idempotency_key, :order])
   end
 
   @type search_catalog_items_response :: %{
@@ -9533,17 +8104,14 @@ defmodule SquareUp.Schema do
           matched_variation_ids: [binary()]
         }
 
-  def search_catalog_items_response(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        items: spec(coll_of(spec(SquareUp.Schema.catalog_object()))),
-        matched_variation_ids: spec(coll_of(spec(is_binary())))
-      })
-      |> selection([])
-    )
+  def search_catalog_items_response do
+    schema(%{
+      cursor: spec(is_binary()),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      items: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.catalog_object/0))),
+      matched_variation_ids: spec(coll_of(spec(is_binary())))
+    })
+    |> selection([])
   end
 
   @type create_device_code_response :: %{
@@ -9551,20 +8119,17 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def create_device_code_response(data) do
-    valid?(
-      data,
-      schema(%{
-        device_code: spec(SquareUp.Schema.device_code()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def create_device_code_response do
+    schema(%{
+      device_code: Norm.Delegate.delegate(&SquareUp.Schema.device_code/0),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type location_capability :: binary()
-  def location_capability(data) do
-    valid?(data, spec(is_binary()))
+  def location_capability do
+    spec(is_binary())
   end
 
   @type v1_settlement :: %{
@@ -9576,24 +8141,21 @@ defmodule SquareUp.Schema do
           total_money: SquareUp.Schema.v1_money()
         }
 
-  def v1_settlement(data) do
-    valid?(
-      data,
-      schema(%{
-        bank_account_id: spec(is_binary()),
-        entries: spec(coll_of(spec(SquareUp.Schema.v1_settlement_entry()))),
-        id: spec(is_binary()),
-        initiated_at: spec(is_binary()),
-        status: spec(is_binary()),
-        total_money: spec(SquareUp.Schema.v1_money())
-      })
-      |> selection([])
-    )
+  def v1_settlement do
+    schema(%{
+      bank_account_id: spec(is_binary()),
+      entries: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_settlement_entry/0))),
+      id: spec(is_binary()),
+      initiated_at: spec(is_binary()),
+      status: spec(is_binary()),
+      total_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0)
+    })
+    |> selection([])
   end
 
   @type v1_list_settlements_request_status :: binary()
-  def v1_list_settlements_request_status(data) do
-    valid?(data, spec(is_binary()))
+  def v1_list_settlements_request_status do
+    spec(is_binary())
   end
 
   @type list_workweek_configs_response :: %{
@@ -9602,16 +8164,13 @@ defmodule SquareUp.Schema do
           workweek_configs: [SquareUp.Schema.workweek_config()]
         }
 
-  def list_workweek_configs_response(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        workweek_configs: spec(coll_of(spec(SquareUp.Schema.workweek_config())))
-      })
-      |> selection([])
-    )
+  def list_workweek_configs_response do
+    schema(%{
+      cursor: spec(is_binary()),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      workweek_configs: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.workweek_config/0)))
+    })
+    |> selection([])
   end
 
   @type business_hours_period :: %{
@@ -9620,16 +8179,13 @@ defmodule SquareUp.Schema do
           start_local_time: binary()
         }
 
-  def business_hours_period(data) do
-    valid?(
-      data,
-      schema(%{
-        day_of_week: spec(is_binary()),
-        end_local_time: spec(is_binary()),
-        start_local_time: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def business_hours_period do
+    schema(%{
+      day_of_week: spec(is_binary()),
+      end_local_time: spec(is_binary()),
+      start_local_time: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type retrieve_loyalty_account_response :: %{
@@ -9637,15 +8193,12 @@ defmodule SquareUp.Schema do
           loyalty_account: SquareUp.Schema.loyalty_account()
         }
 
-  def retrieve_loyalty_account_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        loyalty_account: spec(SquareUp.Schema.loyalty_account())
-      })
-      |> selection([])
-    )
+  def retrieve_loyalty_account_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      loyalty_account: Norm.Delegate.delegate(&SquareUp.Schema.loyalty_account/0)
+    })
+    |> selection([])
   end
 
   @type v1_timecard_event :: %{
@@ -9656,18 +8209,15 @@ defmodule SquareUp.Schema do
           id: binary()
         }
 
-  def v1_timecard_event(data) do
-    valid?(
-      data,
-      schema(%{
-        clockin_time: spec(is_binary()),
-        clockout_time: spec(is_binary()),
-        created_at: spec(is_binary()),
-        event_type: spec(is_binary()),
-        id: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def v1_timecard_event do
+    schema(%{
+      clockin_time: spec(is_binary()),
+      clockout_time: spec(is_binary()),
+      created_at: spec(is_binary()),
+      event_type: spec(is_binary()),
+      id: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type create_subscription_response :: %{
@@ -9675,30 +8225,24 @@ defmodule SquareUp.Schema do
           subscription: SquareUp.Schema.subscription()
         }
 
-  def create_subscription_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        subscription: spec(SquareUp.Schema.subscription())
-      })
-      |> selection([])
-    )
+  def create_subscription_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      subscription: Norm.Delegate.delegate(&SquareUp.Schema.subscription/0)
+    })
+    |> selection([])
   end
 
   @type v1_adjust_inventory_request_adjustment_type :: binary()
-  def v1_adjust_inventory_request_adjustment_type(data) do
-    valid?(data, spec(is_binary()))
+  def v1_adjust_inventory_request_adjustment_type do
+    spec(is_binary())
   end
 
   @type catalog_query_prefix :: %{attribute_name: binary(), attribute_prefix: binary()}
 
-  def catalog_query_prefix(data) do
-    valid?(
-      data,
-      schema(%{attribute_name: spec(is_binary()), attribute_prefix: spec(is_binary())})
-      |> selection([:attribute_name, :attribute_prefix])
-    )
+  def catalog_query_prefix do
+    schema(%{attribute_name: spec(is_binary()), attribute_prefix: spec(is_binary())})
+    |> selection([:attribute_name, :attribute_prefix])
   end
 
   @type shift_query :: %{
@@ -9706,25 +8250,19 @@ defmodule SquareUp.Schema do
           sort: SquareUp.Schema.shift_sort()
         }
 
-  def shift_query(data) do
-    valid?(
-      data,
-      schema(%{
-        filter: spec(SquareUp.Schema.shift_filter()),
-        sort: spec(SquareUp.Schema.shift_sort())
-      })
-      |> selection([])
-    )
+  def shift_query do
+    schema(%{
+      filter: Norm.Delegate.delegate(&SquareUp.Schema.shift_filter/0),
+      sort: Norm.Delegate.delegate(&SquareUp.Schema.shift_sort/0)
+    })
+    |> selection([])
   end
 
   @type catalog_category :: %{name: binary()}
 
-  def catalog_category(data) do
-    valid?(
-      data,
-      schema(%{name: spec(is_binary())})
-      |> selection([])
-    )
+  def catalog_category do
+    schema(%{name: spec(is_binary())})
+    |> selection([])
   end
 
   @type list_dispute_evidence_response :: %{
@@ -9732,25 +8270,19 @@ defmodule SquareUp.Schema do
           evidence: [SquareUp.Schema.dispute_evidence()]
         }
 
-  def list_dispute_evidence_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        evidence: spec(coll_of(spec(SquareUp.Schema.dispute_evidence())))
-      })
-      |> selection([])
-    )
+  def list_dispute_evidence_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      evidence: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.dispute_evidence/0)))
+    })
+    |> selection([])
   end
 
   @type retrieve_cash_drawer_shift_request :: %{location_id: binary()}
 
-  def retrieve_cash_drawer_shift_request(data) do
-    valid?(
-      data,
-      schema(%{location_id: spec(is_binary())})
-      |> selection([:location_id])
-    )
+  def retrieve_cash_drawer_shift_request do
+    schema(%{location_id: spec(is_binary())})
+    |> selection([:location_id])
   end
 
   @type retrieve_catalog_object_response :: %{
@@ -9759,26 +8291,20 @@ defmodule SquareUp.Schema do
           related_objects: [SquareUp.Schema.catalog_object()]
         }
 
-  def retrieve_catalog_object_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        object: spec(SquareUp.Schema.catalog_object()),
-        related_objects: spec(coll_of(spec(SquareUp.Schema.catalog_object())))
-      })
-      |> selection([])
-    )
+  def retrieve_catalog_object_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      object: Norm.Delegate.delegate(&SquareUp.Schema.catalog_object/0),
+      related_objects: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.catalog_object/0)))
+    })
+    |> selection([])
   end
 
   @type time_range :: %{end_at: binary(), start_at: binary()}
 
-  def time_range(data) do
-    valid?(
-      data,
-      schema(%{end_at: spec(is_binary()), start_at: spec(is_binary())})
-      |> selection([])
-    )
+  def time_range do
+    schema(%{end_at: spec(is_binary()), start_at: spec(is_binary())})
+    |> selection([])
   end
 
   @type retrieve_customer_group_response :: %{
@@ -9786,15 +8312,12 @@ defmodule SquareUp.Schema do
           group: SquareUp.Schema.customer_group()
         }
 
-  def retrieve_customer_group_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        group: spec(SquareUp.Schema.customer_group())
-      })
-      |> selection([])
-    )
+  def retrieve_customer_group_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      group: Norm.Delegate.delegate(&SquareUp.Schema.customer_group/0)
+    })
+    |> selection([])
   end
 
   @type search_loyalty_events_response :: %{
@@ -9803,41 +8326,32 @@ defmodule SquareUp.Schema do
           events: [SquareUp.Schema.loyalty_event()]
         }
 
-  def search_loyalty_events_response(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        events: spec(coll_of(spec(SquareUp.Schema.loyalty_event())))
-      })
-      |> selection([])
-    )
+  def search_loyalty_events_response do
+    schema(%{
+      cursor: spec(is_binary()),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      events: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.loyalty_event/0)))
+    })
+    |> selection([])
   end
 
   @type measurement_unit_volume :: binary()
-  def measurement_unit_volume(data) do
-    valid?(data, spec(is_binary()))
+  def measurement_unit_volume do
+    spec(is_binary())
   end
 
   @type catalog_query_items_for_item_options :: %{item_option_ids: [binary()]}
 
-  def catalog_query_items_for_item_options(data) do
-    valid?(
-      data,
-      schema(%{item_option_ids: spec(coll_of(spec(is_binary())))})
-      |> selection([])
-    )
+  def catalog_query_items_for_item_options do
+    schema(%{item_option_ids: spec(coll_of(spec(is_binary())))})
+    |> selection([])
   end
 
   @type v1_list_inventory_request :: %{batch_token: binary(), limit: integer()}
 
-  def v1_list_inventory_request(data) do
-    valid?(
-      data,
-      schema(%{batch_token: spec(is_binary()), limit: spec(is_integer())})
-      |> selection([])
-    )
+  def v1_list_inventory_request do
+    schema(%{batch_token: spec(is_binary()), limit: spec(is_integer())})
+    |> selection([])
   end
 
   @type batch_retrieve_inventory_changes_request :: %{
@@ -9850,35 +8364,29 @@ defmodule SquareUp.Schema do
           updated_before: binary()
         }
 
-  def batch_retrieve_inventory_changes_request(data) do
-    valid?(
-      data,
-      schema(%{
-        catalog_object_ids: spec(coll_of(spec(is_binary()))),
-        cursor: spec(is_binary()),
-        location_ids: spec(coll_of(spec(is_binary()))),
-        states: spec(coll_of(spec(is_binary()))),
-        types: spec(coll_of(spec(is_binary()))),
-        updated_after: spec(is_binary()),
-        updated_before: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def batch_retrieve_inventory_changes_request do
+    schema(%{
+      catalog_object_ids: spec(coll_of(spec(is_binary()))),
+      cursor: spec(is_binary()),
+      location_ids: spec(coll_of(spec(is_binary()))),
+      states: spec(coll_of(spec(is_binary()))),
+      types: spec(coll_of(spec(is_binary()))),
+      updated_after: spec(is_binary()),
+      updated_before: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type customer_creation_source_filter :: %{rule: binary(), values: [binary()]}
 
-  def customer_creation_source_filter(data) do
-    valid?(
-      data,
-      schema(%{rule: spec(is_binary()), values: spec(coll_of(spec(is_binary())))})
-      |> selection([])
-    )
+  def customer_creation_source_filter do
+    schema(%{rule: spec(is_binary()), values: spec(coll_of(spec(is_binary())))})
+    |> selection([])
   end
 
   @type tender_card_details_entry_method :: binary()
-  def tender_card_details_entry_method(data) do
-    valid?(data, spec(is_binary()))
+  def tender_card_details_entry_method do
+    spec(is_binary())
   end
 
   @type create_loyalty_reward_request :: %{
@@ -9886,12 +8394,12 @@ defmodule SquareUp.Schema do
           reward: SquareUp.Schema.loyalty_reward()
         }
 
-  def create_loyalty_reward_request(data) do
-    valid?(
-      data,
-      schema(%{idempotency_key: spec(is_binary()), reward: spec(SquareUp.Schema.loyalty_reward())})
-      |> selection([:reward, :idempotency_key])
-    )
+  def create_loyalty_reward_request do
+    schema(%{
+      idempotency_key: spec(is_binary()),
+      reward: Norm.Delegate.delegate(&SquareUp.Schema.loyalty_reward/0)
+    })
+    |> selection([:reward, :idempotency_key])
   end
 
   @type search_invoices_response :: %{
@@ -9900,16 +8408,13 @@ defmodule SquareUp.Schema do
           invoices: [SquareUp.Schema.invoice()]
         }
 
-  def search_invoices_response(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        invoices: spec(coll_of(spec(SquareUp.Schema.invoice())))
-      })
-      |> selection([])
-    )
+  def search_invoices_response do
+    schema(%{
+      cursor: spec(is_binary()),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      invoices: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.invoice/0)))
+    })
+    |> selection([])
   end
 
   @type create_catalog_image_response :: %{
@@ -9917,15 +8422,12 @@ defmodule SquareUp.Schema do
           image: SquareUp.Schema.catalog_object()
         }
 
-  def create_catalog_image_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        image: spec(SquareUp.Schema.catalog_object())
-      })
-      |> selection([])
-    )
+  def create_catalog_image_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      image: Norm.Delegate.delegate(&SquareUp.Schema.catalog_object/0)
+    })
+    |> selection([])
   end
 
   @type v1_list_timecards_request :: %{
@@ -9942,24 +8444,21 @@ defmodule SquareUp.Schema do
           order: binary()
         }
 
-  def v1_list_timecards_request(data) do
-    valid?(
-      data,
-      schema(%{
-        batch_token: spec(is_binary()),
-        begin_clockin_time: spec(is_binary()),
-        begin_clockout_time: spec(is_binary()),
-        begin_updated_at: spec(is_binary()),
-        deleted: spec(is_boolean()),
-        employee_id: spec(is_binary()),
-        end_clockin_time: spec(is_binary()),
-        end_clockout_time: spec(is_binary()),
-        end_updated_at: spec(is_binary()),
-        limit: spec(is_integer()),
-        order: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def v1_list_timecards_request do
+    schema(%{
+      batch_token: spec(is_binary()),
+      begin_clockin_time: spec(is_binary()),
+      begin_clockout_time: spec(is_binary()),
+      begin_updated_at: spec(is_binary()),
+      deleted: spec(is_boolean()),
+      employee_id: spec(is_binary()),
+      end_clockin_time: spec(is_binary()),
+      end_clockout_time: spec(is_binary()),
+      end_updated_at: spec(is_binary()),
+      limit: spec(is_integer()),
+      order: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type create_dispute_evidence_file_response :: %{
@@ -9967,103 +8466,79 @@ defmodule SquareUp.Schema do
           evidence: SquareUp.Schema.dispute_evidence()
         }
 
-  def create_dispute_evidence_file_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        evidence: spec(SquareUp.Schema.dispute_evidence())
-      })
-      |> selection([])
-    )
+  def create_dispute_evidence_file_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      evidence: Norm.Delegate.delegate(&SquareUp.Schema.dispute_evidence/0)
+    })
+    |> selection([])
   end
 
   @type order_line_item_discount_scope :: binary()
-  def order_line_item_discount_scope(data) do
-    valid?(data, spec(is_binary()))
+  def order_line_item_discount_scope do
+    spec(is_binary())
   end
 
   @type get_shift_response :: %{errors: [SquareUp.Schema.error()], shift: SquareUp.Schema.shift()}
 
-  def get_shift_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        shift: spec(SquareUp.Schema.shift())
-      })
-      |> selection([])
-    )
+  def get_shift_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      shift: Norm.Delegate.delegate(&SquareUp.Schema.shift/0)
+    })
+    |> selection([])
   end
 
   @type order_created_object :: %{order_created: SquareUp.Schema.order_created()}
 
-  def order_created_object(data) do
-    valid?(
-      data,
-      schema(%{order_created: spec(SquareUp.Schema.order_created())})
-      |> selection([])
-    )
+  def order_created_object do
+    schema(%{order_created: Norm.Delegate.delegate(&SquareUp.Schema.order_created/0)})
+    |> selection([])
   end
 
   @type catalog_v1_id :: %{catalog_v1_id: binary(), location_id: binary()}
 
-  def catalog_v1_id(data) do
-    valid?(
-      data,
-      schema(%{catalog_v1_id: spec(is_binary()), location_id: spec(is_binary())})
-      |> selection([])
-    )
+  def catalog_v1_id do
+    schema(%{catalog_v1_id: spec(is_binary()), location_id: spec(is_binary())})
+    |> selection([])
   end
 
   @type delete_invoice_response :: %{errors: [SquareUp.Schema.error()]}
 
-  def delete_invoice_response(data) do
-    valid?(
-      data,
-      schema(%{errors: spec(coll_of(spec(SquareUp.Schema.error())))})
-      |> selection([])
-    )
+  def delete_invoice_response do
+    schema(%{errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))})
+    |> selection([])
   end
 
   @type v1_phone_number :: %{calling_code: binary(), number: binary()}
 
-  def v1_phone_number(data) do
-    valid?(
-      data,
-      schema(%{calling_code: spec(is_binary()), number: spec(is_binary())})
-      |> selection([:calling_code, :number])
-    )
+  def v1_phone_number do
+    schema(%{calling_code: spec(is_binary()), number: spec(is_binary())})
+    |> selection([:calling_code, :number])
   end
 
   @type v1_update_page_cell_request :: %{body: SquareUp.Schema.v1_page_cell()}
 
-  def v1_update_page_cell_request(data) do
-    valid?(
-      data,
-      schema(%{body: spec(SquareUp.Schema.v1_page_cell())})
-      |> selection([:body])
-    )
+  def v1_update_page_cell_request do
+    schema(%{body: Norm.Delegate.delegate(&SquareUp.Schema.v1_page_cell/0)})
+    |> selection([:body])
   end
 
   @type register_domain_response_status :: binary()
-  def register_domain_response_status(data) do
-    valid?(data, spec(is_binary()))
+  def register_domain_response_status do
+    spec(is_binary())
   end
 
   @type loyalty_account_mapping_type :: binary()
-  def loyalty_account_mapping_type(data) do
-    valid?(data, spec(is_binary()))
+  def loyalty_account_mapping_type do
+    spec(is_binary())
   end
 
   @type v1_delete_variation_request :: %{}
 
-  def v1_delete_variation_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def v1_delete_variation_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type charge_response :: %{
@@ -10071,59 +8546,40 @@ defmodule SquareUp.Schema do
           transaction: SquareUp.Schema.transaction()
         }
 
-  def charge_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        transaction: spec(SquareUp.Schema.transaction())
-      })
-      |> selection([])
-    )
+  def charge_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      transaction: Norm.Delegate.delegate(&SquareUp.Schema.transaction/0)
+    })
+    |> selection([])
   end
 
   @type get_device_code_request :: %{}
 
-  def get_device_code_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def get_device_code_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type v1_list_employee_roles_response :: %{items: [SquareUp.Schema.v1_employee_role()]}
 
-  def v1_list_employee_roles_response(data) do
-    valid?(
-      data,
-      schema(%{items: spec(coll_of(spec(SquareUp.Schema.v1_employee_role())))})
-      |> selection([])
-    )
+  def v1_list_employee_roles_response do
+    schema(%{items: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_employee_role/0)))})
+    |> selection([])
   end
 
   @type list_invoices_request :: %{cursor: binary(), limit: integer(), location_id: binary()}
 
-  def list_invoices_request(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        limit: spec(is_integer()),
-        location_id: spec(is_binary())
-      })
-      |> selection([:location_id])
-    )
+  def list_invoices_request do
+    schema(%{cursor: spec(is_binary()), limit: spec(is_integer()), location_id: spec(is_binary())})
+    |> selection([:location_id])
   end
 
   @type v1_create_modifier_option_request :: %{body: SquareUp.Schema.v1_modifier_option()}
 
-  def v1_create_modifier_option_request(data) do
-    valid?(
-      data,
-      schema(%{body: spec(SquareUp.Schema.v1_modifier_option())})
-      |> selection([])
-    )
+  def v1_create_modifier_option_request do
+    schema(%{body: Norm.Delegate.delegate(&SquareUp.Schema.v1_modifier_option/0)})
+    |> selection([])
   end
 
   @type get_device_code_response :: %{
@@ -10131,15 +8587,12 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def get_device_code_response(data) do
-    valid?(
-      data,
-      schema(%{
-        device_code: spec(SquareUp.Schema.device_code()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def get_device_code_response do
+    schema(%{
+      device_code: Norm.Delegate.delegate(&SquareUp.Schema.device_code/0),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type inventory_adjustment :: %{
@@ -10162,40 +8615,34 @@ defmodule SquareUp.Schema do
           transaction_id: binary()
         }
 
-  def inventory_adjustment(data) do
-    valid?(
-      data,
-      schema(%{
-        catalog_object_id: spec(is_binary()),
-        catalog_object_type: spec(is_binary()),
-        created_at: spec(is_binary()),
-        employee_id: spec(is_binary()),
-        from_state: spec(is_binary()),
-        goods_receipt_id: spec(is_binary()),
-        id: spec(is_binary()),
-        location_id: spec(is_binary()),
-        occurred_at: spec(is_binary()),
-        purchase_order_id: spec(is_binary()),
-        quantity: spec(is_binary()),
-        reference_id: spec(is_binary()),
-        refund_id: spec(is_binary()),
-        source: spec(SquareUp.Schema.source_application()),
-        to_state: spec(is_binary()),
-        total_price_money: spec(SquareUp.Schema.money()),
-        transaction_id: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def inventory_adjustment do
+    schema(%{
+      catalog_object_id: spec(is_binary()),
+      catalog_object_type: spec(is_binary()),
+      created_at: spec(is_binary()),
+      employee_id: spec(is_binary()),
+      from_state: spec(is_binary()),
+      goods_receipt_id: spec(is_binary()),
+      id: spec(is_binary()),
+      location_id: spec(is_binary()),
+      occurred_at: spec(is_binary()),
+      purchase_order_id: spec(is_binary()),
+      quantity: spec(is_binary()),
+      reference_id: spec(is_binary()),
+      refund_id: spec(is_binary()),
+      source: Norm.Delegate.delegate(&SquareUp.Schema.source_application/0),
+      to_state: spec(is_binary()),
+      total_price_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      transaction_id: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type get_bank_account_by_v1_id_request :: %{}
 
-  def get_bank_account_by_v1_id_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def get_bank_account_by_v1_id_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type create_device_code_request :: %{
@@ -10203,65 +8650,53 @@ defmodule SquareUp.Schema do
           idempotency_key: binary()
         }
 
-  def create_device_code_request(data) do
-    valid?(
-      data,
-      schema(%{
-        device_code: spec(SquareUp.Schema.device_code()),
-        idempotency_key: spec(is_binary())
-      })
-      |> selection([:idempotency_key, :device_code])
-    )
+  def create_device_code_request do
+    schema(%{
+      device_code: Norm.Delegate.delegate(&SquareUp.Schema.device_code/0),
+      idempotency_key: spec(is_binary())
+    })
+    |> selection([:idempotency_key, :device_code])
   end
 
   @type shift_sort_field :: binary()
-  def shift_sort_field(data) do
-    valid?(data, spec(is_binary()))
+  def shift_sort_field do
+    spec(is_binary())
   end
 
   @type delete_customer_request :: %{}
 
-  def delete_customer_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def delete_customer_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type v1_list_bank_accounts_response :: %{items: [SquareUp.Schema.v1_bank_account()]}
 
-  def v1_list_bank_accounts_response(data) do
-    valid?(
-      data,
-      schema(%{items: spec(coll_of(spec(SquareUp.Schema.v1_bank_account())))})
-      |> selection([])
-    )
+  def v1_list_bank_accounts_response do
+    schema(%{items: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_bank_account/0)))})
+    |> selection([])
   end
 
   @type v1_update_variation_request :: %{body: SquareUp.Schema.v1_variation()}
 
-  def v1_update_variation_request(data) do
-    valid?(
-      data,
-      schema(%{body: spec(SquareUp.Schema.v1_variation())})
-      |> selection([:body])
-    )
+  def v1_update_variation_request do
+    schema(%{body: Norm.Delegate.delegate(&SquareUp.Schema.v1_variation/0)})
+    |> selection([:body])
   end
 
   @type cash_drawer_event_type :: binary()
-  def cash_drawer_event_type(data) do
-    valid?(data, spec(is_binary()))
+  def cash_drawer_event_type do
+    spec(is_binary())
   end
 
   @type tender_bank_transfer_details_status :: binary()
-  def tender_bank_transfer_details_status(data) do
-    valid?(data, spec(is_binary()))
+  def tender_bank_transfer_details_status do
+    spec(is_binary())
   end
 
   @type measurement_unit_length :: binary()
-  def measurement_unit_length(data) do
-    valid?(data, spec(is_binary()))
+  def measurement_unit_length do
+    spec(is_binary())
   end
 
   @type customer_segment :: %{
@@ -10271,27 +8706,21 @@ defmodule SquareUp.Schema do
           updated_at: binary()
         }
 
-  def customer_segment(data) do
-    valid?(
-      data,
-      schema(%{
-        created_at: spec(is_binary()),
-        id: spec(is_binary()),
-        name: spec(is_binary()),
-        updated_at: spec(is_binary())
-      })
-      |> selection([:name])
-    )
+  def customer_segment do
+    schema(%{
+      created_at: spec(is_binary()),
+      id: spec(is_binary()),
+      name: spec(is_binary()),
+      updated_at: spec(is_binary())
+    })
+    |> selection([:name])
   end
 
   @type update_team_member_request :: %{team_member: SquareUp.Schema.team_member()}
 
-  def update_team_member_request(data) do
-    valid?(
-      data,
-      schema(%{team_member: spec(SquareUp.Schema.team_member())})
-      |> selection([])
-    )
+  def update_team_member_request do
+    schema(%{team_member: Norm.Delegate.delegate(&SquareUp.Schema.team_member/0)})
+    |> selection([])
   end
 
   @type search_customers_request :: %{
@@ -10300,55 +8729,43 @@ defmodule SquareUp.Schema do
           query: SquareUp.Schema.customer_query()
         }
 
-  def search_customers_request(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        limit: spec(is_integer()),
-        query: spec(SquareUp.Schema.customer_query())
-      })
-      |> selection([])
-    )
+  def search_customers_request do
+    schema(%{
+      cursor: spec(is_binary()),
+      limit: spec(is_integer()),
+      query: Norm.Delegate.delegate(&SquareUp.Schema.customer_query/0)
+    })
+    |> selection([])
   end
 
   @type currency :: binary()
-  def currency(data) do
-    valid?(data, spec(is_binary()))
+  def currency do
+    spec(is_binary())
   end
 
   @type source_application :: %{application_id: binary(), name: binary(), product: binary()}
 
-  def source_application(data) do
-    valid?(
-      data,
-      schema(%{
-        application_id: spec(is_binary()),
-        name: spec(is_binary()),
-        product: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def source_application do
+    schema(%{
+      application_id: spec(is_binary()),
+      name: spec(is_binary()),
+      product: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type v1_create_fee_request :: %{body: SquareUp.Schema.v1_fee()}
 
-  def v1_create_fee_request(data) do
-    valid?(
-      data,
-      schema(%{body: spec(SquareUp.Schema.v1_fee())})
-      |> selection([])
-    )
+  def v1_create_fee_request do
+    schema(%{body: Norm.Delegate.delegate(&SquareUp.Schema.v1_fee/0)})
+    |> selection([])
   end
 
   @type retrieve_customer_group_request :: %{}
 
-  def retrieve_customer_group_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def retrieve_customer_group_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type device_checkout_options :: %{
@@ -10357,16 +8774,13 @@ defmodule SquareUp.Schema do
           tip_settings: SquareUp.Schema.tip_settings()
         }
 
-  def device_checkout_options(data) do
-    valid?(
-      data,
-      schema(%{
-        device_id: spec(is_binary()),
-        skip_receipt_screen: spec(is_boolean()),
-        tip_settings: spec(SquareUp.Schema.tip_settings())
-      })
-      |> selection([:device_id])
-    )
+  def device_checkout_options do
+    schema(%{
+      device_id: spec(is_binary()),
+      skip_receipt_screen: spec(is_boolean()),
+      tip_settings: Norm.Delegate.delegate(&SquareUp.Schema.tip_settings/0)
+    })
+    |> selection([:device_id])
   end
 
   @type employee :: %{
@@ -10382,23 +8796,20 @@ defmodule SquareUp.Schema do
           updated_at: binary()
         }
 
-  def employee(data) do
-    valid?(
-      data,
-      schema(%{
-        created_at: spec(is_binary()),
-        email: spec(is_binary()),
-        first_name: spec(is_binary()),
-        id: spec(is_binary()),
-        is_owner: spec(is_boolean()),
-        last_name: spec(is_binary()),
-        location_ids: spec(coll_of(spec(is_binary()))),
-        phone_number: spec(is_binary()),
-        status: spec(is_binary()),
-        updated_at: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def employee do
+    schema(%{
+      created_at: spec(is_binary()),
+      email: spec(is_binary()),
+      first_name: spec(is_binary()),
+      id: spec(is_binary()),
+      is_owner: spec(is_boolean()),
+      last_name: spec(is_binary()),
+      location_ids: spec(coll_of(spec(is_binary()))),
+      phone_number: spec(is_binary()),
+      status: spec(is_binary()),
+      updated_at: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type retrieve_team_member_response :: %{
@@ -10406,15 +8817,12 @@ defmodule SquareUp.Schema do
           team_member: SquareUp.Schema.team_member()
         }
 
-  def retrieve_team_member_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        team_member: spec(SquareUp.Schema.team_member())
-      })
-      |> selection([])
-    )
+  def retrieve_team_member_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      team_member: Norm.Delegate.delegate(&SquareUp.Schema.team_member/0)
+    })
+    |> selection([])
   end
 
   @type v1_variation :: %{
@@ -10432,25 +8840,22 @@ defmodule SquareUp.Schema do
           v2_id: binary()
         }
 
-  def v1_variation(data) do
-    valid?(
-      data,
-      schema(%{
-        id: spec(is_binary()),
-        inventory_alert_threshold: spec(is_integer()),
-        inventory_alert_type: spec(is_binary()),
-        item_id: spec(is_binary()),
-        name: spec(is_binary()),
-        ordinal: spec(is_integer()),
-        price_money: spec(SquareUp.Schema.v1_money()),
-        pricing_type: spec(is_binary()),
-        sku: spec(is_binary()),
-        track_inventory: spec(is_boolean()),
-        user_data: spec(is_binary()),
-        v2_id: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def v1_variation do
+    schema(%{
+      id: spec(is_binary()),
+      inventory_alert_threshold: spec(is_integer()),
+      inventory_alert_type: spec(is_binary()),
+      item_id: spec(is_binary()),
+      name: spec(is_binary()),
+      ordinal: spec(is_integer()),
+      price_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      pricing_type: spec(is_binary()),
+      sku: spec(is_binary()),
+      track_inventory: spec(is_boolean()),
+      user_data: spec(is_binary()),
+      v2_id: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type list_disputes_response :: %{
@@ -10459,26 +8864,23 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def list_disputes_response(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        disputes: spec(coll_of(spec(SquareUp.Schema.dispute()))),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def list_disputes_response do
+    schema(%{
+      cursor: spec(is_binary()),
+      disputes: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.dispute/0))),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type tax_inclusion_type :: binary()
-  def tax_inclusion_type(data) do
-    valid?(data, spec(is_binary()))
+  def tax_inclusion_type do
+    spec(is_binary())
   end
 
   @type tender_type :: binary()
-  def tender_type(data) do
-    valid?(data, spec(is_binary()))
+  def tender_type do
+    spec(is_binary())
   end
 
   @type customer_group :: %{
@@ -10488,17 +8890,14 @@ defmodule SquareUp.Schema do
           updated_at: binary()
         }
 
-  def customer_group(data) do
-    valid?(
-      data,
-      schema(%{
-        created_at: spec(is_binary()),
-        id: spec(is_binary()),
-        name: spec(is_binary()),
-        updated_at: spec(is_binary())
-      })
-      |> selection([:name])
-    )
+  def customer_group do
+    schema(%{
+      created_at: spec(is_binary()),
+      id: spec(is_binary()),
+      name: spec(is_binary()),
+      updated_at: spec(is_binary())
+    })
+    |> selection([:name])
   end
 
   @type calculate_order_response :: %{
@@ -10506,15 +8905,12 @@ defmodule SquareUp.Schema do
           order: SquareUp.Schema.order()
         }
 
-  def calculate_order_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        order: spec(SquareUp.Schema.order())
-      })
-      |> selection([])
-    )
+  def calculate_order_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      order: Norm.Delegate.delegate(&SquareUp.Schema.order/0)
+    })
+    |> selection([])
   end
 
   @type get_bank_account_by_v1_id_response :: %{
@@ -10522,25 +8918,19 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def get_bank_account_by_v1_id_response(data) do
-    valid?(
-      data,
-      schema(%{
-        bank_account: spec(SquareUp.Schema.bank_account()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def get_bank_account_by_v1_id_response do
+    schema(%{
+      bank_account: Norm.Delegate.delegate(&SquareUp.Schema.bank_account/0),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type v1_retrieve_modifier_list_request :: %{}
 
-  def v1_retrieve_modifier_list_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def v1_retrieve_modifier_list_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type get_payment_refund_response :: %{
@@ -10548,45 +8938,33 @@ defmodule SquareUp.Schema do
           refund: SquareUp.Schema.payment_refund()
         }
 
-  def get_payment_refund_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        refund: spec(SquareUp.Schema.payment_refund())
-      })
-      |> selection([])
-    )
+  def get_payment_refund_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      refund: Norm.Delegate.delegate(&SquareUp.Schema.payment_refund/0)
+    })
+    |> selection([])
   end
 
   @type delete_customer_group_request :: %{}
 
-  def delete_customer_group_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def delete_customer_group_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type delete_shift_request :: %{}
 
-  def delete_shift_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def delete_shift_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type v1_list_fees_response :: %{items: [SquareUp.Schema.v1_fee()]}
 
-  def v1_list_fees_response(data) do
-    valid?(
-      data,
-      schema(%{items: spec(coll_of(spec(SquareUp.Schema.v1_fee())))})
-      |> selection([])
-    )
+  def v1_list_fees_response do
+    schema(%{items: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_fee/0)))})
+    |> selection([])
   end
 
   @type search_team_members_response :: %{
@@ -10595,16 +8973,13 @@ defmodule SquareUp.Schema do
           team_members: [SquareUp.Schema.team_member()]
         }
 
-  def search_team_members_response(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        team_members: spec(coll_of(spec(SquareUp.Schema.team_member())))
-      })
-      |> selection([])
-    )
+  def search_team_members_response do
+    schema(%{
+      cursor: spec(is_binary()),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      team_members: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.team_member/0)))
+    })
+    |> selection([])
   end
 
   @type create_mobile_authorization_code_response :: %{
@@ -10613,16 +8988,13 @@ defmodule SquareUp.Schema do
           expires_at: binary()
         }
 
-  def create_mobile_authorization_code_response(data) do
-    valid?(
-      data,
-      schema(%{
-        authorization_code: spec(is_binary()),
-        error: spec(SquareUp.Schema.error()),
-        expires_at: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def create_mobile_authorization_code_response do
+    schema(%{
+      authorization_code: spec(is_binary()),
+      error: Norm.Delegate.delegate(&SquareUp.Schema.error/0),
+      expires_at: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type retrieve_employee_response :: %{
@@ -10630,15 +9002,12 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def retrieve_employee_response(data) do
-    valid?(
-      data,
-      schema(%{
-        employee: spec(SquareUp.Schema.employee()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def retrieve_employee_response do
+    schema(%{
+      employee: Norm.Delegate.delegate(&SquareUp.Schema.employee/0),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type catalog_custom_attribute_definition_selection_config :: %{
@@ -10648,52 +9017,43 @@ defmodule SquareUp.Schema do
           max_allowed_selections: integer()
         }
 
-  def catalog_custom_attribute_definition_selection_config(data) do
-    valid?(
-      data,
-      schema(%{
-        allowed_selections:
-          spec(
-            coll_of(
-              spec(
-                SquareUp.Schema.catalog_custom_attribute_definition_selection_config_custom_attribute_selection()
-              )
+  def catalog_custom_attribute_definition_selection_config do
+    schema(%{
+      allowed_selections:
+        spec(
+          coll_of(
+            Norm.Delegate.delegate(
+              &SquareUp.Schema.catalog_custom_attribute_definition_selection_config_custom_attribute_selection/0
             )
-          ),
-        max_allowed_selections: spec(is_integer())
-      })
-      |> selection([])
-    )
+          )
+        ),
+      max_allowed_selections: spec(is_integer())
+    })
+    |> selection([])
   end
 
   @type dispute_reason :: binary()
-  def dispute_reason(data) do
-    valid?(data, spec(is_binary()))
+  def dispute_reason do
+    spec(is_binary())
   end
 
   @type transaction_type :: binary()
-  def transaction_type(data) do
-    valid?(data, spec(is_binary()))
+  def transaction_type do
+    spec(is_binary())
   end
 
   @type search_team_members_query :: %{filter: SquareUp.Schema.search_team_members_filter()}
 
-  def search_team_members_query(data) do
-    valid?(
-      data,
-      schema(%{filter: spec(SquareUp.Schema.search_team_members_filter())})
-      |> selection([])
-    )
+  def search_team_members_query do
+    schema(%{filter: Norm.Delegate.delegate(&SquareUp.Schema.search_team_members_filter/0)})
+    |> selection([])
   end
 
   @type loyalty_event_expire_points :: %{loyalty_program_id: binary(), points: integer()}
 
-  def loyalty_event_expire_points(data) do
-    valid?(
-      data,
-      schema(%{loyalty_program_id: spec(is_binary()), points: spec(is_integer())})
-      |> selection([:loyalty_program_id, :points])
-    )
+  def loyalty_event_expire_points do
+    schema(%{loyalty_program_id: spec(is_binary()), points: spec(is_integer())})
+    |> selection([:loyalty_program_id, :points])
   end
 
   @type loyalty_account :: %{
@@ -10708,22 +9068,19 @@ defmodule SquareUp.Schema do
           updated_at: binary()
         }
 
-  def loyalty_account(data) do
-    valid?(
-      data,
-      schema(%{
-        balance: spec(is_integer()),
-        created_at: spec(is_binary()),
-        customer_id: spec(is_binary()),
-        enrolled_at: spec(is_binary()),
-        id: spec(is_binary()),
-        lifetime_points: spec(is_integer()),
-        mappings: spec(coll_of(spec(SquareUp.Schema.loyalty_account_mapping()))),
-        program_id: spec(is_binary()),
-        updated_at: spec(is_binary())
-      })
-      |> selection([:mappings, :program_id])
-    )
+  def loyalty_account do
+    schema(%{
+      balance: spec(is_integer()),
+      created_at: spec(is_binary()),
+      customer_id: spec(is_binary()),
+      enrolled_at: spec(is_binary()),
+      id: spec(is_binary()),
+      lifetime_points: spec(is_integer()),
+      mappings: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.loyalty_account_mapping/0))),
+      program_id: spec(is_binary()),
+      updated_at: spec(is_binary())
+    })
+    |> selection([:mappings, :program_id])
   end
 
   @type list_team_member_wages_request :: %{
@@ -10732,16 +9089,13 @@ defmodule SquareUp.Schema do
           team_member_id: binary()
         }
 
-  def list_team_member_wages_request(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        limit: spec(is_integer()),
-        team_member_id: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def list_team_member_wages_request do
+    schema(%{
+      cursor: spec(is_binary()),
+      limit: spec(is_integer()),
+      team_member_id: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type retrieve_inventory_physical_count_response :: %{
@@ -10749,20 +9103,17 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def retrieve_inventory_physical_count_response(data) do
-    valid?(
-      data,
-      schema(%{
-        count: spec(SquareUp.Schema.inventory_physical_count()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def retrieve_inventory_physical_count_response do
+    schema(%{
+      count: Norm.Delegate.delegate(&SquareUp.Schema.inventory_physical_count/0),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type v1_payment_surcharge_type :: binary()
-  def v1_payment_surcharge_type(data) do
-    valid?(data, spec(is_binary()))
+  def v1_payment_surcharge_type do
+    spec(is_binary())
   end
 
   @type custom_attribute_filter :: %{
@@ -10774,24 +9125,21 @@ defmodule SquareUp.Schema do
           string_filter: binary()
         }
 
-  def custom_attribute_filter(data) do
-    valid?(
-      data,
-      schema(%{
-        bool_filter: spec(is_boolean()),
-        custom_attribute_definition_id: spec(is_binary()),
-        key: spec(is_binary()),
-        number_filter: spec(SquareUp.Schema.range()),
-        selection_uids_filter: spec(coll_of(spec(is_binary()))),
-        string_filter: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def custom_attribute_filter do
+    schema(%{
+      bool_filter: spec(is_boolean()),
+      custom_attribute_definition_id: spec(is_binary()),
+      key: spec(is_binary()),
+      number_filter: Norm.Delegate.delegate(&SquareUp.Schema.range/0),
+      selection_uids_filter: spec(coll_of(spec(is_binary()))),
+      string_filter: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type card_brand :: binary()
-  def card_brand(data) do
-    valid?(data, spec(is_binary()))
+  def card_brand do
+    spec(is_binary())
   end
 
   @type order_return_tax :: %{
@@ -10805,76 +9153,61 @@ defmodule SquareUp.Schema do
           uid: binary()
         }
 
-  def order_return_tax(data) do
-    valid?(
-      data,
-      schema(%{
-        applied_money: spec(SquareUp.Schema.money()),
-        catalog_object_id: spec(is_binary()),
-        name: spec(is_binary()),
-        percentage: spec(is_binary()),
-        scope: spec(is_binary()),
-        source_tax_uid: spec(is_binary()),
-        type: spec(is_binary()),
-        uid: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def order_return_tax do
+    schema(%{
+      applied_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      catalog_object_id: spec(is_binary()),
+      name: spec(is_binary()),
+      percentage: spec(is_binary()),
+      scope: spec(is_binary()),
+      source_tax_uid: spec(is_binary()),
+      type: spec(is_binary()),
+      uid: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type catalog_image :: %{caption: binary(), name: binary(), url: binary()}
 
-  def catalog_image(data) do
-    valid?(
-      data,
-      schema(%{caption: spec(is_binary()), name: spec(is_binary()), url: spec(is_binary())})
-      |> selection([])
-    )
+  def catalog_image do
+    schema(%{caption: spec(is_binary()), name: spec(is_binary()), url: spec(is_binary())})
+    |> selection([])
   end
 
   @type v1_category :: %{id: binary(), name: binary(), v2_id: binary()}
 
-  def v1_category(data) do
-    valid?(
-      data,
-      schema(%{id: spec(is_binary()), name: spec(is_binary()), v2_id: spec(is_binary())})
-      |> selection([])
-    )
+  def v1_category do
+    schema(%{id: spec(is_binary()), name: spec(is_binary()), v2_id: spec(is_binary())})
+    |> selection([])
   end
 
   @type action_cancel_reason :: binary()
-  def action_cancel_reason(data) do
-    valid?(data, spec(is_binary()))
+  def action_cancel_reason do
+    spec(is_binary())
   end
 
   @type v1_list_locations_response :: %{items: [SquareUp.Schema.v1_merchant()]}
 
-  def v1_list_locations_response(data) do
-    valid?(
-      data,
-      schema(%{items: spec(coll_of(spec(SquareUp.Schema.v1_merchant())))})
-      |> selection([])
-    )
+  def v1_list_locations_response do
+    schema(%{items: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.v1_merchant/0)))})
+    |> selection([])
   end
 
   @type search_catalog_items_request_stock_level :: binary()
-  def search_catalog_items_request_stock_level(data) do
-    valid?(data, spec(is_binary()))
+  def search_catalog_items_request_stock_level do
+    spec(is_binary())
   end
 
   @type order_service_charge_calculation_phase :: binary()
-  def order_service_charge_calculation_phase(data) do
-    valid?(data, spec(is_binary()))
+  def order_service_charge_calculation_phase do
+    spec(is_binary())
   end
 
   @type remove_group_from_customer_response :: %{errors: [SquareUp.Schema.error()]}
 
-  def remove_group_from_customer_response(data) do
-    valid?(
-      data,
-      schema(%{errors: spec(coll_of(spec(SquareUp.Schema.error())))})
-      |> selection([])
-    )
+  def remove_group_from_customer_response do
+    schema(%{errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))})
+    |> selection([])
   end
 
   @type upsert_catalog_object_response :: %{
@@ -10883,16 +9216,13 @@ defmodule SquareUp.Schema do
           id_mappings: [SquareUp.Schema.catalog_id_mapping()]
         }
 
-  def upsert_catalog_object_response(data) do
-    valid?(
-      data,
-      schema(%{
-        catalog_object: spec(SquareUp.Schema.catalog_object()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        id_mappings: spec(coll_of(spec(SquareUp.Schema.catalog_id_mapping())))
-      })
-      |> selection([])
-    )
+  def upsert_catalog_object_response do
+    schema(%{
+      catalog_object: Norm.Delegate.delegate(&SquareUp.Schema.catalog_object/0),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      id_mappings: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.catalog_id_mapping/0)))
+    })
+    |> selection([])
   end
 
   @type list_device_codes_response :: %{
@@ -10901,36 +9231,29 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def list_device_codes_response(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        device_codes: spec(coll_of(spec(SquareUp.Schema.device_code()))),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def list_device_codes_response do
+    schema(%{
+      cursor: spec(is_binary()),
+      device_codes: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.device_code/0))),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type business_hours :: %{periods: [SquareUp.Schema.business_hours_period()]}
 
-  def business_hours(data) do
-    valid?(
-      data,
-      schema(%{periods: spec(coll_of(spec(SquareUp.Schema.business_hours_period())))})
-      |> selection([])
-    )
+  def business_hours do
+    schema(%{
+      periods: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.business_hours_period/0)))
+    })
+    |> selection([])
   end
 
   @type capture_transaction_response :: %{errors: [SquareUp.Schema.error()]}
 
-  def capture_transaction_response(data) do
-    valid?(
-      data,
-      schema(%{errors: spec(coll_of(spec(SquareUp.Schema.error())))})
-      |> selection([])
-    )
+  def capture_transaction_response do
+    schema(%{errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))})
+    |> selection([])
   end
 
   @type v1_create_refund_request :: %{
@@ -10941,18 +9264,15 @@ defmodule SquareUp.Schema do
           type: binary()
         }
 
-  def v1_create_refund_request(data) do
-    valid?(
-      data,
-      schema(%{
-        payment_id: spec(is_binary()),
-        reason: spec(is_binary()),
-        refunded_money: spec(SquareUp.Schema.v1_money()),
-        request_idempotence_key: spec(is_binary()),
-        type: spec(is_binary())
-      })
-      |> selection([:payment_id, :type, :reason])
-    )
+  def v1_create_refund_request do
+    schema(%{
+      payment_id: spec(is_binary()),
+      reason: spec(is_binary()),
+      refunded_money: Norm.Delegate.delegate(&SquareUp.Schema.v1_money/0),
+      request_idempotence_key: spec(is_binary()),
+      type: spec(is_binary())
+    })
+    |> selection([:payment_id, :type, :reason])
   end
 
   @type v1_adjust_inventory_request :: %{
@@ -10961,16 +9281,13 @@ defmodule SquareUp.Schema do
           quantity_delta: number()
         }
 
-  def v1_adjust_inventory_request(data) do
-    valid?(
-      data,
-      schema(%{
-        adjustment_type: spec(is_binary()),
-        memo: spec(is_binary()),
-        quantity_delta: spec(is_number())
-      })
-      |> selection([])
-    )
+  def v1_adjust_inventory_request do
+    schema(%{
+      adjustment_type: spec(is_binary()),
+      memo: spec(is_binary()),
+      quantity_delta: spec(is_number())
+    })
+    |> selection([])
   end
 
   @type catalog_quick_amount :: %{
@@ -10980,27 +9297,21 @@ defmodule SquareUp.Schema do
           type: binary()
         }
 
-  def catalog_quick_amount(data) do
-    valid?(
-      data,
-      schema(%{
-        amount: spec(SquareUp.Schema.money()),
-        ordinal: spec(is_integer()),
-        score: spec(is_integer()),
-        type: spec(is_binary())
-      })
-      |> selection([:type, :amount])
-    )
+  def catalog_quick_amount do
+    schema(%{
+      amount: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      ordinal: spec(is_integer()),
+      score: spec(is_integer()),
+      type: spec(is_binary())
+    })
+    |> selection([:type, :amount])
   end
 
   @type loyalty_program_expiration_policy :: %{expiration_duration: binary()}
 
-  def loyalty_program_expiration_policy(data) do
-    valid?(
-      data,
-      schema(%{expiration_duration: spec(is_binary())})
-      |> selection([:expiration_duration])
-    )
+  def loyalty_program_expiration_policy do
+    schema(%{expiration_duration: spec(is_binary())})
+    |> selection([:expiration_duration])
   end
 
   @type team_member_wage :: %{
@@ -11010,17 +9321,14 @@ defmodule SquareUp.Schema do
           title: binary()
         }
 
-  def team_member_wage(data) do
-    valid?(
-      data,
-      schema(%{
-        hourly_rate: spec(SquareUp.Schema.money()),
-        id: spec(is_binary()),
-        team_member_id: spec(is_binary()),
-        title: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def team_member_wage do
+    schema(%{
+      hourly_rate: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      id: spec(is_binary()),
+      team_member_id: spec(is_binary()),
+      title: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type create_dispute_evidence_text_request :: %{
@@ -11029,26 +9337,20 @@ defmodule SquareUp.Schema do
           idempotency_key: binary()
         }
 
-  def create_dispute_evidence_text_request(data) do
-    valid?(
-      data,
-      schema(%{
-        evidence_text: spec(is_binary()),
-        evidence_type: spec(is_binary()),
-        idempotency_key: spec(is_binary())
-      })
-      |> selection([:idempotency_key, :evidence_text])
-    )
+  def create_dispute_evidence_text_request do
+    schema(%{
+      evidence_text: spec(is_binary()),
+      evidence_type: spec(is_binary()),
+      idempotency_key: spec(is_binary())
+    })
+    |> selection([:idempotency_key, :evidence_text])
   end
 
   @type delete_catalog_object_request :: %{}
 
-  def delete_catalog_object_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def delete_catalog_object_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type calculate_order_request :: %{
@@ -11056,25 +9358,19 @@ defmodule SquareUp.Schema do
           proposed_rewards: [SquareUp.Schema.order_reward()]
         }
 
-  def calculate_order_request(data) do
-    valid?(
-      data,
-      schema(%{
-        order: spec(SquareUp.Schema.order()),
-        proposed_rewards: spec(coll_of(spec(SquareUp.Schema.order_reward())))
-      })
-      |> selection([:order])
-    )
+  def calculate_order_request do
+    schema(%{
+      order: Norm.Delegate.delegate(&SquareUp.Schema.order/0),
+      proposed_rewards: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.order_reward/0)))
+    })
+    |> selection([:order])
   end
 
   @type get_payment_refund_request :: %{}
 
-  def get_payment_refund_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def get_payment_refund_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type update_location_response :: %{
@@ -11082,60 +9378,45 @@ defmodule SquareUp.Schema do
           location: SquareUp.Schema.location()
         }
 
-  def update_location_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        location: spec(SquareUp.Schema.location())
-      })
-      |> selection([])
-    )
+  def update_location_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      location: Norm.Delegate.delegate(&SquareUp.Schema.location/0)
+    })
+    |> selection([])
   end
 
   @type search_orders_customer_filter :: %{customer_ids: [binary()]}
 
-  def search_orders_customer_filter(data) do
-    valid?(
-      data,
-      schema(%{customer_ids: spec(coll_of(spec(is_binary())))})
-      |> selection([])
-    )
+  def search_orders_customer_filter do
+    schema(%{customer_ids: spec(coll_of(spec(is_binary())))})
+    |> selection([])
   end
 
   @type customer_text_filter :: %{exact: binary(), fuzzy: binary()}
 
-  def customer_text_filter(data) do
-    valid?(
-      data,
-      schema(%{exact: spec(is_binary()), fuzzy: spec(is_binary())})
-      |> selection([])
-    )
+  def customer_text_filter do
+    schema(%{exact: spec(is_binary()), fuzzy: spec(is_binary())})
+    |> selection([])
   end
 
   @type v1_update_employee_request :: %{body: SquareUp.Schema.v1_employee()}
 
-  def v1_update_employee_request(data) do
-    valid?(
-      data,
-      schema(%{body: spec(SquareUp.Schema.v1_employee())})
-      |> selection([:body])
-    )
+  def v1_update_employee_request do
+    schema(%{body: Norm.Delegate.delegate(&SquareUp.Schema.v1_employee/0)})
+    |> selection([:body])
   end
 
   @type v1_create_employee_role_request :: %{employee_role: SquareUp.Schema.v1_employee_role()}
 
-  def v1_create_employee_role_request(data) do
-    valid?(
-      data,
-      schema(%{employee_role: spec(SquareUp.Schema.v1_employee_role())})
-      |> selection([])
-    )
+  def v1_create_employee_role_request do
+    schema(%{employee_role: Norm.Delegate.delegate(&SquareUp.Schema.v1_employee_role/0)})
+    |> selection([])
   end
 
   @type card_type :: binary()
-  def card_type(data) do
-    valid?(data, spec(is_binary()))
+  def card_type do
+    spec(is_binary())
   end
 
   @type create_refund_response :: %{
@@ -11143,15 +9424,12 @@ defmodule SquareUp.Schema do
           refund: SquareUp.Schema.refund()
         }
 
-  def create_refund_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        refund: spec(SquareUp.Schema.refund())
-      })
-      |> selection([])
-    )
+  def create_refund_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      refund: Norm.Delegate.delegate(&SquareUp.Schema.refund/0)
+    })
+    |> selection([])
   end
 
   @type search_shifts_response :: %{
@@ -11160,36 +9438,27 @@ defmodule SquareUp.Schema do
           shifts: [SquareUp.Schema.shift()]
         }
 
-  def search_shifts_response(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        shifts: spec(coll_of(spec(SquareUp.Schema.shift())))
-      })
-      |> selection([])
-    )
+  def search_shifts_response do
+    schema(%{
+      cursor: spec(is_binary()),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      shifts: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.shift/0)))
+    })
+    |> selection([])
   end
 
   @type update_subscription_request :: %{subscription: SquareUp.Schema.subscription()}
 
-  def update_subscription_request(data) do
-    valid?(
-      data,
-      schema(%{subscription: spec(SquareUp.Schema.subscription())})
-      |> selection([])
-    )
+  def update_subscription_request do
+    schema(%{subscription: Norm.Delegate.delegate(&SquareUp.Schema.subscription/0)})
+    |> selection([])
   end
 
   @type v1_update_item_request :: %{body: SquareUp.Schema.v1_item()}
 
-  def v1_update_item_request(data) do
-    valid?(
-      data,
-      schema(%{body: spec(SquareUp.Schema.v1_item())})
-      |> selection([:body])
-    )
+  def v1_update_item_request do
+    schema(%{body: Norm.Delegate.delegate(&SquareUp.Schema.v1_item/0)})
+    |> selection([:body])
   end
 
   @type standard_unit_description :: %{
@@ -11198,31 +9467,25 @@ defmodule SquareUp.Schema do
           unit: SquareUp.Schema.measurement_unit()
         }
 
-  def standard_unit_description(data) do
-    valid?(
-      data,
-      schema(%{
-        abbreviation: spec(is_binary()),
-        name: spec(is_binary()),
-        unit: spec(SquareUp.Schema.measurement_unit())
-      })
-      |> selection([])
-    )
+  def standard_unit_description do
+    schema(%{
+      abbreviation: spec(is_binary()),
+      name: spec(is_binary()),
+      unit: Norm.Delegate.delegate(&SquareUp.Schema.measurement_unit/0)
+    })
+    |> selection([])
   end
 
   @type v1_fee_inclusion_type :: binary()
-  def v1_fee_inclusion_type(data) do
-    valid?(data, spec(is_binary()))
+  def v1_fee_inclusion_type do
+    spec(is_binary())
   end
 
   @type v1_update_modifier_option_request :: %{body: SquareUp.Schema.v1_modifier_option()}
 
-  def v1_update_modifier_option_request(data) do
-    valid?(
-      data,
-      schema(%{body: spec(SquareUp.Schema.v1_modifier_option())})
-      |> selection([:body])
-    )
+  def v1_update_modifier_option_request do
+    schema(%{body: Norm.Delegate.delegate(&SquareUp.Schema.v1_modifier_option/0)})
+    |> selection([:body])
   end
 
   @type list_employees_response :: %{
@@ -11231,36 +9494,27 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def list_employees_response(data) do
-    valid?(
-      data,
-      schema(%{
-        cursor: spec(is_binary()),
-        employees: spec(coll_of(spec(SquareUp.Schema.employee()))),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def list_employees_response do
+    schema(%{
+      cursor: spec(is_binary()),
+      employees: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.employee/0))),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type catalog_query_exact :: %{attribute_name: binary(), attribute_value: binary()}
 
-  def catalog_query_exact(data) do
-    valid?(
-      data,
-      schema(%{attribute_name: spec(is_binary()), attribute_value: spec(is_binary())})
-      |> selection([:attribute_name, :attribute_value])
-    )
+  def catalog_query_exact do
+    schema(%{attribute_name: spec(is_binary()), attribute_value: spec(is_binary())})
+    |> selection([:attribute_name, :attribute_value])
   end
 
   @type remove_dispute_evidence_response :: %{errors: [SquareUp.Schema.error()]}
 
-  def remove_dispute_evidence_response(data) do
-    valid?(
-      data,
-      schema(%{errors: spec(coll_of(spec(SquareUp.Schema.error())))})
-      |> selection([])
-    )
+  def remove_dispute_evidence_response do
+    schema(%{errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))})
+    |> selection([])
   end
 
   @type complete_payment_response :: %{
@@ -11268,15 +9522,12 @@ defmodule SquareUp.Schema do
           payment: SquareUp.Schema.payment()
         }
 
-  def complete_payment_response(data) do
-    valid?(
-      data,
-      schema(%{
-        errors: spec(coll_of(spec(SquareUp.Schema.error()))),
-        payment: spec(SquareUp.Schema.payment())
-      })
-      |> selection([])
-    )
+  def complete_payment_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      payment: Norm.Delegate.delegate(&SquareUp.Schema.payment/0)
+    })
+    |> selection([])
   end
 
   @type search_loyalty_rewards_request_loyalty_reward_query :: %{
@@ -11284,12 +9535,9 @@ defmodule SquareUp.Schema do
           status: binary()
         }
 
-  def search_loyalty_rewards_request_loyalty_reward_query(data) do
-    valid?(
-      data,
-      schema(%{loyalty_account_id: spec(is_binary()), status: spec(is_binary())})
-      |> selection([:loyalty_account_id])
-    )
+  def search_loyalty_rewards_request_loyalty_reward_query do
+    schema(%{loyalty_account_id: spec(is_binary()), status: spec(is_binary())})
+    |> selection([:loyalty_account_id])
   end
 
   @type batch_retrieve_inventory_counts_request :: %{
@@ -11300,18 +9548,15 @@ defmodule SquareUp.Schema do
           updated_after: binary()
         }
 
-  def batch_retrieve_inventory_counts_request(data) do
-    valid?(
-      data,
-      schema(%{
-        catalog_object_ids: spec(coll_of(spec(is_binary()))),
-        cursor: spec(is_binary()),
-        location_ids: spec(coll_of(spec(is_binary()))),
-        states: spec(coll_of(spec(is_binary()))),
-        updated_after: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def batch_retrieve_inventory_counts_request do
+    schema(%{
+      catalog_object_ids: spec(coll_of(spec(is_binary()))),
+      cursor: spec(is_binary()),
+      location_ids: spec(coll_of(spec(is_binary()))),
+      states: spec(coll_of(spec(is_binary()))),
+      updated_after: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type delete_catalog_object_response :: %{
@@ -11320,16 +9565,13 @@ defmodule SquareUp.Schema do
           errors: [SquareUp.Schema.error()]
         }
 
-  def delete_catalog_object_response(data) do
-    valid?(
-      data,
-      schema(%{
-        deleted_at: spec(is_binary()),
-        deleted_object_ids: spec(coll_of(spec(is_binary()))),
-        errors: spec(coll_of(spec(SquareUp.Schema.error())))
-      })
-      |> selection([])
-    )
+  def delete_catalog_object_response do
+    schema(%{
+      deleted_at: spec(is_binary()),
+      deleted_object_ids: spec(coll_of(spec(is_binary()))),
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0)))
+    })
+    |> selection([])
   end
 
   @type list_payment_refunds_request :: %{
@@ -11342,25 +9584,22 @@ defmodule SquareUp.Schema do
           status: binary()
         }
 
-  def list_payment_refunds_request(data) do
-    valid?(
-      data,
-      schema(%{
-        begin_time: spec(is_binary()),
-        cursor: spec(is_binary()),
-        end_time: spec(is_binary()),
-        location_id: spec(is_binary()),
-        sort_order: spec(is_binary()),
-        source_type: spec(is_binary()),
-        status: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def list_payment_refunds_request do
+    schema(%{
+      begin_time: spec(is_binary()),
+      cursor: spec(is_binary()),
+      end_time: spec(is_binary()),
+      location_id: spec(is_binary()),
+      sort_order: spec(is_binary()),
+      source_type: spec(is_binary()),
+      status: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type dispute_state :: binary()
-  def dispute_state(data) do
-    valid?(data, spec(is_binary()))
+  def dispute_state do
+    spec(is_binary())
   end
 
   @type search_catalog_items_request :: %{
@@ -11375,37 +9614,32 @@ defmodule SquareUp.Schema do
           text_filter: binary()
         }
 
-  def search_catalog_items_request(data) do
-    valid?(
-      data,
-      schema(%{
-        category_ids: spec(coll_of(spec(is_binary()))),
-        cursor: spec(is_binary()),
-        custom_attribute_filters: spec(coll_of(spec(SquareUp.Schema.custom_attribute_filter()))),
-        enabled_location_ids: spec(coll_of(spec(is_binary()))),
-        limit: spec(is_integer()),
-        product_types: spec(coll_of(spec(is_binary()))),
-        sort_order: spec(is_binary()),
-        stock_levels: spec(coll_of(spec(is_binary()))),
-        text_filter: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def search_catalog_items_request do
+    schema(%{
+      category_ids: spec(coll_of(spec(is_binary()))),
+      cursor: spec(is_binary()),
+      custom_attribute_filters:
+        spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.custom_attribute_filter/0))),
+      enabled_location_ids: spec(coll_of(spec(is_binary()))),
+      limit: spec(is_integer()),
+      product_types: spec(coll_of(spec(is_binary()))),
+      sort_order: spec(is_binary()),
+      stock_levels: spec(coll_of(spec(is_binary()))),
+      text_filter: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type v1_item_visibility :: binary()
-  def v1_item_visibility(data) do
-    valid?(data, spec(is_binary()))
+  def v1_item_visibility do
+    spec(is_binary())
   end
 
   @type list_customer_segments_request :: %{cursor: binary()}
 
-  def list_customer_segments_request(data) do
-    valid?(
-      data,
-      schema(%{cursor: spec(is_binary())})
-      |> selection([])
-    )
+  def list_customer_segments_request do
+    schema(%{cursor: spec(is_binary())})
+    |> selection([])
   end
 
   @type job_assignment :: %{
@@ -11416,53 +9650,44 @@ defmodule SquareUp.Schema do
           weekly_hours: integer()
         }
 
-  def job_assignment(data) do
-    valid?(
-      data,
-      schema(%{
-        annual_rate: spec(SquareUp.Schema.money()),
-        hourly_rate: spec(SquareUp.Schema.money()),
-        job_title: spec(is_binary()),
-        pay_type: spec(is_binary()),
-        weekly_hours: spec(is_integer())
-      })
-      |> selection([:job_title, :pay_type])
-    )
+  def job_assignment do
+    schema(%{
+      annual_rate: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      hourly_rate: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      job_title: spec(is_binary()),
+      pay_type: spec(is_binary()),
+      weekly_hours: spec(is_integer())
+    })
+    |> selection([:job_title, :pay_type])
   end
 
   @type loyalty_program_reward_definition_type :: binary()
-  def loyalty_program_reward_definition_type(data) do
-    valid?(data, spec(is_binary()))
+  def loyalty_program_reward_definition_type do
+    spec(is_binary())
   end
 
   @type location_status :: binary()
-  def location_status(data) do
-    valid?(data, spec(is_binary()))
+  def location_status do
+    spec(is_binary())
   end
 
   @type catalog_id_mapping :: %{client_object_id: binary(), object_id: binary()}
 
-  def catalog_id_mapping(data) do
-    valid?(
-      data,
-      schema(%{client_object_id: spec(is_binary()), object_id: spec(is_binary())})
-      |> selection([])
-    )
+  def catalog_id_mapping do
+    schema(%{client_object_id: spec(is_binary()), object_id: spec(is_binary())})
+    |> selection([])
   end
 
   @type loyalty_reward_status :: binary()
-  def loyalty_reward_status(data) do
-    valid?(data, spec(is_binary()))
+  def loyalty_reward_status do
+    spec(is_binary())
   end
 
   @type v1_create_category_request :: %{body: SquareUp.Schema.v1_category()}
 
-  def v1_create_category_request(data) do
-    valid?(
-      data,
-      schema(%{body: spec(SquareUp.Schema.v1_category())})
-      |> selection([])
-    )
+  def v1_create_category_request do
+    schema(%{body: Norm.Delegate.delegate(&SquareUp.Schema.v1_category/0)})
+    |> selection([])
   end
 
   @type catalog_item_option :: %{
@@ -11474,19 +9699,16 @@ defmodule SquareUp.Schema do
           values: [SquareUp.Schema.catalog_object()]
         }
 
-  def catalog_item_option(data) do
-    valid?(
-      data,
-      schema(%{
-        description: spec(is_binary()),
-        display_name: spec(is_binary()),
-        item_count: spec(is_integer()),
-        name: spec(is_binary()),
-        show_colors: spec(is_boolean()),
-        values: spec(coll_of(spec(SquareUp.Schema.catalog_object())))
-      })
-      |> selection([])
-    )
+  def catalog_item_option do
+    schema(%{
+      description: spec(is_binary()),
+      display_name: spec(is_binary()),
+      item_count: spec(is_integer()),
+      name: spec(is_binary()),
+      show_colors: spec(is_boolean()),
+      values: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.catalog_object/0)))
+    })
+    |> selection([])
   end
 
   @type order_return :: %{
@@ -11500,47 +9722,40 @@ defmodule SquareUp.Schema do
           uid: binary()
         }
 
-  def order_return(data) do
-    valid?(
-      data,
-      schema(%{
-        return_amounts: spec(SquareUp.Schema.order_money_amounts()),
-        return_discounts: spec(coll_of(spec(SquareUp.Schema.order_return_discount()))),
-        return_line_items: spec(coll_of(spec(SquareUp.Schema.order_return_line_item()))),
-        return_service_charges:
-          spec(coll_of(spec(SquareUp.Schema.order_return_service_charge()))),
-        return_taxes: spec(coll_of(spec(SquareUp.Schema.order_return_tax()))),
-        rounding_adjustment: spec(SquareUp.Schema.order_rounding_adjustment()),
-        source_order_id: spec(is_binary()),
-        uid: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def order_return do
+    schema(%{
+      return_amounts: Norm.Delegate.delegate(&SquareUp.Schema.order_money_amounts/0),
+      return_discounts:
+        spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.order_return_discount/0))),
+      return_line_items:
+        spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.order_return_line_item/0))),
+      return_service_charges:
+        spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.order_return_service_charge/0))),
+      return_taxes: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.order_return_tax/0))),
+      rounding_adjustment: Norm.Delegate.delegate(&SquareUp.Schema.order_rounding_adjustment/0),
+      source_order_id: spec(is_binary()),
+      uid: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type transaction_product :: binary()
-  def transaction_product(data) do
-    valid?(data, spec(is_binary()))
+  def transaction_product do
+    spec(is_binary())
   end
 
   @type v1_delete_category_request :: %{}
 
-  def v1_delete_category_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def v1_delete_category_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type v1_retrieve_item_request :: %{}
 
-  def v1_retrieve_item_request(data) do
-    valid?(
-      data,
-      schema(%{})
-      |> selection([])
-    )
+  def v1_retrieve_item_request do
+    schema(%{})
+    |> selection([])
   end
 
   @type bulk_create_team_members_response :: %{
@@ -11548,12 +9763,12 @@ defmodule SquareUp.Schema do
           team_members: map()
         }
 
-  def bulk_create_team_members_response(data) do
-    valid?(
-      data,
-      schema(%{errors: spec(coll_of(spec(SquareUp.Schema.error()))), team_members: schema(%{})})
-      |> selection([])
-    )
+  def bulk_create_team_members_response do
+    schema(%{
+      errors: spec(coll_of(Norm.Delegate.delegate(&SquareUp.Schema.error/0))),
+      team_members: schema(%{})
+    })
+    |> selection([])
   end
 
   @type order_return_line_item_modifier :: %{
@@ -11565,23 +9780,20 @@ defmodule SquareUp.Schema do
           uid: binary()
         }
 
-  def order_return_line_item_modifier(data) do
-    valid?(
-      data,
-      schema(%{
-        base_price_money: spec(SquareUp.Schema.money()),
-        catalog_object_id: spec(is_binary()),
-        name: spec(is_binary()),
-        source_modifier_uid: spec(is_binary()),
-        total_price_money: spec(SquareUp.Schema.money()),
-        uid: spec(is_binary())
-      })
-      |> selection([])
-    )
+  def order_return_line_item_modifier do
+    schema(%{
+      base_price_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      catalog_object_id: spec(is_binary()),
+      name: spec(is_binary()),
+      source_modifier_uid: spec(is_binary()),
+      total_price_money: Norm.Delegate.delegate(&SquareUp.Schema.money/0),
+      uid: spec(is_binary())
+    })
+    |> selection([])
   end
 
   @type v1_tender_type :: binary()
-  def v1_tender_type(data) do
-    valid?(data, spec(is_binary()))
+  def v1_tender_type do
+    spec(is_binary())
   end
 end

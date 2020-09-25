@@ -5,7 +5,7 @@ defmodule SquareUp.V2.CatalogObjects do
   @spec batch_delete(%SquareUp.Client{}, SquareUp.Schema.batch_delete_catalog_objects_request()) ::
           SquareUp.Client.response()
   def batch_delete(client, params \\ %{}) do
-    norm_spec = spec(SquareUp.Schema.batch_delete_catalog_objects_request())
+    norm_spec = Norm.Delegate.delegate(&SquareUp.Schema.batch_delete_catalog_objects_request/0)
 
     call(client, %{
       method: :post,
@@ -20,7 +20,7 @@ defmodule SquareUp.V2.CatalogObjects do
           SquareUp.Schema.batch_retrieve_catalog_objects_request()
         ) :: SquareUp.Client.response()
   def batch_retrieve(client, params \\ %{}) do
-    norm_spec = spec(SquareUp.Schema.batch_retrieve_catalog_objects_request())
+    norm_spec = Norm.Delegate.delegate(&SquareUp.Schema.batch_retrieve_catalog_objects_request/0)
 
     call(client, %{
       method: :post,
@@ -33,7 +33,7 @@ defmodule SquareUp.V2.CatalogObjects do
   @spec search(%SquareUp.Client{}, SquareUp.Schema.search_catalog_objects_request()) ::
           SquareUp.Client.response()
   def search(client, params \\ %{}) do
-    norm_spec = spec(SquareUp.Schema.search_catalog_objects_request())
+    norm_spec = Norm.Delegate.delegate(&SquareUp.Schema.search_catalog_objects_request/0)
 
     call(client, %{
       method: :post,

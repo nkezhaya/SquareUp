@@ -5,7 +5,7 @@ defmodule SquareUp.V2.Invoice do
   @spec create(%SquareUp.Client{}, SquareUp.Schema.create_invoice_request()) ::
           SquareUp.Client.response()
   def create(client, params \\ %{}) do
-    norm_spec = spec(SquareUp.Schema.create_invoice_request())
+    norm_spec = Norm.Delegate.delegate(&SquareUp.Schema.create_invoice_request/0)
 
     call(client, %{
       method: :post,
@@ -23,7 +23,7 @@ defmodule SquareUp.V2.Invoice do
     norm_spec =
       schema(%{
         invoice_id: spec(is_binary()),
-        body: spec(SquareUp.Schema.publish_invoice_request())
+        body: Norm.Delegate.delegate(&SquareUp.Schema.publish_invoice_request/0)
       })
 
     call(client, %{
@@ -67,7 +67,7 @@ defmodule SquareUp.V2.Invoice do
     norm_spec =
       schema(%{
         invoice_id: spec(is_binary()),
-        body: spec(SquareUp.Schema.update_invoice_request())
+        body: Norm.Delegate.delegate(&SquareUp.Schema.update_invoice_request/0)
       })
 
     call(client, %{
@@ -86,7 +86,7 @@ defmodule SquareUp.V2.Invoice do
     norm_spec =
       schema(%{
         invoice_id: spec(is_binary()),
-        body: spec(SquareUp.Schema.cancel_invoice_request())
+        body: Norm.Delegate.delegate(&SquareUp.Schema.cancel_invoice_request/0)
       })
 
     call(client, %{

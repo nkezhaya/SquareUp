@@ -21,7 +21,7 @@ defmodule SquareUp.V2.WageSetting do
     norm_spec =
       schema(%{
         team_member_id: spec(is_binary()),
-        body: spec(SquareUp.Schema.update_wage_setting_request())
+        body: Norm.Delegate.delegate(&SquareUp.Schema.update_wage_setting_request/0)
       })
 
     call(client, %{

@@ -16,7 +16,7 @@ defmodule SquareUp.V2.DeviceCode do
   @spec create(%SquareUp.Client{}, SquareUp.Schema.create_device_code_request()) ::
           SquareUp.Client.response()
   def create(client, params \\ %{}) do
-    norm_spec = spec(SquareUp.Schema.create_device_code_request())
+    norm_spec = Norm.Delegate.delegate(&SquareUp.Schema.create_device_code_request/0)
 
     call(client, %{
       method: :post,

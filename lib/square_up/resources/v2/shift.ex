@@ -29,7 +29,10 @@ defmodule SquareUp.V2.Shift do
           SquareUp.Client.response()
   def update(client, params \\ %{}) do
     norm_spec =
-      schema(%{id: spec(is_binary()), body: spec(SquareUp.Schema.update_shift_request())})
+      schema(%{
+        id: spec(is_binary()),
+        body: Norm.Delegate.delegate(&SquareUp.Schema.update_shift_request/0)
+      })
 
     call(client, %{
       method: :put,
@@ -42,7 +45,7 @@ defmodule SquareUp.V2.Shift do
   @spec create(%SquareUp.Client{}, SquareUp.Schema.create_shift_request()) ::
           SquareUp.Client.response()
   def create(client, params \\ %{}) do
-    norm_spec = spec(SquareUp.Schema.create_shift_request())
+    norm_spec = Norm.Delegate.delegate(&SquareUp.Schema.create_shift_request/0)
 
     call(client, %{
       method: :post,

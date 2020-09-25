@@ -5,7 +5,7 @@ defmodule SquareUp.V2.Payment do
   @spec refund(%SquareUp.Client{}, SquareUp.Schema.refund_payment_request()) ::
           SquareUp.Client.response()
   def refund(client, params \\ %{}) do
-    norm_spec = spec(SquareUp.Schema.refund_payment_request())
+    norm_spec = Norm.Delegate.delegate(&SquareUp.Schema.refund_payment_request/0)
 
     call(client, %{
       method: :post,
@@ -20,7 +20,8 @@ defmodule SquareUp.V2.Payment do
           SquareUp.Schema.cancel_payment_by_idempotency_key_request()
         ) :: SquareUp.Client.response()
   def cancel_by_idempotency_key(client, params \\ %{}) do
-    norm_spec = spec(SquareUp.Schema.cancel_payment_by_idempotency_key_request())
+    norm_spec =
+      Norm.Delegate.delegate(&SquareUp.Schema.cancel_payment_by_idempotency_key_request/0)
 
     call(client, %{
       method: :post,
@@ -69,7 +70,7 @@ defmodule SquareUp.V2.Payment do
   @spec create(%SquareUp.Client{}, SquareUp.Schema.create_payment_request()) ::
           SquareUp.Client.response()
   def create(client, params \\ %{}) do
-    norm_spec = spec(SquareUp.Schema.create_payment_request())
+    norm_spec = Norm.Delegate.delegate(&SquareUp.Schema.create_payment_request/0)
 
     call(client, %{
       method: :post,

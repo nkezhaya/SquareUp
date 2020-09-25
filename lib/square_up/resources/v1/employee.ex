@@ -17,7 +17,10 @@ defmodule SquareUp.V1.Employee do
           SquareUp.Client.response()
   def update(client, params \\ %{}) do
     norm_spec =
-      schema(%{employee_id: spec(is_binary()), body: spec(SquareUp.Schema.v1_employee())})
+      schema(%{
+        employee_id: spec(is_binary()),
+        body: Norm.Delegate.delegate(&SquareUp.Schema.v1_employee/0)
+      })
 
     call(client, %{
       method: :put,
@@ -29,7 +32,7 @@ defmodule SquareUp.V1.Employee do
 
   @spec create(%SquareUp.Client{}, SquareUp.Schema.v1_employee()) :: SquareUp.Client.response()
   def create(client, params \\ %{}) do
-    norm_spec = spec(SquareUp.Schema.v1_employee())
+    norm_spec = Norm.Delegate.delegate(&SquareUp.Schema.v1_employee/0)
 
     call(client, %{
       method: :post,

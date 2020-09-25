@@ -10,7 +10,7 @@ defmodule SquareUp.V2.Checkout do
     norm_spec =
       schema(%{
         location_id: spec(is_binary()),
-        body: spec(SquareUp.Schema.create_checkout_request())
+        body: Norm.Delegate.delegate(&SquareUp.Schema.create_checkout_request/0)
       })
 
     call(client, %{

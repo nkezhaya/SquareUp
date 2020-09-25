@@ -5,7 +5,7 @@ defmodule SquareUp.V2.ChangeInventory do
   @spec batch(%SquareUp.Client{}, SquareUp.Schema.batch_change_inventory_request()) ::
           SquareUp.Client.response()
   def batch(client, params \\ %{}) do
-    norm_spec = spec(SquareUp.Schema.batch_change_inventory_request())
+    norm_spec = Norm.Delegate.delegate(&SquareUp.Schema.batch_change_inventory_request/0)
 
     call(client, %{
       method: :post,

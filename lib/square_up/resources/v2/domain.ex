@@ -5,7 +5,7 @@ defmodule SquareUp.V2.Domain do
   @spec register(%SquareUp.Client{}, SquareUp.Schema.register_domain_request()) ::
           SquareUp.Client.response()
   def register(client, params \\ %{}) do
-    norm_spec = spec(SquareUp.Schema.register_domain_request())
+    norm_spec = Norm.Delegate.delegate(&SquareUp.Schema.register_domain_request/0)
 
     call(client, %{
       method: :post,

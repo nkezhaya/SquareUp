@@ -25,7 +25,7 @@ defmodule SquareUp.V1.Order do
       schema(%{
         location_id: spec(is_binary()),
         order_id: spec(is_binary()),
-        body: spec(SquareUp.Schema.v1_update_order_request())
+        body: Norm.Delegate.delegate(&SquareUp.Schema.v1_update_order_request/0)
       })
 
     call(client, %{

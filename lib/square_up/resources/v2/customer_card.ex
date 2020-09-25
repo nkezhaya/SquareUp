@@ -23,7 +23,7 @@ defmodule SquareUp.V2.CustomerCard do
     norm_spec =
       schema(%{
         customer_id: spec(is_binary()),
-        body: spec(SquareUp.Schema.create_customer_card_request())
+        body: Norm.Delegate.delegate(&SquareUp.Schema.create_customer_card_request/0)
       })
 
     call(client, %{

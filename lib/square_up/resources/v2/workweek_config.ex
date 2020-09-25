@@ -10,7 +10,7 @@ defmodule SquareUp.V2.WorkweekConfig do
     norm_spec =
       schema(%{
         id: spec(is_binary()),
-        body: spec(SquareUp.Schema.update_workweek_config_request())
+        body: Norm.Delegate.delegate(&SquareUp.Schema.update_workweek_config_request/0)
       })
 
     call(client, %{

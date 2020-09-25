@@ -5,7 +5,7 @@ defmodule SquareUp.OAUTH2.Token do
   @spec obtain(%SquareUp.Client{}, SquareUp.Schema.obtain_token_request()) ::
           SquareUp.Client.response()
   def obtain(client, params \\ %{}) do
-    norm_spec = spec(SquareUp.Schema.obtain_token_request())
+    norm_spec = Norm.Delegate.delegate(&SquareUp.Schema.obtain_token_request/0)
 
     call(client, %{
       method: :post,
@@ -18,7 +18,7 @@ defmodule SquareUp.OAUTH2.Token do
   @spec revoke(%SquareUp.Client{}, SquareUp.Schema.revoke_token_request()) ::
           SquareUp.Client.response()
   def revoke(client, params \\ %{}) do
-    norm_spec = spec(SquareUp.Schema.revoke_token_request())
+    norm_spec = Norm.Delegate.delegate(&SquareUp.Schema.revoke_token_request/0)
 
     call(client, %{
       method: :post,

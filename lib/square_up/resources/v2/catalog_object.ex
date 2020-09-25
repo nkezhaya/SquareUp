@@ -30,7 +30,7 @@ defmodule SquareUp.V2.CatalogObject do
   @spec upsert(%SquareUp.Client{}, SquareUp.Schema.upsert_catalog_object_request()) ::
           SquareUp.Client.response()
   def upsert(client, params \\ %{}) do
-    norm_spec = spec(SquareUp.Schema.upsert_catalog_object_request())
+    norm_spec = Norm.Delegate.delegate(&SquareUp.Schema.upsert_catalog_object_request/0)
 
     call(client, %{
       method: :post,

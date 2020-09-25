@@ -5,7 +5,7 @@ defmodule SquareUp.V2.TeamMember do
   @spec create(%SquareUp.Client{}, SquareUp.Schema.create_team_member_request()) ::
           SquareUp.Client.response()
   def create(client, params \\ %{}) do
-    norm_spec = spec(SquareUp.Schema.create_team_member_request())
+    norm_spec = Norm.Delegate.delegate(&SquareUp.Schema.create_team_member_request/0)
 
     call(client, %{
       method: :post,
@@ -35,7 +35,7 @@ defmodule SquareUp.V2.TeamMember do
     norm_spec =
       schema(%{
         team_member_id: spec(is_binary()),
-        body: spec(SquareUp.Schema.update_team_member_request())
+        body: Norm.Delegate.delegate(&SquareUp.Schema.update_team_member_request/0)
       })
 
     call(client, %{
