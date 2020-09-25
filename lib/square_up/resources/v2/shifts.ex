@@ -1,5 +1,4 @@
 defmodule SquareUp.V2.Shifts do
-  import Norm
   import SquareUp.Client, only: [call: 2]
 
   @spec search(SquareUp.Client.t(), %{}, SquareUp.TypeSpecs.search_shifts_request()) ::

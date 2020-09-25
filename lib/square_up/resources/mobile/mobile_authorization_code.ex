@@ -1,5 +1,4 @@
 defmodule SquareUp.MOBILE.MobileAuthorizationCode do
-  import Norm
   import SquareUp.Client, only: [call: 2]
 
   @spec create(

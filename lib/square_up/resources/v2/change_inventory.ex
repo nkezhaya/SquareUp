@@ -1,5 +1,4 @@
 defmodule SquareUp.V2.ChangeInventory do
-  import Norm
   import SquareUp.Client, only: [call: 2]
 
   @spec batch(SquareUp.Client.t(), %{}, SquareUp.TypeSpecs.batch_change_inventory_request()) ::

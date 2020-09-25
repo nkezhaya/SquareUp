@@ -1,5 +1,4 @@
 defmodule SquareUp.V2.ItemModifierLists do
-  import Norm
   import SquareUp.Client, only: [call: 2]
 
   @spec update(SquareUp.Client.t(), %{}, SquareUp.TypeSpecs.update_item_modifier_lists_request()) ::

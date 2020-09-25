@@ -1,5 +1,4 @@
 defmodule SquareUp.V2.CreateTeamMembers do
-  import Norm
   import SquareUp.Client, only: [call: 2]
 
   @spec bulk(SquareUp.Client.t(), %{}, SquareUp.TypeSpecs.bulk_create_team_members_request()) ::
