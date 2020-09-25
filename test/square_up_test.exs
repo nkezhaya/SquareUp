@@ -8,16 +8,12 @@ defmodule SquareUpTest do
     base_path: "https://connect.squareupsandbox.com"
   }
 
-  test "can list payments" do
-    assert {:ok, _payments} = SquareUp.V2.Payments.list(@client)
-  end
-
   test "rejects an invalid request" do
     assert {:error, [%{input: "foo", path: [:amount_money, :amount], spec: "is_integer()"} | _]} =
              SquareUp.V2.Payment.create(@client, %{}, %{amount_money: %{amount: "foo"}})
   end
 
-  test "create a payment" do
+  test "create and retrieve a customer" do
     {:ok, %{customer: %{id: customer_id}}} =
       SquareUp.V2.Customer.create(@client, %{}, %{
         given_name: "Derek",
