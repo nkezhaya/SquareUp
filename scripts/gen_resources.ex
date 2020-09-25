@@ -4,13 +4,23 @@ defmodule GenResources do
 
   @api File.read!("api.json") |> Jason.decode!()
 
+  # Module.register_attribute(__MODULE__, :schemas_to_export)
+  # Module.register_attribute(__MODULE__, :response_schemas_to_export)
+  # Module.register_attribute(__MODULE__, :typespecs_to_export)
+
   @impl Mix.Task
   def run(_args) do
     rm_resources()
 
-    write_schema_module()
-
     write_resources()
+
+    write_norm_schema_module()
+
+    write_typespecs_module()
+
+    write_response_schemas_module()
+
+    Mix.Tasks.Format.run(~w(lib/square_up/resources/**/*.ex))
   end
 
   defp rm_resources() do
@@ -37,8 +47,6 @@ defmodule GenResources do
       {module, version}
     end)
     |> Enum.map(&write_module/1)
-
-    Mix.Tasks.Format.run(~w(lib/square_up/resources/**/*.ex))
   end
 
   defp write_module({{module, version}, endpoints}) do
@@ -67,48 +75,85 @@ defmodule GenResources do
       end)
 
     params = Map.get(defn, "parameters")
+    success_response = Map.get(defn, "responses") |> Map.get("200") |> Map.get("schema")
 
     """
-      @spec #{function}(%SquareUp.Client{}, #{params_to_typespec(params)}) :: SquareUp.Client.response()
+      @spec #{function}(SquareUp.Client.t(), #{params_to_typespec(params)}) :: SquareUp.Client.response(#{
+      params_to_typespec(success_response)
+    })
       def #{function}(client, params \\\\ %{}) do
         norm_spec = #{params_to_norm(params)}
+
+        response_spec = #{response_to_spec(success_response)}
 
         call(client, %{
           method: :#{method},
           params: params,
           spec: norm_spec,
+          response_spec: response_spec,
           path: "#{path}"
         })
       end
     """
   end
 
-  defp write_schema_module() do
+  defp write_norm_schema_module() do
     definitions = Map.get(@api, "definitions")
 
     contents = """
-    defmodule SquareUp.Schema do
+    defmodule SquareUp.NormSchema do
       import Norm
-    #{Enum.map(definitions, &write_definition/1)}
+    #{Enum.map(definitions, &write_norm_definition/1)}
     end
     """
 
-    File.write!("lib/square_up/resources/schema.ex", contents)
+    File.write!("lib/square_up/resources/norm_schema.ex", contents)
   end
 
-  defp write_definition({function, defn}) do
+  defp write_norm_definition({function, defn}) do
     """
-    @type #{Macro.underscore(function)} :: #{params_to_typespec(defn)}
     def #{Macro.underscore(function)} do
       #{params_to_norm(defn)}
     end
     """
+  end
 
-    # """
-    # def #{Macro.underscore(function)}() do
-    ## {params_to_norm(defn)}
-    # end
-    # """
+  defp write_typespecs_module() do
+    definitions = Map.get(@api, "definitions")
+
+    contents = """
+    defmodule SquareUp.TypeSpecs do
+    #{Enum.map(definitions, &write_typespec/1)}
+    end
+    """
+
+    File.write!("lib/square_up/resources/typespecs.ex", contents)
+  end
+
+  defp write_typespec({function, defn}) do
+    """
+    @type #{Macro.underscore(function)} :: #{params_to_typespec(defn)}
+    """
+  end
+
+  defp write_response_schemas_module() do
+    definitions = Map.get(@api, "definitions")
+
+    contents = """
+    defmodule SquareUp.ResponseSchema do
+    #{Enum.map(definitions, &write_response_schema/1)}
+    end
+    """
+
+    File.write!("lib/square_up/resources/response_schema.ex", contents)
+  end
+
+  defp write_response_schema({function, defn}) do
+    """
+    def #{Macro.underscore(function)} do
+      #{response_to_spec(defn)}
+    end
+    """
   end
 
   defp params_to_norm([%{"name" => "body"} = body]) do
@@ -134,12 +179,12 @@ defmodule GenResources do
 
   defp params_to_norm(%{"schema" => %{"$ref" => schema}}) do
     "#/definitions/" <> function = schema
-    ~s[Norm.Delegate.delegate(&SquareUp.Schema.#{Macro.underscore(function)}/0)]
+    ~s[Norm.Delegate.delegate(&SquareUp.NormSchema.#{Macro.underscore(function)}/0)]
   end
 
   defp params_to_norm(%{"$ref" => schema}) do
     "#/definitions/" <> function = schema
-    ~s[Norm.Delegate.delegate(&SquareUp.Schema.#{Macro.underscore(function)}/0)]
+    ~s[Norm.Delegate.delegate(&SquareUp.NormSchema.#{Macro.underscore(function)}/0)]
   end
 
   defp params_to_norm(%{"type" => "integer"}) do
@@ -202,12 +247,12 @@ defmodule GenResources do
 
   defp params_to_typespec(%{"schema" => %{"$ref" => schema}}) do
     "#/definitions/" <> function = schema
-    ~s[SquareUp.Schema.#{Macro.underscore(function)}()]
+    ~s[SquareUp.TypeSpecs.#{Macro.underscore(function)}()]
   end
 
   defp params_to_typespec(%{"$ref" => schema}) do
     "#/definitions/" <> function = schema
-    ~s[SquareUp.Schema.#{Macro.underscore(function)}()]
+    ~s[SquareUp.TypeSpecs.#{Macro.underscore(function)}()]
   end
 
   defp params_to_typespec(%{"type" => "integer"}), do: "integer()"
@@ -222,6 +267,47 @@ defmodule GenResources do
 
   defp params_to_typespec({name, param = %{}}) do
     params_to_typespec(Map.put(param, "name", name))
+  end
+
+  # response_to_spec
+  defp response_to_spec([%{"name" => "body"} = body]) do
+    Map.delete(body, "name") |> response_to_spec()
+  end
+
+  defp response_to_spec(list) when is_list(list) do
+    "%{#{Enum.map(list, &response_to_spec/1) |> Enum.join(",")}}"
+  end
+
+  defp response_to_spec(%{"properties" => props}) do
+    ~s[%{#{Enum.map(props, &response_to_spec/1) |> Enum.join(",")}}]
+  end
+
+  defp response_to_spec(%{"name" => name} = param) do
+    ~s[#{name}: #{response_to_spec(Map.delete(param, "name"))}]
+  end
+
+  defp response_to_spec(%{"schema" => %{"$ref" => schema}}) do
+    "#/definitions/" <> function = schema
+    ~s[{:delegate, &SquareUp.ResponseSchema.#{Macro.underscore(function)}/0}]
+  end
+
+  defp response_to_spec(%{"$ref" => schema}) do
+    "#/definitions/" <> function = schema
+    ~s[{:delegate, &SquareUp.ResponseSchema.#{Macro.underscore(function)}/0}]
+  end
+
+  defp response_to_spec(%{"type" => "integer"}), do: ":value"
+  defp response_to_spec(%{"type" => "boolean"}), do: ":value"
+  defp response_to_spec(%{"type" => "string"}), do: ":value"
+  defp response_to_spec(%{"type" => "number"}), do: ":value"
+  defp response_to_spec(%{"type" => "object"}), do: ":value"
+
+  defp response_to_spec(%{"items" => item, "type" => "array"}) do
+    "[#{response_to_spec(item)}]"
+  end
+
+  defp response_to_spec({name, param = %{}}) do
+    response_to_spec(Map.put(param, "name", name))
   end
 
   defp name_to_function("BulkUpdate" <> module), do: {module, "bulk_update"}

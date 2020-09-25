@@ -2,7 +2,7 @@ defmodule SquareUp.V2.PaymentRefunds do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  @spec list(%SquareUp.Client{}, %{
+  @spec list(SquareUp.Client.t(), %{
           begin_time: binary(),
           end_time: binary(),
           sort_order: binary(),
@@ -10,7 +10,7 @@ defmodule SquareUp.V2.PaymentRefunds do
           location_id: binary(),
           status: binary(),
           source_type: binary()
-        }) :: SquareUp.Client.response()
+        }) :: SquareUp.Client.response(SquareUp.TypeSpecs.list_payment_refunds_response())
   def list(client, params \\ %{}) do
     norm_spec =
       schema(%{
@@ -23,10 +23,13 @@ defmodule SquareUp.V2.PaymentRefunds do
         source_type: spec(is_binary())
       })
 
+    response_spec = {:delegate, &SquareUp.ResponseSchema.list_payment_refunds_response/0}
+
     call(client, %{
       method: :get,
       params: params,
       spec: norm_spec,
+      response_spec: response_spec,
       path: "/v2/refunds"
     })
   end

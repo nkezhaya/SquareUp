@@ -1,33 +1,41 @@
 defmodule SquareUp.V2.WageSetting do
   import Norm
   import SquareUp.Client, only: [call: 2]
-  @spec retrieve(%SquareUp.Client{}, %{team_member_id: binary()}) :: SquareUp.Client.response()
+
+  @spec retrieve(SquareUp.Client.t(), %{team_member_id: binary()}) ::
+          SquareUp.Client.response(SquareUp.TypeSpecs.retrieve_wage_setting_response())
   def retrieve(client, params \\ %{}) do
     norm_spec = schema(%{team_member_id: spec(is_binary())})
+
+    response_spec = {:delegate, &SquareUp.ResponseSchema.retrieve_wage_setting_response/0}
 
     call(client, %{
       method: :get,
       params: params,
       spec: norm_spec,
+      response_spec: response_spec,
       path: "/v2/team-members/#{Map.get(params, "team_member_id")}/wage-setting"
     })
   end
 
-  @spec update(%SquareUp.Client{}, %{
+  @spec update(SquareUp.Client.t(), %{
           team_member_id: binary(),
-          body: SquareUp.Schema.update_wage_setting_request()
-        }) :: SquareUp.Client.response()
+          body: SquareUp.TypeSpecs.update_wage_setting_request()
+        }) :: SquareUp.Client.response(SquareUp.TypeSpecs.update_wage_setting_response())
   def update(client, params \\ %{}) do
     norm_spec =
       schema(%{
         team_member_id: spec(is_binary()),
-        body: Norm.Delegate.delegate(&SquareUp.Schema.update_wage_setting_request/0)
+        body: Norm.Delegate.delegate(&SquareUp.NormSchema.update_wage_setting_request/0)
       })
+
+    response_spec = {:delegate, &SquareUp.ResponseSchema.update_wage_setting_response/0}
 
     call(client, %{
       method: :put,
       params: params,
       spec: norm_spec,
+      response_spec: response_spec,
       path: "/v2/team-members/#{Map.get(params, "team_member_id")}/wage-setting"
     })
   end

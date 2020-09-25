@@ -16,4 +16,15 @@ defmodule SquareUpTest do
     assert {:error, [%{input: "foo", path: [:amount_money, :amount], spec: "is_integer()"} | _]} =
              SquareUp.V2.Payment.create(@client, %{amount_money: %{amount: "foo"}})
   end
+
+  test "create a payment" do
+    idempotency_key = UUID.uuid4()
+
+    {:ok, payment} =
+      SquareUp.V2.Payment.create(@client, %{
+        source_id: "111",
+        idempotency_key: idempotency_key,
+        amount_money: %{amount: 3000, currency: "USD"}
+      })
+  end
 end

@@ -3,7 +3,9 @@ defmodule SquareUp.Client do
 
   @square_version "2020-08-26"
 
-  @type response :: {:ok, decoded_json :: any()} | {:error, any()}
+  # @type response :: {:ok, decoded_json :: any()} | {:error, any()}
+  @type response(success) :: {:ok, success} | {:error, any()}
+  @type t :: %__MODULE__{}
 
   def call(client, call, opts \\ []) do
     case check_request(call) do
@@ -31,16 +33,17 @@ defmodule SquareUp.Client do
     )
     |> case do
       {:ok, 200, _resp_headers, ref} ->
-        {:ok, get_body!(ref)}
+        {:ok, get_body!(ref, call.response_spec)}
 
       {:ok, http_code, _resp_headers, ref} ->
         {:error, {:resp_not_200, http_code, get_body_best_effort(ref)}}
     end
   end
 
-  defp get_body!(ref) do
+  defp get_body!(ref, response_spec) do
     {:ok, body_json} = :hackney.body(ref)
-    Jason.decode!(body_json)
+    body = Jason.decode!(body_json) |> IO.inspect()
+    keys_to_atoms(body, response_spec)
   end
 
   defp get_body_best_effort(ref) do
@@ -50,6 +53,26 @@ defmodule SquareUp.Client do
       {:ok, body} -> body
       _ -> body_json
     end
+  end
+
+  defp keys_to_atoms(nil, [_spec]), do: []
+  defp keys_to_atoms(nil, _), do: nil
+
+  defp keys_to_atoms(map = %{}, spec = %{}) do
+    Map.new(spec, fn {key, val} ->
+      value = keys_to_atoms(Map.get(map, to_string(key)), val)
+      {key, value}
+    end)
+  end
+
+  defp keys_to_atoms(list, [spec]) do
+    Enum.map(list, fn item -> keys_to_atoms(item, spec) end)
+  end
+
+  defp keys_to_atoms(val, :value), do: val
+
+  defp keys_to_atoms(val, {:delegate, fun}) do
+    keys_to_atoms(val, fun.())
   end
 
   defp url(client, call) do

@@ -2,8 +2,8 @@ defmodule SquareUp.V2.BankAccounts do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  @spec list(%SquareUp.Client{}, %{cursor: binary(), limit: integer(), location_id: binary()}) ::
-          SquareUp.Client.response()
+  @spec list(SquareUp.Client.t(), %{cursor: binary(), limit: integer(), location_id: binary()}) ::
+          SquareUp.Client.response(SquareUp.TypeSpecs.list_bank_accounts_response())
   def list(client, params \\ %{}) do
     norm_spec =
       schema(%{
@@ -12,10 +12,13 @@ defmodule SquareUp.V2.BankAccounts do
         location_id: spec(is_binary())
       })
 
+    response_spec = {:delegate, &SquareUp.ResponseSchema.list_bank_accounts_response/0}
+
     call(client, %{
       method: :get,
       params: params,
       spec: norm_spec,
+      response_spec: response_spec,
       path: "/v2/bank-accounts"
     })
   end
