@@ -1,4 +1,5 @@
 defmodule SquareUp.V2.LoyaltyRewards do
+  import Norm, only: [schema: 1]
   import SquareUp.Client, only: [call: 2]
 
   @spec search(SquareUp.Client.t(), %{}, SquareUp.TypeSpecs.search_loyalty_rewards_request()) ::

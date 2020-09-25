@@ -1,4 +1,5 @@
 defmodule SquareUp.V2.TerminalCheckouts do
+  import Norm
   import SquareUp.Client, only: [call: 2]
 
   @spec search(SquareUp.Client.t(), %{}, SquareUp.TypeSpecs.search_terminal_checkouts_request()) ::

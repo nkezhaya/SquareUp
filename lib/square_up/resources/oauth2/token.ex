@@ -1,4 +1,5 @@
 defmodule SquareUp.OAUTH2.Token do
+  import Norm, only: [schema: 1]
   import SquareUp.Client, only: [call: 2]
 
   @spec obtain(SquareUp.Client.t(), %{}, SquareUp.TypeSpecs.obtain_token_request()) ::

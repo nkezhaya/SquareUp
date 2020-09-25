@@ -1,4 +1,5 @@
 defmodule SquareUp.V2.Domain do
+  import Norm
   import SquareUp.Client, only: [call: 2]
 
   @spec register(SquareUp.Client.t(), %{}, SquareUp.TypeSpecs.register_domain_request()) ::

@@ -1,4 +1,5 @@
 defmodule SquareUp.V2.CatalogObjects do
+  import Norm, only: [schema: 1]
   import SquareUp.Client, only: [call: 2]
 
   @spec batch_delete(
