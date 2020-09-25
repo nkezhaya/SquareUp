@@ -14,17 +14,17 @@ defmodule SquareUpTest do
 
   test "rejects an invalid request" do
     assert {:error, [%{input: "foo", path: [:amount_money, :amount], spec: "is_integer()"} | _]} =
-             SquareUp.V2.Payment.create(@client, %{amount_money: %{amount: "foo"}})
+             SquareUp.V2.Payment.create(@client, %{}, %{amount_money: %{amount: "foo"}})
   end
 
   test "create a payment" do
-    idempotency_key = UUID.uuid4()
-
-    {:ok, payment} =
-      SquareUp.V2.Payment.create(@client, %{
-        source_id: "111",
-        idempotency_key: idempotency_key,
-        amount_money: %{amount: 3000, currency: "USD"}
+    {:ok, %{customer: %{id: customer_id}}} =
+      SquareUp.V2.Customer.create(@client, %{}, %{
+        given_name: "Derek",
+        family_name: "Kraan"
       })
+
+    {:ok, %{customer: %{given_name: "Derek", family_name: "Kraan"}}} =
+      SquareUp.V2.Customer.retrieve(@client, %{customer_id: customer_id})
   end
 end

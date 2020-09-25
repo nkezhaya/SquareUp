@@ -4,18 +4,23 @@ defmodule SquareUp.V2.CatalogObjects do
 
   @spec batch_delete(
           SquareUp.Client.t(),
+          %{},
           SquareUp.TypeSpecs.batch_delete_catalog_objects_request()
         ) :: SquareUp.Client.response(SquareUp.TypeSpecs.batch_delete_catalog_objects_response())
-  def batch_delete(client, params \\ %{}) do
-    norm_spec =
+  def batch_delete(client, path_params \\ %{}, params \\ %{}) do
+    path_params_spec = schema(%{})
+
+    params_spec =
       Norm.Delegate.delegate(&SquareUp.NormSchema.batch_delete_catalog_objects_request/0)
 
     response_spec = {:delegate, &SquareUp.ResponseSchema.batch_delete_catalog_objects_response/0}
 
     call(client, %{
       method: :post,
+      path_params: path_params,
       params: params,
-      spec: norm_spec,
+      path_params_spec: path_params_spec,
+      params_spec: params_spec,
       response_spec: response_spec,
       path: "/v2/catalog/batch-delete"
     })
@@ -23,11 +28,14 @@ defmodule SquareUp.V2.CatalogObjects do
 
   @spec batch_retrieve(
           SquareUp.Client.t(),
+          %{},
           SquareUp.TypeSpecs.batch_retrieve_catalog_objects_request()
         ) ::
           SquareUp.Client.response(SquareUp.TypeSpecs.batch_retrieve_catalog_objects_response())
-  def batch_retrieve(client, params \\ %{}) do
-    norm_spec =
+  def batch_retrieve(client, path_params \\ %{}, params \\ %{}) do
+    path_params_spec = schema(%{})
+
+    params_spec =
       Norm.Delegate.delegate(&SquareUp.NormSchema.batch_retrieve_catalog_objects_request/0)
 
     response_spec =
@@ -35,24 +43,29 @@ defmodule SquareUp.V2.CatalogObjects do
 
     call(client, %{
       method: :post,
+      path_params: path_params,
       params: params,
-      spec: norm_spec,
+      path_params_spec: path_params_spec,
+      params_spec: params_spec,
       response_spec: response_spec,
       path: "/v2/catalog/batch-retrieve"
     })
   end
 
-  @spec search(SquareUp.Client.t(), SquareUp.TypeSpecs.search_catalog_objects_request()) ::
+  @spec search(SquareUp.Client.t(), %{}, SquareUp.TypeSpecs.search_catalog_objects_request()) ::
           SquareUp.Client.response(SquareUp.TypeSpecs.search_catalog_objects_response())
-  def search(client, params \\ %{}) do
-    norm_spec = Norm.Delegate.delegate(&SquareUp.NormSchema.search_catalog_objects_request/0)
+  def search(client, path_params \\ %{}, params \\ %{}) do
+    path_params_spec = schema(%{})
+    params_spec = Norm.Delegate.delegate(&SquareUp.NormSchema.search_catalog_objects_request/0)
 
     response_spec = {:delegate, &SquareUp.ResponseSchema.search_catalog_objects_response/0}
 
     call(client, %{
       method: :post,
+      path_params: path_params,
       params: params,
-      spec: norm_spec,
+      path_params_spec: path_params_spec,
+      params_spec: params_spec,
       response_spec: response_spec,
       path: "/v2/catalog/search"
     })

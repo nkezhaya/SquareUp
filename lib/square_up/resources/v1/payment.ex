@@ -2,19 +2,22 @@ defmodule SquareUp.V1.Payment do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  @spec retrieve(SquareUp.Client.t(), %{location_id: binary(), payment_id: binary()}) ::
+  @spec retrieve(SquareUp.Client.t(), %{location_id: binary(), payment_id: binary()}, %{}) ::
           SquareUp.Client.response(SquareUp.TypeSpecs.v1_payment())
-  def retrieve(client, params \\ %{}) do
-    norm_spec = schema(%{location_id: spec(is_binary()), payment_id: spec(is_binary())})
+  def retrieve(client, path_params \\ %{}, params \\ %{}) do
+    path_params_spec = schema(%{location_id: spec(is_binary()), payment_id: spec(is_binary())})
+    params_spec = schema(%{})
 
     response_spec = {:delegate, &SquareUp.ResponseSchema.v1_payment/0}
 
     call(client, %{
       method: :get,
+      path_params: path_params,
       params: params,
-      spec: norm_spec,
+      path_params_spec: path_params_spec,
+      params_spec: params_spec,
       response_spec: response_spec,
-      path: "/v1/#{Map.get(params, "location_id")}/payments/#{Map.get(params, "payment_id")}"
+      path: "/v1/{location_id}/payments/{payment_id}"
     })
   end
 end

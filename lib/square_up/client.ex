@@ -17,8 +17,10 @@ defmodule SquareUp.Client do
   defp check_request(call) do
     import Norm
 
-    case conform(call.params, call.spec) do
-      {:ok, _params} -> :ok
+    with {:ok, _params} <- conform(call.params, call.params_spec),
+         {:ok, _params} <- conform(call.path_params, call.path_params_spec) do
+      :ok
+    else
       {:error, _} = err -> err
     end
   end
@@ -42,7 +44,7 @@ defmodule SquareUp.Client do
 
   defp get_body!(ref, response_spec) do
     {:ok, body_json} = :hackney.body(ref)
-    body = Jason.decode!(body_json) |> IO.inspect()
+    body = Jason.decode!(body_json)
     keys_to_atoms(body, response_spec)
   end
 
@@ -76,7 +78,12 @@ defmodule SquareUp.Client do
   end
 
   defp url(client, call) do
-    client.base_path <> call.path
+    path =
+      Enum.reduce(call.path_params, call.path, fn {key, val}, path ->
+        String.replace(path, "{#{key}}", val)
+      end)
+
+    client.base_path <> path
   end
 
   defp headers(client, _call) do

@@ -67,29 +67,31 @@ defmodule GenResources do
   end
 
   defp write_function({{_module, function}, {path, method, defn}}) do
-    path =
-      String.replace(path, ~r/{[^}]+}/, fn param ->
-        param = String.replace(param, ["{", "}"], "")
-
-        ~s[\#\{Map.get(params, "#{param}")\}]
+    {path_params, params} =
+      Map.get(defn, "parameters")
+      |> Enum.split_with(fn
+        %{"in" => "path"} -> true
+        _ -> false
       end)
 
-    params = Map.get(defn, "parameters")
     success_response = Map.get(defn, "responses") |> Map.get("200") |> Map.get("schema")
 
     """
-      @spec #{function}(SquareUp.Client.t(), #{params_to_typespec(params)}) :: SquareUp.Client.response(#{
-      params_to_typespec(success_response)
-    })
-      def #{function}(client, params \\\\ %{}) do
-        norm_spec = #{params_to_norm(params)}
+      @spec #{function}(SquareUp.Client.t(), #{params_to_typespec(path_params)}, #{
+      params_to_typespec(params)
+    }) :: SquareUp.Client.response(#{params_to_typespec(success_response)})
+      def #{function}(client, path_params \\\\ %{}, params \\\\ %{}) do
+        path_params_spec = #{params_to_norm(path_params)}
+        params_spec = #{params_to_norm(params)}
 
         response_spec = #{response_to_spec(success_response)}
 
         call(client, %{
           method: :#{method},
+          path_params: path_params,
           params: params,
-          spec: norm_spec,
+          path_params_spec: path_params_spec,
+          params_spec: params_spec,
           response_spec: response_spec,
           path: "#{path}"
         })
