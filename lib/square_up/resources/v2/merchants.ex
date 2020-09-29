@@ -2,7 +2,7 @@ defmodule SquareUp.V2.Merchants do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  @spec list(SquareUp.Client.t(), %{}, %{cursor: integer()}) ::
+  @spec list(SquareUp.Client.t(), %{}, %{optional(:cursor) => integer()}) ::
           SquareUp.Client.response(SquareUp.TypeSpecs.list_merchants_response())
   def list(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{})

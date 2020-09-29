@@ -2,7 +2,7 @@ defmodule SquareUp.V2.Merchant do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  @spec retrieve(SquareUp.Client.t(), %{merchant_id: binary()}, %{}) ::
+  @spec retrieve(SquareUp.Client.t(), %{required(:merchant_id) => binary()}, %{}) ::
           SquareUp.Client.response(SquareUp.TypeSpecs.retrieve_merchant_response())
   def retrieve(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{merchant_id: spec(is_binary())})

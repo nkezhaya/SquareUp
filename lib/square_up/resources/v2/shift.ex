@@ -2,7 +2,7 @@ defmodule SquareUp.V2.Shift do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  @spec delete(SquareUp.Client.t(), %{id: binary()}, %{}) ::
+  @spec delete(SquareUp.Client.t(), %{required(:id) => binary()}, %{}) ::
           SquareUp.Client.response(SquareUp.TypeSpecs.delete_shift_response())
   def delete(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{id: spec(is_binary())})
@@ -21,7 +21,7 @@ defmodule SquareUp.V2.Shift do
     })
   end
 
-  @spec get(SquareUp.Client.t(), %{id: binary()}, %{}) ::
+  @spec get(SquareUp.Client.t(), %{required(:id) => binary()}, %{}) ::
           SquareUp.Client.response(SquareUp.TypeSpecs.get_shift_response())
   def get(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{id: spec(is_binary())})
@@ -40,8 +40,11 @@ defmodule SquareUp.V2.Shift do
     })
   end
 
-  @spec update(SquareUp.Client.t(), %{id: binary()}, SquareUp.TypeSpecs.update_shift_request()) ::
-          SquareUp.Client.response(SquareUp.TypeSpecs.update_shift_response())
+  @spec update(
+          SquareUp.Client.t(),
+          %{required(:id) => binary()},
+          SquareUp.TypeSpecs.update_shift_request()
+        ) :: SquareUp.Client.response(SquareUp.TypeSpecs.update_shift_response())
   def update(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{id: spec(is_binary())})
     params_spec = Norm.Delegate.delegate(&SquareUp.NormSchema.update_shift_request/0)

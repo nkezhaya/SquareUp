@@ -3,14 +3,14 @@ defmodule SquareUp.V2.Payments do
   import SquareUp.Client, only: [call: 2]
 
   @spec list(SquareUp.Client.t(), %{}, %{
-          begin_time: binary(),
-          end_time: binary(),
-          sort_order: binary(),
-          cursor: binary(),
-          location_id: binary(),
-          total: integer(),
-          last_4: binary(),
-          card_brand: binary()
+          optional(:begin_time) => binary(),
+          optional(:end_time) => binary(),
+          optional(:sort_order) => binary(),
+          optional(:cursor) => binary(),
+          optional(:location_id) => binary(),
+          optional(:total) => integer(),
+          optional(:last_4) => binary(),
+          optional(:card_brand) => binary()
         }) :: SquareUp.Client.response(SquareUp.TypeSpecs.list_payments_response())
   def list(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{})

@@ -2,7 +2,7 @@ defmodule SquareUp.V2.CatalogObject do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  @spec delete(SquareUp.Client.t(), %{object_id: binary()}, %{}) ::
+  @spec delete(SquareUp.Client.t(), %{required(:object_id) => binary()}, %{}) ::
           SquareUp.Client.response(SquareUp.TypeSpecs.delete_catalog_object_response())
   def delete(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{object_id: spec(is_binary())})
@@ -21,8 +21,8 @@ defmodule SquareUp.V2.CatalogObject do
     })
   end
 
-  @spec retrieve(SquareUp.Client.t(), %{object_id: binary()}, %{
-          include_related_objects: boolean()
+  @spec retrieve(SquareUp.Client.t(), %{required(:object_id) => binary()}, %{
+          optional(:include_related_objects) => boolean()
         }) :: SquareUp.Client.response(SquareUp.TypeSpecs.retrieve_catalog_object_response())
   def retrieve(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{object_id: spec(is_binary())})

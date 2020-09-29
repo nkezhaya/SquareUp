@@ -49,7 +49,7 @@ defmodule SquareUp.V2.Payment do
     })
   end
 
-  @spec complete(SquareUp.Client.t(), %{payment_id: binary()}, %{}) ::
+  @spec complete(SquareUp.Client.t(), %{required(:payment_id) => binary()}, %{}) ::
           SquareUp.Client.response(SquareUp.TypeSpecs.complete_payment_response())
   def complete(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{payment_id: spec(is_binary())})
@@ -68,7 +68,7 @@ defmodule SquareUp.V2.Payment do
     })
   end
 
-  @spec get(SquareUp.Client.t(), %{payment_id: binary()}, %{}) ::
+  @spec get(SquareUp.Client.t(), %{required(:payment_id) => binary()}, %{}) ::
           SquareUp.Client.response(SquareUp.TypeSpecs.get_payment_response())
   def get(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{payment_id: spec(is_binary())})
@@ -87,7 +87,7 @@ defmodule SquareUp.V2.Payment do
     })
   end
 
-  @spec cancel(SquareUp.Client.t(), %{payment_id: binary()}, %{}) ::
+  @spec cancel(SquareUp.Client.t(), %{required(:payment_id) => binary()}, %{}) ::
           SquareUp.Client.response(SquareUp.TypeSpecs.cancel_payment_response())
   def cancel(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{payment_id: spec(is_binary())})

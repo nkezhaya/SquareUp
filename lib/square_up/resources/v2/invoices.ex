@@ -22,9 +22,9 @@ defmodule SquareUp.V2.Invoices do
   end
 
   @spec list(SquareUp.Client.t(), %{}, %{
-          location_id: binary(),
-          cursor: binary(),
-          limit: integer()
+          required(:location_id) => binary(),
+          optional(:cursor) => binary(),
+          optional(:limit) => integer()
         }) :: SquareUp.Client.response(SquareUp.TypeSpecs.list_invoices_response())
   def list(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{})

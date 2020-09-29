@@ -2,10 +2,10 @@ defmodule SquareUp.V1.Orders do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  @spec list(SquareUp.Client.t(), %{location_id: binary()}, %{
-          order: binary(),
-          limit: integer(),
-          batch_token: binary()
+  @spec list(SquareUp.Client.t(), %{required(:location_id) => binary()}, %{
+          optional(:order) => binary(),
+          optional(:limit) => integer(),
+          optional(:batch_token) => binary()
         }) :: SquareUp.Client.response([SquareUp.TypeSpecs.v1_order()])
   def list(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{location_id: spec(is_binary())})

@@ -3,15 +3,15 @@ defmodule SquareUp.V1.Employees do
   import SquareUp.Client, only: [call: 2]
 
   @spec list(SquareUp.Client.t(), %{}, %{
-          order: binary(),
-          begin_updated_at: binary(),
-          end_updated_at: binary(),
-          begin_created_at: binary(),
-          end_created_at: binary(),
-          status: binary(),
-          external_id: binary(),
-          limit: integer(),
-          batch_token: binary()
+          optional(:order) => binary(),
+          optional(:begin_updated_at) => binary(),
+          optional(:end_updated_at) => binary(),
+          optional(:begin_created_at) => binary(),
+          optional(:end_created_at) => binary(),
+          optional(:status) => binary(),
+          optional(:external_id) => binary(),
+          optional(:limit) => integer(),
+          optional(:batch_token) => binary()
         }) :: SquareUp.Client.response([SquareUp.TypeSpecs.v1_employee()])
   def list(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{})

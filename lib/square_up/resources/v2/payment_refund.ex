@@ -2,7 +2,7 @@ defmodule SquareUp.V2.PaymentRefund do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  @spec get(SquareUp.Client.t(), %{refund_id: binary()}, %{}) ::
+  @spec get(SquareUp.Client.t(), %{required(:refund_id) => binary()}, %{}) ::
           SquareUp.Client.response(SquareUp.TypeSpecs.get_payment_refund_response())
   def get(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{refund_id: spec(is_binary())})

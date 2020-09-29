@@ -2,9 +2,9 @@ defmodule SquareUp.V2.SubscriptionEvents do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  @spec list(SquareUp.Client.t(), %{subscription_id: binary()}, %{
-          cursor: binary(),
-          limit: integer()
+  @spec list(SquareUp.Client.t(), %{required(:subscription_id) => binary()}, %{
+          optional(:cursor) => binary(),
+          optional(:limit) => integer()
         }) :: SquareUp.Client.response(SquareUp.TypeSpecs.list_subscription_events_response())
   def list(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{subscription_id: spec(is_binary())})

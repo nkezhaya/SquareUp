@@ -21,7 +21,7 @@ defmodule SquareUp.V2.TerminalCheckout do
     })
   end
 
-  @spec get(SquareUp.Client.t(), %{checkout_id: binary()}, %{}) ::
+  @spec get(SquareUp.Client.t(), %{required(:checkout_id) => binary()}, %{}) ::
           SquareUp.Client.response(SquareUp.TypeSpecs.get_terminal_checkout_response())
   def get(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{checkout_id: spec(is_binary())})
@@ -40,7 +40,7 @@ defmodule SquareUp.V2.TerminalCheckout do
     })
   end
 
-  @spec cancel(SquareUp.Client.t(), %{checkout_id: binary()}, %{}) ::
+  @spec cancel(SquareUp.Client.t(), %{required(:checkout_id) => binary()}, %{}) ::
           SquareUp.Client.response(SquareUp.TypeSpecs.cancel_terminal_checkout_response())
   def cancel(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{checkout_id: spec(is_binary())})

@@ -4,7 +4,7 @@ defmodule SquareUp.V2.WorkweekConfig do
 
   @spec update(
           SquareUp.Client.t(),
-          %{id: binary()},
+          %{required(:id) => binary()},
           SquareUp.TypeSpecs.update_workweek_config_request()
         ) :: SquareUp.Client.response(SquareUp.TypeSpecs.update_workweek_config_response())
   def update(client, path_params \\ %{}, params \\ %{}) do

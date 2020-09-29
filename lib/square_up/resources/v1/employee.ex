@@ -2,7 +2,7 @@ defmodule SquareUp.V1.Employee do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  @spec retrieve(SquareUp.Client.t(), %{employee_id: binary()}, %{}) ::
+  @spec retrieve(SquareUp.Client.t(), %{required(:employee_id) => binary()}, %{}) ::
           SquareUp.Client.response(SquareUp.TypeSpecs.v1_employee())
   def retrieve(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{employee_id: spec(is_binary())})
@@ -21,8 +21,11 @@ defmodule SquareUp.V1.Employee do
     })
   end
 
-  @spec update(SquareUp.Client.t(), %{employee_id: binary()}, SquareUp.TypeSpecs.v1_employee()) ::
-          SquareUp.Client.response(SquareUp.TypeSpecs.v1_employee())
+  @spec update(
+          SquareUp.Client.t(),
+          %{required(:employee_id) => binary()},
+          SquareUp.TypeSpecs.v1_employee()
+        ) :: SquareUp.Client.response(SquareUp.TypeSpecs.v1_employee())
   def update(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{employee_id: spec(is_binary())})
     params_spec = Norm.Delegate.delegate(&SquareUp.NormSchema.v1_employee/0)

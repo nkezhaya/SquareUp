@@ -4,7 +4,7 @@ defmodule SquareUp.V2.Checkout do
 
   @spec create(
           SquareUp.Client.t(),
-          %{location_id: binary()},
+          %{required(:location_id) => binary()},
           SquareUp.TypeSpecs.create_checkout_request()
         ) :: SquareUp.Client.response(SquareUp.TypeSpecs.create_checkout_response())
   def create(client, path_params \\ %{}, params \\ %{}) do

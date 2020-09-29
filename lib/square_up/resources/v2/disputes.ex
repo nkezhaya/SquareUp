@@ -3,9 +3,9 @@ defmodule SquareUp.V2.Disputes do
   import SquareUp.Client, only: [call: 2]
 
   @spec list(SquareUp.Client.t(), %{}, %{
-          cursor: binary(),
-          states: binary(),
-          location_id: binary()
+          optional(:cursor) => binary(),
+          optional(:states) => binary(),
+          optional(:location_id) => binary()
         }) :: SquareUp.Client.response(SquareUp.TypeSpecs.list_disputes_response())
   def list(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{})

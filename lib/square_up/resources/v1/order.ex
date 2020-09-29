@@ -2,8 +2,11 @@ defmodule SquareUp.V1.Order do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  @spec retrieve(SquareUp.Client.t(), %{location_id: binary(), order_id: binary()}, %{}) ::
-          SquareUp.Client.response(SquareUp.TypeSpecs.v1_order())
+  @spec retrieve(
+          SquareUp.Client.t(),
+          %{required(:location_id) => binary(), required(:order_id) => binary()},
+          %{}
+        ) :: SquareUp.Client.response(SquareUp.TypeSpecs.v1_order())
   def retrieve(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{location_id: spec(is_binary()), order_id: spec(is_binary())})
     params_spec = schema(%{})
@@ -23,7 +26,7 @@ defmodule SquareUp.V1.Order do
 
   @spec update(
           SquareUp.Client.t(),
-          %{location_id: binary(), order_id: binary()},
+          %{required(:location_id) => binary(), required(:order_id) => binary()},
           SquareUp.TypeSpecs.v1_update_order_request()
         ) :: SquareUp.Client.response(SquareUp.TypeSpecs.v1_order())
   def update(client, path_params \\ %{}, params \\ %{}) do

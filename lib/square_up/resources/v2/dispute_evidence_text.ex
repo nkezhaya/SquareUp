@@ -4,7 +4,7 @@ defmodule SquareUp.V2.DisputeEvidenceText do
 
   @spec create(
           SquareUp.Client.t(),
-          %{dispute_id: binary()},
+          %{required(:dispute_id) => binary()},
           SquareUp.TypeSpecs.create_dispute_evidence_text_request()
         ) :: SquareUp.Client.response(SquareUp.TypeSpecs.create_dispute_evidence_text_response())
   def create(client, path_params \\ %{}, params \\ %{}) do

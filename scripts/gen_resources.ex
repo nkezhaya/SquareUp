@@ -4,10 +4,6 @@ defmodule GenResources do
 
   @api File.read!("api.json") |> Jason.decode!()
 
-  # Module.register_attribute(__MODULE__, :schemas_to_export)
-  # Module.register_attribute(__MODULE__, :response_schemas_to_export)
-  # Module.register_attribute(__MODULE__, :typespecs_to_export)
-
   @impl Mix.Task
   def run(_args) do
     rm_resources()
@@ -230,9 +226,9 @@ defmodule GenResources do
     required = Map.get(defn, "required", [])
 
     props =
-      Enum.map(props, fn prop ->
-        if prop in required do
-          Map.put(prop, "required", true)
+      Enum.map(props, fn {key, val} = prop ->
+        if key in required do
+          {key, Map.put(val, "required", true)}
         else
           prop
         end
@@ -243,8 +239,12 @@ defmodule GenResources do
     """
   end
 
+  defp params_to_typespec(%{"name" => name, "required" => true} = param) do
+    ~s[required(:#{name}) => #{params_to_typespec(Map.delete(param, "name"))}]
+  end
+
   defp params_to_typespec(%{"name" => name} = param) do
-    ~s[#{name}: #{params_to_typespec(Map.delete(param, "name"))}]
+    ~s[optional(:#{name}) => #{params_to_typespec(Map.delete(param, "name"))}]
   end
 
   defp params_to_typespec(%{"schema" => %{"$ref" => schema}}) do

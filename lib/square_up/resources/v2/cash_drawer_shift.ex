@@ -2,8 +2,9 @@ defmodule SquareUp.V2.CashDrawerShift do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  @spec retrieve(SquareUp.Client.t(), %{shift_id: binary()}, %{location_id: binary()}) ::
-          SquareUp.Client.response(SquareUp.TypeSpecs.retrieve_cash_drawer_shift_response())
+  @spec retrieve(SquareUp.Client.t(), %{required(:shift_id) => binary()}, %{
+          required(:location_id) => binary()
+        }) :: SquareUp.Client.response(SquareUp.TypeSpecs.retrieve_cash_drawer_shift_response())
   def retrieve(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{shift_id: spec(is_binary())})
     params_spec = schema(%{location_id: spec(is_binary())})

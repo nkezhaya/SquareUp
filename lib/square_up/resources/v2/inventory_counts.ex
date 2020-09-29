@@ -1,5 +1,5 @@
 defmodule SquareUp.V2.InventoryCounts do
-  import Norm, only: [schema: 1]
+  import Norm
   import SquareUp.Client, only: [call: 2]
 
   @spec batch_retrieve(

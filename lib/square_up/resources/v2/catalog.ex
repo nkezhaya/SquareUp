@@ -2,8 +2,10 @@ defmodule SquareUp.V2.Catalog do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  @spec list(SquareUp.Client.t(), %{}, %{cursor: binary(), types: binary()}) ::
-          SquareUp.Client.response(SquareUp.TypeSpecs.list_catalog_response())
+  @spec list(SquareUp.Client.t(), %{}, %{
+          optional(:cursor) => binary(),
+          optional(:types) => binary()
+        }) :: SquareUp.Client.response(SquareUp.TypeSpecs.list_catalog_response())
   def list(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{})
     params_spec = schema(%{cursor: spec(is_binary()), types: spec(is_binary())})

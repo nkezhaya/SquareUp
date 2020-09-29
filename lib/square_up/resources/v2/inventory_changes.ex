@@ -2,9 +2,9 @@ defmodule SquareUp.V2.InventoryChanges do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  @spec retrieve(SquareUp.Client.t(), %{catalog_object_id: binary()}, %{
-          location_ids: binary(),
-          cursor: binary()
+  @spec retrieve(SquareUp.Client.t(), %{required(:catalog_object_id) => binary()}, %{
+          optional(:location_ids) => binary(),
+          optional(:cursor) => binary()
         }) :: SquareUp.Client.response(SquareUp.TypeSpecs.retrieve_inventory_changes_response())
   def retrieve(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{catalog_object_id: spec(is_binary())})

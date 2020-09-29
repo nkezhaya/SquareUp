@@ -2,12 +2,12 @@ defmodule SquareUp.V1.Refunds do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  @spec list(SquareUp.Client.t(), %{location_id: binary()}, %{
-          order: binary(),
-          begin_time: binary(),
-          end_time: binary(),
-          limit: integer(),
-          batch_token: binary()
+  @spec list(SquareUp.Client.t(), %{required(:location_id) => binary()}, %{
+          optional(:order) => binary(),
+          optional(:begin_time) => binary(),
+          optional(:end_time) => binary(),
+          optional(:limit) => integer(),
+          optional(:batch_token) => binary()
         }) :: SquareUp.Client.response([SquareUp.TypeSpecs.v1_refund()])
   def list(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{location_id: spec(is_binary())})

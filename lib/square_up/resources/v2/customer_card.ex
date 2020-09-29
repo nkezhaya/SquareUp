@@ -2,8 +2,11 @@ defmodule SquareUp.V2.CustomerCard do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  @spec delete(SquareUp.Client.t(), %{customer_id: binary(), card_id: binary()}, %{}) ::
-          SquareUp.Client.response(SquareUp.TypeSpecs.delete_customer_card_response())
+  @spec delete(
+          SquareUp.Client.t(),
+          %{required(:customer_id) => binary(), required(:card_id) => binary()},
+          %{}
+        ) :: SquareUp.Client.response(SquareUp.TypeSpecs.delete_customer_card_response())
   def delete(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{customer_id: spec(is_binary()), card_id: spec(is_binary())})
     params_spec = schema(%{})
@@ -23,7 +26,7 @@ defmodule SquareUp.V2.CustomerCard do
 
   @spec create(
           SquareUp.Client.t(),
-          %{customer_id: binary()},
+          %{required(:customer_id) => binary()},
           SquareUp.TypeSpecs.create_customer_card_request()
         ) :: SquareUp.Client.response(SquareUp.TypeSpecs.create_customer_card_response())
   def create(client, path_params \\ %{}, params \\ %{}) do

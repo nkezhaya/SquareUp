@@ -2,7 +2,7 @@ defmodule SquareUp.V2.InventoryPhysicalCount do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  @spec retrieve(SquareUp.Client.t(), %{physical_count_id: binary()}, %{}) ::
+  @spec retrieve(SquareUp.Client.t(), %{required(:physical_count_id) => binary()}, %{}) ::
           SquareUp.Client.response(
             SquareUp.TypeSpecs.retrieve_inventory_physical_count_response()
           )

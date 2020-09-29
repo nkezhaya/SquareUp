@@ -2,8 +2,11 @@ defmodule SquareUp.V1.EmployeeRoles do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  @spec list(SquareUp.Client.t(), %{}, %{order: binary(), limit: integer(), batch_token: binary()}) ::
-          SquareUp.Client.response([SquareUp.TypeSpecs.v1_employee_role()])
+  @spec list(SquareUp.Client.t(), %{}, %{
+          optional(:order) => binary(),
+          optional(:limit) => integer(),
+          optional(:batch_token) => binary()
+        }) :: SquareUp.Client.response([SquareUp.TypeSpecs.v1_employee_role()])
   def list(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{})
 

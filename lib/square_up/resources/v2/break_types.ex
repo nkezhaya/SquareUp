@@ -3,9 +3,9 @@ defmodule SquareUp.V2.BreakTypes do
   import SquareUp.Client, only: [call: 2]
 
   @spec list(SquareUp.Client.t(), %{}, %{
-          location_id: binary(),
-          limit: integer(),
-          cursor: binary()
+          optional(:location_id) => binary(),
+          optional(:limit) => integer(),
+          optional(:cursor) => binary()
         }) :: SquareUp.Client.response(SquareUp.TypeSpecs.list_break_types_response())
   def list(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{})

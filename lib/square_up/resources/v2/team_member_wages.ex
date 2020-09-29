@@ -3,9 +3,9 @@ defmodule SquareUp.V2.TeamMemberWages do
   import SquareUp.Client, only: [call: 2]
 
   @spec list(SquareUp.Client.t(), %{}, %{
-          team_member_id: binary(),
-          limit: integer(),
-          cursor: binary()
+          optional(:team_member_id) => binary(),
+          optional(:limit) => integer(),
+          optional(:cursor) => binary()
         }) :: SquareUp.Client.response(SquareUp.TypeSpecs.list_team_member_wages_response())
   def list(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{})

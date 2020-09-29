@@ -4,7 +4,7 @@ defmodule SquareUp.V2.LoyaltyPoints do
 
   @spec calculate(
           SquareUp.Client.t(),
-          %{program_id: binary()},
+          %{required(:program_id) => binary()},
           SquareUp.TypeSpecs.calculate_loyalty_points_request()
         ) :: SquareUp.Client.response(SquareUp.TypeSpecs.calculate_loyalty_points_response())
   def calculate(client, path_params \\ %{}, params \\ %{}) do
@@ -26,7 +26,7 @@ defmodule SquareUp.V2.LoyaltyPoints do
 
   @spec accumulate(
           SquareUp.Client.t(),
-          %{account_id: binary()},
+          %{required(:account_id) => binary()},
           SquareUp.TypeSpecs.accumulate_loyalty_points_request()
         ) :: SquareUp.Client.response(SquareUp.TypeSpecs.accumulate_loyalty_points_response())
   def accumulate(client, path_params \\ %{}, params \\ %{}) do
@@ -48,7 +48,7 @@ defmodule SquareUp.V2.LoyaltyPoints do
 
   @spec adjust(
           SquareUp.Client.t(),
-          %{account_id: binary()},
+          %{required(:account_id) => binary()},
           SquareUp.TypeSpecs.adjust_loyalty_points_request()
         ) :: SquareUp.Client.response(SquareUp.TypeSpecs.adjust_loyalty_points_response())
   def adjust(client, path_params \\ %{}, params \\ %{}) do

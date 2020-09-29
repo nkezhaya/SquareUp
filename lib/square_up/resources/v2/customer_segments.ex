@@ -2,7 +2,7 @@ defmodule SquareUp.V2.CustomerSegments do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  @spec list(SquareUp.Client.t(), %{}, %{cursor: binary()}) ::
+  @spec list(SquareUp.Client.t(), %{}, %{optional(:cursor) => binary()}) ::
           SquareUp.Client.response(SquareUp.TypeSpecs.list_customer_segments_response())
   def list(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{})

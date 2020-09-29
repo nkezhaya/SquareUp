@@ -2,8 +2,11 @@ defmodule SquareUp.V2.DisputeEvidence do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  @spec remove(SquareUp.Client.t(), %{dispute_id: binary(), evidence_id: binary()}, %{}) ::
-          SquareUp.Client.response(SquareUp.TypeSpecs.remove_dispute_evidence_response())
+  @spec remove(
+          SquareUp.Client.t(),
+          %{required(:dispute_id) => binary(), required(:evidence_id) => binary()},
+          %{}
+        ) :: SquareUp.Client.response(SquareUp.TypeSpecs.remove_dispute_evidence_response())
   def remove(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{dispute_id: spec(is_binary()), evidence_id: spec(is_binary())})
     params_spec = schema(%{})
@@ -21,8 +24,11 @@ defmodule SquareUp.V2.DisputeEvidence do
     })
   end
 
-  @spec retrieve(SquareUp.Client.t(), %{dispute_id: binary(), evidence_id: binary()}, %{}) ::
-          SquareUp.Client.response(SquareUp.TypeSpecs.retrieve_dispute_evidence_response())
+  @spec retrieve(
+          SquareUp.Client.t(),
+          %{required(:dispute_id) => binary(), required(:evidence_id) => binary()},
+          %{}
+        ) :: SquareUp.Client.response(SquareUp.TypeSpecs.retrieve_dispute_evidence_response())
   def retrieve(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{dispute_id: spec(is_binary()), evidence_id: spec(is_binary())})
     params_spec = schema(%{})
@@ -40,7 +46,7 @@ defmodule SquareUp.V2.DisputeEvidence do
     })
   end
 
-  @spec list(SquareUp.Client.t(), %{dispute_id: binary()}, %{}) ::
+  @spec list(SquareUp.Client.t(), %{required(:dispute_id) => binary()}, %{}) ::
           SquareUp.Client.response(SquareUp.TypeSpecs.list_dispute_evidence_response())
   def list(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{dispute_id: spec(is_binary())})

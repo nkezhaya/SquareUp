@@ -4,7 +4,7 @@ defmodule SquareUp.V1.Refund do
 
   @spec create(
           SquareUp.Client.t(),
-          %{location_id: binary()},
+          %{required(:location_id) => binary()},
           SquareUp.TypeSpecs.v1_create_refund_request()
         ) :: SquareUp.Client.response(SquareUp.TypeSpecs.v1_refund())
   def create(client, path_params \\ %{}, params \\ %{}) do

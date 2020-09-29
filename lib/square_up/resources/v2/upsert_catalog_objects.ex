@@ -1,5 +1,5 @@
 defmodule SquareUp.V2.UpsertCatalogObjects do
-  import Norm, only: [schema: 1]
+  import Norm
   import SquareUp.Client, only: [call: 2]
 
   @spec batch(SquareUp.Client.t(), %{}, SquareUp.TypeSpecs.batch_upsert_catalog_objects_request()) ::

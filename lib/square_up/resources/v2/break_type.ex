@@ -2,7 +2,7 @@ defmodule SquareUp.V2.BreakType do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  @spec delete(SquareUp.Client.t(), %{id: binary()}, %{}) ::
+  @spec delete(SquareUp.Client.t(), %{required(:id) => binary()}, %{}) ::
           SquareUp.Client.response(SquareUp.TypeSpecs.delete_break_type_response())
   def delete(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{id: spec(is_binary())})
@@ -21,7 +21,7 @@ defmodule SquareUp.V2.BreakType do
     })
   end
 
-  @spec get(SquareUp.Client.t(), %{id: binary()}, %{}) ::
+  @spec get(SquareUp.Client.t(), %{required(:id) => binary()}, %{}) ::
           SquareUp.Client.response(SquareUp.TypeSpecs.get_break_type_response())
   def get(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{id: spec(is_binary())})
@@ -42,7 +42,7 @@ defmodule SquareUp.V2.BreakType do
 
   @spec update(
           SquareUp.Client.t(),
-          %{id: binary()},
+          %{required(:id) => binary()},
           SquareUp.TypeSpecs.update_break_type_request()
         ) :: SquareUp.Client.response(SquareUp.TypeSpecs.update_break_type_response())
   def update(client, path_params \\ %{}, params \\ %{}) do

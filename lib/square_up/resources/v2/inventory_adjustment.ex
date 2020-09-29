@@ -2,7 +2,7 @@ defmodule SquareUp.V2.InventoryAdjustment do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  @spec retrieve(SquareUp.Client.t(), %{adjustment_id: binary()}, %{}) ::
+  @spec retrieve(SquareUp.Client.t(), %{required(:adjustment_id) => binary()}, %{}) ::
           SquareUp.Client.response(SquareUp.TypeSpecs.retrieve_inventory_adjustment_response())
   def retrieve(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{adjustment_id: spec(is_binary())})

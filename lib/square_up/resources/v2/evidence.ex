@@ -2,7 +2,7 @@ defmodule SquareUp.V2.Evidence do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  @spec submit(SquareUp.Client.t(), %{dispute_id: binary()}, %{}) ::
+  @spec submit(SquareUp.Client.t(), %{required(:dispute_id) => binary()}, %{}) ::
           SquareUp.Client.response(SquareUp.TypeSpecs.submit_evidence_response())
   def submit(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{dispute_id: spec(is_binary())})

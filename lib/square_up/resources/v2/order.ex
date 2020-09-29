@@ -4,7 +4,7 @@ defmodule SquareUp.V2.Order do
 
   @spec update(
           SquareUp.Client.t(),
-          %{order_id: binary()},
+          %{required(:order_id) => binary()},
           SquareUp.TypeSpecs.update_order_request()
         ) :: SquareUp.Client.response(SquareUp.TypeSpecs.update_order_response())
   def update(client, path_params \\ %{}, params \\ %{}) do
@@ -62,8 +62,11 @@ defmodule SquareUp.V2.Order do
     })
   end
 
-  @spec pay(SquareUp.Client.t(), %{order_id: binary()}, SquareUp.TypeSpecs.pay_order_request()) ::
-          SquareUp.Client.response(SquareUp.TypeSpecs.pay_order_response())
+  @spec pay(
+          SquareUp.Client.t(),
+          %{required(:order_id) => binary()},
+          SquareUp.TypeSpecs.pay_order_request()
+        ) :: SquareUp.Client.response(SquareUp.TypeSpecs.pay_order_response())
   def pay(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{order_id: spec(is_binary())})
     params_spec = Norm.Delegate.delegate(&SquareUp.NormSchema.pay_order_request/0)

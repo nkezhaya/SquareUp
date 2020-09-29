@@ -4,7 +4,7 @@ defmodule SquareUp.V2.LoyaltyReward do
 
   @spec redeem(
           SquareUp.Client.t(),
-          %{reward_id: binary()},
+          %{required(:reward_id) => binary()},
           SquareUp.TypeSpecs.redeem_loyalty_reward_request()
         ) :: SquareUp.Client.response(SquareUp.TypeSpecs.redeem_loyalty_reward_response())
   def redeem(client, path_params \\ %{}, params \\ %{}) do
@@ -24,7 +24,7 @@ defmodule SquareUp.V2.LoyaltyReward do
     })
   end
 
-  @spec delete(SquareUp.Client.t(), %{reward_id: binary()}, %{}) ::
+  @spec delete(SquareUp.Client.t(), %{required(:reward_id) => binary()}, %{}) ::
           SquareUp.Client.response(SquareUp.TypeSpecs.delete_loyalty_reward_response())
   def delete(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{reward_id: spec(is_binary())})
@@ -43,7 +43,7 @@ defmodule SquareUp.V2.LoyaltyReward do
     })
   end
 
-  @spec retrieve(SquareUp.Client.t(), %{reward_id: binary()}, %{}) ::
+  @spec retrieve(SquareUp.Client.t(), %{required(:reward_id) => binary()}, %{}) ::
           SquareUp.Client.response(SquareUp.TypeSpecs.retrieve_loyalty_reward_response())
   def retrieve(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{reward_id: spec(is_binary())})

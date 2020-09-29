@@ -2,7 +2,7 @@ defmodule SquareUp.V2.Dispute do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  @spec retrieve(SquareUp.Client.t(), %{dispute_id: binary()}, %{}) ::
+  @spec retrieve(SquareUp.Client.t(), %{required(:dispute_id) => binary()}, %{}) ::
           SquareUp.Client.response(SquareUp.TypeSpecs.retrieve_dispute_response())
   def retrieve(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{dispute_id: spec(is_binary())})
@@ -21,7 +21,7 @@ defmodule SquareUp.V2.Dispute do
     })
   end
 
-  @spec accept(SquareUp.Client.t(), %{dispute_id: binary()}, %{}) ::
+  @spec accept(SquareUp.Client.t(), %{required(:dispute_id) => binary()}, %{}) ::
           SquareUp.Client.response(SquareUp.TypeSpecs.accept_dispute_response())
   def accept(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{dispute_id: spec(is_binary())})

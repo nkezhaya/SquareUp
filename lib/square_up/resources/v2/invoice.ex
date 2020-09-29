@@ -23,7 +23,7 @@ defmodule SquareUp.V2.Invoice do
 
   @spec publish(
           SquareUp.Client.t(),
-          %{invoice_id: binary()},
+          %{required(:invoice_id) => binary()},
           SquareUp.TypeSpecs.publish_invoice_request()
         ) :: SquareUp.Client.response(SquareUp.TypeSpecs.publish_invoice_response())
   def publish(client, path_params \\ %{}, params \\ %{}) do
@@ -43,8 +43,9 @@ defmodule SquareUp.V2.Invoice do
     })
   end
 
-  @spec delete(SquareUp.Client.t(), %{invoice_id: binary()}, %{version: integer()}) ::
-          SquareUp.Client.response(SquareUp.TypeSpecs.delete_invoice_response())
+  @spec delete(SquareUp.Client.t(), %{required(:invoice_id) => binary()}, %{
+          optional(:version) => integer()
+        }) :: SquareUp.Client.response(SquareUp.TypeSpecs.delete_invoice_response())
   def delete(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{invoice_id: spec(is_binary())})
     params_spec = schema(%{version: spec(is_integer())})
@@ -62,7 +63,7 @@ defmodule SquareUp.V2.Invoice do
     })
   end
 
-  @spec get(SquareUp.Client.t(), %{invoice_id: binary()}, %{}) ::
+  @spec get(SquareUp.Client.t(), %{required(:invoice_id) => binary()}, %{}) ::
           SquareUp.Client.response(SquareUp.TypeSpecs.get_invoice_response())
   def get(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{invoice_id: spec(is_binary())})
@@ -83,7 +84,7 @@ defmodule SquareUp.V2.Invoice do
 
   @spec update(
           SquareUp.Client.t(),
-          %{invoice_id: binary()},
+          %{required(:invoice_id) => binary()},
           SquareUp.TypeSpecs.update_invoice_request()
         ) :: SquareUp.Client.response(SquareUp.TypeSpecs.update_invoice_response())
   def update(client, path_params \\ %{}, params \\ %{}) do
@@ -105,7 +106,7 @@ defmodule SquareUp.V2.Invoice do
 
   @spec cancel(
           SquareUp.Client.t(),
-          %{invoice_id: binary()},
+          %{required(:invoice_id) => binary()},
           SquareUp.TypeSpecs.cancel_invoice_request()
         ) :: SquareUp.Client.response(SquareUp.TypeSpecs.cancel_invoice_response())
   def cancel(client, path_params \\ %{}, params \\ %{}) do

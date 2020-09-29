@@ -2,10 +2,10 @@ defmodule SquareUp.V2.CashDrawerShiftEvents do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  @spec list(SquareUp.Client.t(), %{shift_id: binary()}, %{
-          location_id: binary(),
-          limit: integer(),
-          cursor: binary()
+  @spec list(SquareUp.Client.t(), %{required(:shift_id) => binary()}, %{
+          required(:location_id) => binary(),
+          optional(:limit) => integer(),
+          optional(:cursor) => binary()
         }) ::
           SquareUp.Client.response(SquareUp.TypeSpecs.list_cash_drawer_shift_events_response())
   def list(client, path_params \\ %{}, params \\ %{}) do

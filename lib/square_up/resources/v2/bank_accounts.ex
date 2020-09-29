@@ -3,9 +3,9 @@ defmodule SquareUp.V2.BankAccounts do
   import SquareUp.Client, only: [call: 2]
 
   @spec list(SquareUp.Client.t(), %{}, %{
-          cursor: binary(),
-          limit: integer(),
-          location_id: binary()
+          optional(:cursor) => binary(),
+          optional(:limit) => integer(),
+          optional(:location_id) => binary()
         }) :: SquareUp.Client.response(SquareUp.TypeSpecs.list_bank_accounts_response())
   def list(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{})

@@ -22,9 +22,9 @@ defmodule SquareUp.V2.Customers do
   end
 
   @spec list(SquareUp.Client.t(), %{}, %{
-          cursor: binary(),
-          sort_field: binary(),
-          sort_order: binary()
+          optional(:cursor) => binary(),
+          optional(:sort_field) => binary(),
+          optional(:sort_order) => binary()
         }) :: SquareUp.Client.response(SquareUp.TypeSpecs.list_customers_response())
   def list(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{})

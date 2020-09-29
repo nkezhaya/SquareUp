@@ -3,9 +3,9 @@ defmodule SquareUp.V2.DeviceCodes do
   import SquareUp.Client, only: [call: 2]
 
   @spec list(SquareUp.Client.t(), %{}, %{
-          cursor: binary(),
-          location_id: binary(),
-          product_type: binary()
+          optional(:cursor) => binary(),
+          optional(:location_id) => binary(),
+          optional(:product_type) => binary()
         }) :: SquareUp.Client.response(SquareUp.TypeSpecs.list_device_codes_response())
   def list(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{})

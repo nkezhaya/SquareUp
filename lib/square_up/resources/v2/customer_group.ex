@@ -21,7 +21,7 @@ defmodule SquareUp.V2.CustomerGroup do
     })
   end
 
-  @spec delete(SquareUp.Client.t(), %{group_id: binary()}, %{}) ::
+  @spec delete(SquareUp.Client.t(), %{required(:group_id) => binary()}, %{}) ::
           SquareUp.Client.response(SquareUp.TypeSpecs.delete_customer_group_response())
   def delete(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{group_id: spec(is_binary())})
@@ -40,7 +40,7 @@ defmodule SquareUp.V2.CustomerGroup do
     })
   end
 
-  @spec retrieve(SquareUp.Client.t(), %{group_id: binary()}, %{}) ::
+  @spec retrieve(SquareUp.Client.t(), %{required(:group_id) => binary()}, %{}) ::
           SquareUp.Client.response(SquareUp.TypeSpecs.retrieve_customer_group_response())
   def retrieve(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{group_id: spec(is_binary())})
@@ -61,7 +61,7 @@ defmodule SquareUp.V2.CustomerGroup do
 
   @spec update(
           SquareUp.Client.t(),
-          %{group_id: binary()},
+          %{required(:group_id) => binary()},
           SquareUp.TypeSpecs.update_customer_group_request()
         ) :: SquareUp.Client.response(SquareUp.TypeSpecs.update_customer_group_response())
   def update(client, path_params \\ %{}, params \\ %{}) do

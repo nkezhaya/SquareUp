@@ -2,7 +2,7 @@ defmodule SquareUp.V2.LoyaltyAccount do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  @spec retrieve(SquareUp.Client.t(), %{account_id: binary()}, %{}) ::
+  @spec retrieve(SquareUp.Client.t(), %{required(:account_id) => binary()}, %{}) ::
           SquareUp.Client.response(SquareUp.TypeSpecs.retrieve_loyalty_account_response())
   def retrieve(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{account_id: spec(is_binary())})

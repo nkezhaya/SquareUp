@@ -2,7 +2,7 @@ defmodule SquareUp.V2.Subscription do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  @spec retrieve(SquareUp.Client.t(), %{subscription_id: binary()}, %{}) ::
+  @spec retrieve(SquareUp.Client.t(), %{required(:subscription_id) => binary()}, %{}) ::
           SquareUp.Client.response(SquareUp.TypeSpecs.retrieve_subscription_response())
   def retrieve(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{subscription_id: spec(is_binary())})
@@ -23,7 +23,7 @@ defmodule SquareUp.V2.Subscription do
 
   @spec update(
           SquareUp.Client.t(),
-          %{subscription_id: binary()},
+          %{required(:subscription_id) => binary()},
           SquareUp.TypeSpecs.update_subscription_request()
         ) :: SquareUp.Client.response(SquareUp.TypeSpecs.update_subscription_response())
   def update(client, path_params \\ %{}, params \\ %{}) do
@@ -43,7 +43,7 @@ defmodule SquareUp.V2.Subscription do
     })
   end
 
-  @spec cancel(SquareUp.Client.t(), %{subscription_id: binary()}, %{}) ::
+  @spec cancel(SquareUp.Client.t(), %{required(:subscription_id) => binary()}, %{}) ::
           SquareUp.Client.response(SquareUp.TypeSpecs.cancel_subscription_response())
   def cancel(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{subscription_id: spec(is_binary())})

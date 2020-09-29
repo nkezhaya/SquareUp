@@ -2,7 +2,7 @@ defmodule SquareUp.V2.CustomerSegment do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  @spec retrieve(SquareUp.Client.t(), %{segment_id: binary()}, %{}) ::
+  @spec retrieve(SquareUp.Client.t(), %{required(:segment_id) => binary()}, %{}) ::
           SquareUp.Client.response(SquareUp.TypeSpecs.retrieve_customer_segment_response())
   def retrieve(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{segment_id: spec(is_binary())})

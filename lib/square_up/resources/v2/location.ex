@@ -21,7 +21,7 @@ defmodule SquareUp.V2.Location do
     })
   end
 
-  @spec retrieve(SquareUp.Client.t(), %{location_id: binary()}, %{}) ::
+  @spec retrieve(SquareUp.Client.t(), %{required(:location_id) => binary()}, %{}) ::
           SquareUp.Client.response(SquareUp.TypeSpecs.retrieve_location_response())
   def retrieve(client, path_params \\ %{}, params \\ %{}) do
     path_params_spec = schema(%{location_id: spec(is_binary())})
@@ -42,7 +42,7 @@ defmodule SquareUp.V2.Location do
 
   @spec update(
           SquareUp.Client.t(),
-          %{location_id: binary()},
+          %{required(:location_id) => binary()},
           SquareUp.TypeSpecs.update_location_request()
         ) :: SquareUp.Client.response(SquareUp.TypeSpecs.update_location_response())
   def update(client, path_params \\ %{}, params \\ %{}) do
