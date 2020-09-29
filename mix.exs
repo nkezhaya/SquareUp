@@ -8,6 +8,7 @@ defmodule SquareUp.MixProject do
       elixir: "~> 1.10",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
+      package: package(),
 
       # Docs
       name: "SquareUp",
@@ -30,6 +31,15 @@ defmodule SquareUp.MixProject do
       {:hackney, "~> 1.16"},
       {:elixir_uuid, "~> 1.2", only: :test},
       {:ex_doc, "~> 0.22", only: :dev, runtime: false}
+    ]
+  end
+
+  defp package do
+    [
+      description: "Square Api Client in Elixir",
+      licenses: ["MIT"],
+      maintainers: ["Derek Kraan"],
+      links: %{GitHub: "https://github.com/whitepaperclip/SquareUp"}
     ]
   end
 end
