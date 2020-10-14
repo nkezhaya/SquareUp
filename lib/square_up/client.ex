@@ -35,7 +35,10 @@ defmodule SquareUp.Client do
     )
     |> case do
       {:ok, 200, _resp_headers, ref} ->
-        {:ok, get_body!(ref, call.response_spec)}
+        case get_body!(ref, call.response_spec) do
+          %{errors: errors} when length(errors) > 0 -> {:error, errors}
+          response -> {:ok, response}
+        end
 
       {:ok, http_code, _resp_headers, ref} ->
         {:error, {:resp_not_200, http_code, get_body_best_effort(ref)}}
