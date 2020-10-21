@@ -98,6 +98,8 @@ defmodule SquareUp.Client do
     |> Map.to_list()
   end
 
+  defp body(_client, %{method: :delete}), do: ""
+
   defp body(_client, call) do
     Jason.encode!(call.params)
   end
