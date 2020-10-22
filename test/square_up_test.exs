@@ -10,12 +10,12 @@ defmodule SquareUpTest do
 
   test "rejects an invalid request" do
     assert {:error, [%{input: "foo", path: [:amount_money, :amount], spec: "is_integer()"} | _]} =
-             SquareUp.V2.Payment.create(@client, %{}, %{amount_money: %{amount: "foo"}})
+             SquareUp.V2.Payment.create(@client, %{}, %{}, %{amount_money: %{amount: "foo"}})
   end
 
   test "create and retrieve a customer" do
     {:ok, %{customer: %{id: customer_id}}} =
-      SquareUp.V2.Customer.create(@client, %{}, %{
+      SquareUp.V2.Customer.create(@client, %{}, %{}, %{
         given_name: "Derek",
         family_name: "Kraan"
       })
