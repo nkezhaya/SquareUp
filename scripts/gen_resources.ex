@@ -82,23 +82,23 @@ defmodule GenResources do
 
     """
       @spec #{function}(SquareUp.Client.t(), #{params_to_typespec(path_params)}, #{
-      params_to_typespec(query_params)}, #{params_to_typespec(params)
+      params_to_typespec(params)}, #{params_to_typespec(query_params)
     }) :: SquareUp.Client.response(#{params_to_typespec(success_response)})
-      def #{function}(client, path_params \\\\ %{}, query_params \\\\ %{}, params \\\\ %{}) do
+      def #{function}(client, path_params \\\\ %{}, params \\\\ %{}, query_params \\\\ %{}) do
         path_params_spec = #{params_to_norm(path_params)}
-        query_params_spec = #{params_to_norm(query_params)}
         params_spec = #{params_to_norm(params)}
+        query_params_spec = #{params_to_norm(query_params)}
 
         response_spec = #{response_to_spec(success_response)}
 
         call(client, %{
           method: :#{method},
           path_params: path_params,
-          query_params: query_params,
           params: params,
+          query_params: query_params,
           path_params_spec: path_params_spec,
-          query_params_spec: query_params_spec,
           params_spec: params_spec,
+          query_params_spec: query_params_spec,
           response_spec: response_spec,
           path: "#{path}"
         })
