@@ -23,4 +23,8 @@ defmodule SquareUpTest do
     {:ok, %{customer: %{given_name: "Derek", family_name: "Kraan"}}} =
       SquareUp.V2.Customer.retrieve(@client, %{customer_id: customer_id})
   end
+
+  test "list catalogs" do
+    {:ok, _catalogs} = SquareUp.V2.Catalog.list(@client)
+  end
 end
