@@ -6,10 +6,10 @@ defmodule SquareUp.V2.InventoryPhysicalCount do
           SquareUp.Client.response(
             SquareUp.TypeSpecs.retrieve_inventory_physical_count_response()
           )
-  def retrieve(client, path_params \\ %{}, query_params \\ %{}, params \\ %{}) do
+  def retrieve(client, path_params \\ %{}, params \\ %{}, query_params \\ %{}) do
     path_params_spec = schema(%{physical_count_id: spec(is_binary())})
-    query_params_spec = schema(%{})
     params_spec = schema(%{})
+    query_params_spec = schema(%{})
 
     response_spec =
       {:delegate, &SquareUp.ResponseSchema.retrieve_inventory_physical_count_response/0}
@@ -17,11 +17,11 @@ defmodule SquareUp.V2.InventoryPhysicalCount do
     call(client, %{
       method: :get,
       path_params: path_params,
-      query_params: query_params,
       params: params,
+      query_params: query_params,
       path_params_spec: path_params_spec,
-      query_params_spec: query_params_spec,
       params_spec: params_spec,
+      query_params_spec: query_params_spec,
       response_spec: response_spec,
       path: "/v2/inventory/physical-count/{physical_count_id}"
     })

@@ -8,21 +8,21 @@ defmodule SquareUp.V1.Order do
           %{},
           %{}
         ) :: SquareUp.Client.response(SquareUp.TypeSpecs.v1_order())
-  def retrieve(client, path_params \\ %{}, query_params \\ %{}, params \\ %{}) do
+  def retrieve(client, path_params \\ %{}, params \\ %{}, query_params \\ %{}) do
     path_params_spec = schema(%{location_id: spec(is_binary()), order_id: spec(is_binary())})
-    query_params_spec = schema(%{})
     params_spec = schema(%{})
+    query_params_spec = schema(%{})
 
     response_spec = {:delegate, &SquareUp.ResponseSchema.v1_order/0}
 
     call(client, %{
       method: :get,
       path_params: path_params,
-      query_params: query_params,
       params: params,
+      query_params: query_params,
       path_params_spec: path_params_spec,
-      query_params_spec: query_params_spec,
       params_spec: params_spec,
+      query_params_spec: query_params_spec,
       response_spec: response_spec,
       path: "/v1/{location_id}/orders/{order_id}"
     })
@@ -31,24 +31,24 @@ defmodule SquareUp.V1.Order do
   @spec update(
           SquareUp.Client.t(),
           %{required(:location_id) => binary(), required(:order_id) => binary()},
-          %{},
-          SquareUp.TypeSpecs.v1_update_order_request()
+          SquareUp.TypeSpecs.v1_update_order_request(),
+          %{}
         ) :: SquareUp.Client.response(SquareUp.TypeSpecs.v1_order())
-  def update(client, path_params \\ %{}, query_params \\ %{}, params \\ %{}) do
+  def update(client, path_params \\ %{}, params \\ %{}, query_params \\ %{}) do
     path_params_spec = schema(%{location_id: spec(is_binary()), order_id: spec(is_binary())})
-    query_params_spec = schema(%{})
     params_spec = Norm.Delegate.delegate(&SquareUp.NormSchema.v1_update_order_request/0)
+    query_params_spec = schema(%{})
 
     response_spec = {:delegate, &SquareUp.ResponseSchema.v1_order/0}
 
     call(client, %{
       method: :put,
       path_params: path_params,
-      query_params: query_params,
       params: params,
+      query_params: query_params,
       path_params_spec: path_params_spec,
-      query_params_spec: query_params_spec,
       params_spec: params_spec,
+      query_params_spec: query_params_spec,
       response_spec: response_spec,
       path: "/v1/{location_id}/orders/{order_id}"
     })
