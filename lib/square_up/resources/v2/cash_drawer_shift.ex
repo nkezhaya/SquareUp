@@ -2,12 +2,13 @@ defmodule SquareUp.V2.CashDrawerShift do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  @spec retrieve(SquareUp.Client.t(), %{required(:shift_id) => binary()}, %{
+  @spec retrieve(SquareUp.Client.t(), %{required(:shift_id) => binary()}, %{}, %{
           required(:location_id) => binary()
         }) :: SquareUp.Client.response(SquareUp.TypeSpecs.retrieve_cash_drawer_shift_response())
-  def retrieve(client, path_params \\ %{}, params \\ %{}) do
+  def retrieve(client, path_params \\ %{}, params \\ %{}, query_params \\ %{}) do
     path_params_spec = schema(%{shift_id: spec(is_binary())})
-    params_spec = schema(%{location_id: spec(is_binary())})
+    params_spec = schema(%{})
+    query_params_spec = schema(%{location_id: spec(is_binary())})
 
     response_spec = {:delegate, &SquareUp.ResponseSchema.retrieve_cash_drawer_shift_response/0}
 
@@ -15,8 +16,10 @@ defmodule SquareUp.V2.CashDrawerShift do
       method: :get,
       path_params: path_params,
       params: params,
+      query_params: query_params,
       path_params_spec: path_params_spec,
       params_spec: params_spec,
+      query_params_spec: query_params_spec,
       response_spec: response_spec,
       path: "/v2/cash-drawers/shifts/{shift_id}"
     })

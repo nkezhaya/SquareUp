@@ -20,7 +20,7 @@ defmodule GenResources do
   end
 
   defp rm_resources() do
-    Path.wildcard("lib/square_up/resources/*.ex")
+    Path.wildcard("lib/square_up/resources/**/*.ex")
     |> Enum.each(&File.rm/1)
   end
 
@@ -63,22 +63,31 @@ defmodule GenResources do
   end
 
   defp write_function({{_module, function}, {path, method, defn}}) do
-    {path_params, params} =
+    {path_params, other_params} =
       Map.get(defn, "parameters")
       |> Enum.split_with(fn
         %{"in" => "path"} -> true
         _ -> false
       end)
 
+    {params, query_params} =
+      other_params
+      |> Enum.split_with(fn
+        %{"in" => "body"} -> true
+        _ -> false
+      end)
+
+
     success_response = Map.get(defn, "responses") |> Map.get("200") |> Map.get("schema")
 
     """
       @spec #{function}(SquareUp.Client.t(), #{params_to_typespec(path_params)}, #{
-      params_to_typespec(params)
+      params_to_typespec(params)}, #{params_to_typespec(query_params)
     }) :: SquareUp.Client.response(#{params_to_typespec(success_response)})
-      def #{function}(client, path_params \\\\ %{}, params \\\\ %{}) do
+      def #{function}(client, path_params \\\\ %{}, params \\\\ %{}, query_params \\\\ %{}) do
         path_params_spec = #{params_to_norm(path_params)}
         params_spec = #{params_to_norm(params)}
+        query_params_spec = #{params_to_norm(query_params)}
 
         response_spec = #{response_to_spec(success_response)}
 
@@ -86,8 +95,10 @@ defmodule GenResources do
           method: :#{method},
           path_params: path_params,
           params: params,
+          query_params: query_params,
           path_params_spec: path_params_spec,
           params_spec: params_spec,
+          query_params_spec: query_params_spec,
           response_spec: response_spec,
           path: "#{path}"
         })

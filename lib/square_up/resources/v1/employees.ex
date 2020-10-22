@@ -2,7 +2,7 @@ defmodule SquareUp.V1.Employees do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  @spec list(SquareUp.Client.t(), %{}, %{
+  @spec list(SquareUp.Client.t(), %{}, %{}, %{
           optional(:order) => binary(),
           optional(:begin_updated_at) => binary(),
           optional(:end_updated_at) => binary(),
@@ -13,10 +13,11 @@ defmodule SquareUp.V1.Employees do
           optional(:limit) => integer(),
           optional(:batch_token) => binary()
         }) :: SquareUp.Client.response([SquareUp.TypeSpecs.v1_employee()])
-  def list(client, path_params \\ %{}, params \\ %{}) do
+  def list(client, path_params \\ %{}, params \\ %{}, query_params \\ %{}) do
     path_params_spec = schema(%{})
+    params_spec = schema(%{})
 
-    params_spec =
+    query_params_spec =
       schema(%{
         order: spec(is_binary()),
         begin_updated_at: spec(is_binary()),
@@ -35,8 +36,10 @@ defmodule SquareUp.V1.Employees do
       method: :get,
       path_params: path_params,
       params: params,
+      query_params: query_params,
       path_params_spec: path_params_spec,
       params_spec: params_spec,
+      query_params_spec: query_params_spec,
       response_spec: response_spec,
       path: "/v1/me/employees"
     })

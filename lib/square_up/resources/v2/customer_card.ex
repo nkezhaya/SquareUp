@@ -5,11 +5,13 @@ defmodule SquareUp.V2.CustomerCard do
   @spec delete(
           SquareUp.Client.t(),
           %{required(:customer_id) => binary(), required(:card_id) => binary()},
+          %{},
           %{}
         ) :: SquareUp.Client.response(SquareUp.TypeSpecs.delete_customer_card_response())
-  def delete(client, path_params \\ %{}, params \\ %{}) do
+  def delete(client, path_params \\ %{}, params \\ %{}, query_params \\ %{}) do
     path_params_spec = schema(%{customer_id: spec(is_binary()), card_id: spec(is_binary())})
     params_spec = schema(%{})
+    query_params_spec = schema(%{})
 
     response_spec = {:delegate, &SquareUp.ResponseSchema.delete_customer_card_response/0}
 
@@ -17,8 +19,10 @@ defmodule SquareUp.V2.CustomerCard do
       method: :delete,
       path_params: path_params,
       params: params,
+      query_params: query_params,
       path_params_spec: path_params_spec,
       params_spec: params_spec,
+      query_params_spec: query_params_spec,
       response_spec: response_spec,
       path: "/v2/customers/{customer_id}/cards/{card_id}"
     })
@@ -27,11 +31,13 @@ defmodule SquareUp.V2.CustomerCard do
   @spec create(
           SquareUp.Client.t(),
           %{required(:customer_id) => binary()},
-          SquareUp.TypeSpecs.create_customer_card_request()
+          SquareUp.TypeSpecs.create_customer_card_request(),
+          %{}
         ) :: SquareUp.Client.response(SquareUp.TypeSpecs.create_customer_card_response())
-  def create(client, path_params \\ %{}, params \\ %{}) do
+  def create(client, path_params \\ %{}, params \\ %{}, query_params \\ %{}) do
     path_params_spec = schema(%{customer_id: spec(is_binary())})
     params_spec = Norm.Delegate.delegate(&SquareUp.NormSchema.create_customer_card_request/0)
+    query_params_spec = schema(%{})
 
     response_spec = {:delegate, &SquareUp.ResponseSchema.create_customer_card_response/0}
 
@@ -39,8 +45,10 @@ defmodule SquareUp.V2.CustomerCard do
       method: :post,
       path_params: path_params,
       params: params,
+      query_params: query_params,
       path_params_spec: path_params_spec,
       params_spec: params_spec,
+      query_params_spec: query_params_spec,
       response_spec: response_spec,
       path: "/v2/customers/{customer_id}/cards"
     })

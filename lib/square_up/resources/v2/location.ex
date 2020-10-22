@@ -2,11 +2,12 @@ defmodule SquareUp.V2.Location do
   import Norm
   import SquareUp.Client, only: [call: 2]
 
-  @spec create(SquareUp.Client.t(), %{}, SquareUp.TypeSpecs.create_location_request()) ::
+  @spec create(SquareUp.Client.t(), %{}, SquareUp.TypeSpecs.create_location_request(), %{}) ::
           SquareUp.Client.response(SquareUp.TypeSpecs.create_location_response())
-  def create(client, path_params \\ %{}, params \\ %{}) do
+  def create(client, path_params \\ %{}, params \\ %{}, query_params \\ %{}) do
     path_params_spec = schema(%{})
     params_spec = Norm.Delegate.delegate(&SquareUp.NormSchema.create_location_request/0)
+    query_params_spec = schema(%{})
 
     response_spec = {:delegate, &SquareUp.ResponseSchema.create_location_response/0}
 
@@ -14,18 +15,21 @@ defmodule SquareUp.V2.Location do
       method: :post,
       path_params: path_params,
       params: params,
+      query_params: query_params,
       path_params_spec: path_params_spec,
       params_spec: params_spec,
+      query_params_spec: query_params_spec,
       response_spec: response_spec,
       path: "/v2/locations"
     })
   end
 
-  @spec retrieve(SquareUp.Client.t(), %{required(:location_id) => binary()}, %{}) ::
+  @spec retrieve(SquareUp.Client.t(), %{required(:location_id) => binary()}, %{}, %{}) ::
           SquareUp.Client.response(SquareUp.TypeSpecs.retrieve_location_response())
-  def retrieve(client, path_params \\ %{}, params \\ %{}) do
+  def retrieve(client, path_params \\ %{}, params \\ %{}, query_params \\ %{}) do
     path_params_spec = schema(%{location_id: spec(is_binary())})
     params_spec = schema(%{})
+    query_params_spec = schema(%{})
 
     response_spec = {:delegate, &SquareUp.ResponseSchema.retrieve_location_response/0}
 
@@ -33,8 +37,10 @@ defmodule SquareUp.V2.Location do
       method: :get,
       path_params: path_params,
       params: params,
+      query_params: query_params,
       path_params_spec: path_params_spec,
       params_spec: params_spec,
+      query_params_spec: query_params_spec,
       response_spec: response_spec,
       path: "/v2/locations/{location_id}"
     })
@@ -43,11 +49,13 @@ defmodule SquareUp.V2.Location do
   @spec update(
           SquareUp.Client.t(),
           %{required(:location_id) => binary()},
-          SquareUp.TypeSpecs.update_location_request()
+          SquareUp.TypeSpecs.update_location_request(),
+          %{}
         ) :: SquareUp.Client.response(SquareUp.TypeSpecs.update_location_response())
-  def update(client, path_params \\ %{}, params \\ %{}) do
+  def update(client, path_params \\ %{}, params \\ %{}, query_params \\ %{}) do
     path_params_spec = schema(%{location_id: spec(is_binary())})
     params_spec = Norm.Delegate.delegate(&SquareUp.NormSchema.update_location_request/0)
+    query_params_spec = schema(%{})
 
     response_spec = {:delegate, &SquareUp.ResponseSchema.update_location_response/0}
 
@@ -55,8 +63,10 @@ defmodule SquareUp.V2.Location do
       method: :put,
       path_params: path_params,
       params: params,
+      query_params: query_params,
       path_params_spec: path_params_spec,
       params_spec: params_spec,
+      query_params_spec: query_params_spec,
       response_spec: response_spec,
       path: "/v2/locations/{location_id}"
     })

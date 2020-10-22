@@ -18,7 +18,8 @@ defmodule SquareUp.Client do
     import Norm
 
     with {:ok, _params} <- conform(call.params, call.params_spec),
-         {:ok, _params} <- conform(call.path_params, call.path_params_spec) do
+         {:ok, _params} <- conform(call.path_params, call.path_params_spec),
+         {:ok, _params} <- conform(call.query_params, call.query_params_spec) do
       :ok
     else
       {:error, _} = err -> err
@@ -86,7 +87,9 @@ defmodule SquareUp.Client do
         String.replace(path, "{#{key}}", val)
       end)
 
-    client.base_path <> path
+    query = URI.encode_query(call.query_params)
+
+    client.base_path <> path <> "?" <> query
   end
 
   defp headers(client, _call) do
