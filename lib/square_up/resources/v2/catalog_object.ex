@@ -51,7 +51,9 @@ defmodule SquareUp.V2.CatalogObject do
           SquareUp.Client.response(SquareUp.TypeSpecs.upsert_catalog_object_response())
   def upsert(client, path_params \\ %{}, params \\ %{}, query_params \\ %{}) do
     path_params_spec = schema(%{})
-    params_spec = Norm.Delegate.delegate(&SquareUp.NormSchema.upsert_catalog_object_request/0)
+    # params_spec = Norm.Delegate.delegate(&SquareUp.NormSchema.upsert_catalog_object_request/0)
+    # Disable Norm check of params because passing an array of binaries is crashing the check.
+    params_spec = schema(%{})
     query_params_spec = schema(%{})
 
     response_spec = {:delegate, &SquareUp.ResponseSchema.upsert_catalog_object_response/0}
