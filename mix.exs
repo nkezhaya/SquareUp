@@ -27,7 +27,7 @@ defmodule SquareUp.MixProject do
   defp deps do
     [
       {:jason, "~> 1.2"},
-      {:norm, "~> 0.12.0"},
+      {:norm, git: "https://github.com/keathley/norm", branch: "master"},
       {:hackney, "~> 1.16"},
       {:elixir_uuid, "~> 1.2", only: :test},
       {:ex_doc, "~> 0.22", only: :dev, runtime: false}
