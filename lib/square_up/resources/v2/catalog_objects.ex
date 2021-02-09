@@ -66,7 +66,8 @@ defmodule SquareUp.V2.CatalogObjects do
           SquareUp.Client.response(SquareUp.TypeSpecs.search_catalog_objects_response())
   def search(client, path_params \\ %{}, params \\ %{}, query_params \\ %{}) do
     path_params_spec = schema(%{})
-    params_spec = Norm.Delegate.delegate(&SquareUp.NormSchema.search_catalog_objects_request/0)
+    params_spec = schema(%{})
+    # params_spec = Norm.Delegate.delegate(&SquareUp.NormSchema.search_catalog_objects_request/0)
     query_params_spec = schema(%{})
 
     response_spec = {:delegate, &SquareUp.ResponseSchema.search_catalog_objects_response/0}
