@@ -10,8 +10,8 @@ defmodule SquareUp.V2.CatalogObjects do
         ) :: SquareUp.Client.response(SquareUp.TypeSpecs.batch_delete_catalog_objects_response())
   def batch_delete(client, path_params \\ %{}, params \\ %{}, query_params \\ %{}) do
     path_params_spec = schema(%{})
-
-    params_spec =
+    params_spec = schema(%{})
+    # params_spec =
       Norm.Delegate.delegate(&SquareUp.NormSchema.batch_delete_catalog_objects_request/0)
 
     query_params_spec = schema(%{})
