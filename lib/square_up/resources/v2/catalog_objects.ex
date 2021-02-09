@@ -11,8 +11,7 @@ defmodule SquareUp.V2.CatalogObjects do
   def batch_delete(client, path_params \\ %{}, params \\ %{}, query_params \\ %{}) do
     path_params_spec = schema(%{})
     params_spec = schema(%{})
-    # params_spec =
-      Norm.Delegate.delegate(&SquareUp.NormSchema.batch_delete_catalog_objects_request/0)
+    # params_spec = Norm.Delegate.delegate(&SquareUp.NormSchema.batch_delete_catalog_objects_request/0)
 
     query_params_spec = schema(%{})
 
